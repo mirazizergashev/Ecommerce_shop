@@ -5,7 +5,7 @@ const pool = mysql.createPool({
     host: '45.12.212.172',
     user: 'admin',
     password: "in_CRM2021",
-    database: 'shafran',
+    database: 'ecommerce_shop',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
