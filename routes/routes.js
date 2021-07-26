@@ -1,6 +1,6 @@
 var express=require('express');
 var routes= express.Router();
-var controllers= require('../controllers/userController');
+var controllers= require('../controllers/index');
 
 
 
@@ -17,7 +17,7 @@ var controllers= require('../controllers/userController');
 //employee routes
 // routes.get('/employee',controllers.employeeController.index);
 // routes.get('/employee/add',controllers.employeeController.add);
-routes.post('/user/add',controllers.save);
+routes.post('/user/add',controllers.userController.save);
 // routes.post('/employee/view',controllers.employeeController.employeeDetail);
 // routes.get('/employee/edit/(:employee_id)',controllers.employeeController.edit);
 module.exports=routes;

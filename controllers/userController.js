@@ -1,6 +1,6 @@
 var userModel = require('../models/userModel');
 const schema = require('../utils/user')
-const dateFormat = require('dateformat');
+// const dateFormat = require('dateformat');
 
 var userController = function () {
 

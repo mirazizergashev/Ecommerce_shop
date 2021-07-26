@@ -7,7 +7,7 @@
     "start1": "nodemon index.js",
     "start": "pm2 stop ecosystem.config.js && git pull origin main && pm2 start ecosystem.config.js --env development",
     "prod": "pm2 stop ecosystem.config.js && sudo git pull && npm install && sequelize db:migrate --env production && pm2 start ecosystem.config.js --env production && grunt apidoc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "stop": "pm2 stop 0"
   },
   "dependencies": {
     "cookie-parser": "^1.4.5",
