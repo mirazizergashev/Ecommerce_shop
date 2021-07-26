@@ -1,9 +1,9 @@
-var sql= require('../db');
+var pool= require('../database/db');
 
-var employeeModel=function(){}
+var userModel=function(){}
 
-employeeModel.insertEmployee=function(newEmployee,result){
-    sql.query("INSERT into employee SET  ?",newEmployee,function(err,res,field){
+userModel.user_edit_insert=function(newUser,result){
+    pool.query("call user_edit_insert(?)",newUser,function(err,res,field){
         if(err){
             return result(err,null);
         }else{
@@ -12,7 +12,7 @@ employeeModel.insertEmployee=function(newEmployee,result){
     });
    
 }
-employeeModel.getAllEmployees=function(result){
+userModel.getAllEmployees=function(result){
     sql.query("SELECT * FROM  `employee`",function(err, rows, fields){
         if(err){
             return result(err,null);
@@ -21,7 +21,7 @@ employeeModel.getAllEmployees=function(result){
         }
     });
 }
-employeeModel.getEmployeeById=function(employee_id,result){
+userModel.getEmployeeById=function(employee_id,result){
     sql.query("SELECT employee.*,company.name as company_name FROM employee  LEFT JOIN company ON company.id=employee.company_id WHERE employee.id="+employee_id,function(err,rows){
         if(err)
             return result(err);
@@ -34,4 +34,4 @@ employeeModel.getEmployeeById=function(employee_id,result){
         }  
     });
 }
-module.exports=employeeModel;
+module.exports=userModel;

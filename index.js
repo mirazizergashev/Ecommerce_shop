@@ -29,7 +29,7 @@ app.use(fileUpload());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-var main = require('./routes/app');
+var main = require('./routes/routes');
 
 app.use(cookieParser(process.env.SESSION || "sxdsxs@!#$%^cscs"));
 app.use(session({
