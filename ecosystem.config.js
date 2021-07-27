@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'Ecommerce_shop',
+      name: 'Ecommerce_shopping',
       script: './index.js',
       watch: true,
       env: {
