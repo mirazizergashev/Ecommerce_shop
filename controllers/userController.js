@@ -18,13 +18,6 @@ userController.index = function (req, res, next) {
     });
 
 }
-userController.add = function (req, res, next) {
-    conpanyModel.getAllCompany(function (err, companies) {
-        res.render('employee/add', { title: 'Add Employee', companies: companies });
-    });
-
-}
-
 
 // qoshish
 userController.save = function (req, res, next) {
@@ -55,7 +48,7 @@ userController.save = function (req, res, next) {
         password:parol
     }
 
-    userModel.user_edit_insert(newUser, function (err) {
+    userModel.user_edit_insert(newUser, function (err,result) {
         if (err) {
             // req.flash('error', 'There was error in inserting data');
             return res.status(200).json({
@@ -70,8 +63,8 @@ userController.save = function (req, res, next) {
             })
         } else {
             // req.flash('success', 'Employee added succesfully');
-            console.log(res)
-            switch (res[0][0].natija) {
+            console.log(result)
+            switch (result[0][0].natija) {
                 case '1':
                     return res.status(200).json({
                         code: 400,
@@ -86,7 +79,7 @@ userController.save = function (req, res, next) {
 
                     case '2':
                     return res.status(200).json({
-                        code: 400,
+                        code: 203,
                         error: {
                             message: {
                                 uz: "Foydalanuvchi ma'lumotlari o'zgardi !",
@@ -98,7 +91,7 @@ userController.save = function (req, res, next) {
 
                     case '3':
                         return res.status(200).json({
-                            code: 404,
+                            code: 400,
                             error: {
                                 message: {
                                     uz: "Bunday rol topilmadi!",
@@ -109,7 +102,7 @@ userController.save = function (req, res, next) {
                         })
                         case '4':
                         return res.status(200).json({
-                            code: 404,
+                            code: 400,
                             error: {
                                 message: {
                                     uz: "Bunday telefon mavjud!",
@@ -120,7 +113,7 @@ userController.save = function (req, res, next) {
                         })
                         case '5':
                         return res.status(200).json({
-                            code: 404,
+                            code: 400,
                             error: {
                                 message: {
                                     uz: "Bunday foydalanuvchi topilmadi!",
@@ -134,7 +127,7 @@ userController.save = function (req, res, next) {
                 default:
                 
                     return res.status(200).json({
-                        code: 200,
+                        code: 418,
                         success: {
                             message: {
                                 uz: "Kutilmagan xatolik adminga xabar bering !",

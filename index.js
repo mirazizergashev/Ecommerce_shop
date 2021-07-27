@@ -31,9 +31,9 @@ app.use(express.urlencoded({ extended: false }));
 
 var main = require('./routes/routes');
 
-app.use(cookieParser(process.env.SESSION || "sxdsxs@!#$%^cscs"));
+app.use(cookieParser(process.env.SESSION || "0sxdsxs@!#$%^cscs"));
 app.use(session({
-    secret: process.env.SESSION || "sxdsxs@!#$%^cscs",
+    secret: process.env.SESSION || "0sxdsxs@!#$%^cscs",
     resave: false,
     saveUninitialized: false,
     store: new FileStore({ path: require('path').join(require('os').tmpdir(), 'session-store') }),
