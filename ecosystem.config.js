@@ -5,11 +5,11 @@ module.exports = {
       script: './index.js',
       watch: true,
       env: {
-        PORT: 8090,
+        PORT: 7090,
         NODE_ENV: 'development'
       },
       env_production: {
-        PORT: 8091,
+        PORT: 7091,
         NODE_ENV: 'production'
       }
     }

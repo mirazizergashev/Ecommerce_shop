@@ -41,9 +41,9 @@ userController.save = function (req, res, next) {
     let a=req.body;
     var newUser={
         id:0,
-        role_id:a.rol,
-        first_name:a.ism,
-        last_name:a.fam,
+        role_id:3,
+        first_name:null,
+        last_name:null,
         phone:a.tel,        
         password:parol
     }
