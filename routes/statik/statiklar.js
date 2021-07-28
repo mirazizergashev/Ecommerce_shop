@@ -27,7 +27,7 @@ router.post("/rol_edit_insert", async (req, res) => {
         });
     }
     let a = req.body;
-    pool.query("call rol_edit_insert(?,?,?)", [a.id,a.nom, a.holat], (err, rows, fields) => {
+    pool.query("call rol_edit_insert(?,?,?)", [a.id||0,a.nom, a.holat], (err, rows, fields) => {
         if (err) {
             console.error(err)
             return res.status(200).json({
