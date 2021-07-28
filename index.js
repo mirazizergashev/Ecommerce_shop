@@ -30,6 +30,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 var main = require('./routes/app');
+var routes = require('./routes/routes');
 
 app.use(cookieParser(process.env.SESSION || "0sxdsxs@!#$%^cscs"));
 app.use(session({
@@ -43,6 +44,7 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', main);
+app.use('/', routes);
 
 app.get('/', (req, res) => {
     return res.status(200).json({
