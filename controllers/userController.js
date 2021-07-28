@@ -52,6 +52,7 @@ userController.save = function (req, res, next) {
         if (err) {
             console.log(err)
             // req.flash('error', 'There was error in inserting data');
+            console.log(err)
             return res.status(200).json({
                 code: 500,
                 error: {

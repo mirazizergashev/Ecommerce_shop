@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const schema = require('../../models/user')
+const schema = require('../../utils/user')
 const pool = require('../../database/db');
 
 
@@ -37,7 +37,7 @@ router.post("/up", async (req, res) => {
     }
 
     let a = req.body;
-    pool.query("call user_insert(0,?,?,?)", [a.fio, a.login, a.password],
+    pool.query("call user_edit_insert(0,?,?,?,?,?)", [a.rol, a.ism, a.fam, a.tel, a.parol],
         (err, rows, fields) => {
             if (err) {
                 console.log(err);
@@ -55,69 +55,81 @@ router.post("/up", async (req, res) => {
 
             switch (rows[0][0].natija) {
                 case '1':
-                    res.status(200).json({
-                        code: 201,
-                        success: {
+                    return res.status(200).json({
+                        code: 400,
+                        error: {
                             message: {
-                                en: "You have successfully registered!",
-                                uz: "Muvaffaqiyatli ro'yxatdan o'tdingiz!",
-                                ru: "Вы успешно зарегистрировались!"
+                                uz: "Yangi foydalanuvchi yaratildi !",
+                                en: "A new user has been created!",
+                                ru: "Создан новый пользователь!"
                             }
                         }
                     })
 
-                    break;
-
-                case '3':
-                    res.status(200).json({
-                        code: 400,
-                        error: {
-                            message: {
-                                uz: "Bu  login bilan allaqachon ro'yxatdan o'tilgan!",
-                                en: "This  login is already registered!",
-                                ru: "Этот loginна уже зарегистрирован!"
-                            }
-                        }
-                    })
-                    break;
-                case '4':
-                    res.status(200).json({
-                        code: 400,
-                        error: {
-                            message: {
-                                uz: "Ushbu ID ga ega foydalanuvchi foydalanuvchi aniqlanmadi!",
-                                ru: "Пользователь с таким идентификатором не идентифицирован!",
-                                en: "The user with this ID has not been identified!"
-                            }
-                        }
-                    })
-                    break;
                 case '2':
-                    res.status(200).json({
+                    return res.status(200).json({
                         code: 203,
                         error: {
                             message: {
-                                uz: "Muvaffaqiyatli yangilandi!",
-                                en: "Successfully updated!",
-                                ru: "Успешно обновлено!"
+                                uz: "Foydalanuvchi ma'lumotlari o'zgardi !",
+                                en: "User information has changed!",
+                                ru: "Информация о пользователе изменилась!"
                             }
                         }
                     })
-                    break;
-                default:
-                    res.status(200).json({
-                        code: 418,
+
+                case '3':
+                    return res.status(200).json({
+                        code: 400,
                         error: {
                             message: {
-                                ru: "Произошла незамеченная ошибка",
-                                uz: "E'tiborga olinmagan xatolik yuz berdi",
-                                en: "An unnoticed error occurred"
+                                uz: "Bunday rol topilmadi!",
+                                en: "No such role found!",
+                                ru: "Такой роли не найдено!"
                             }
                         }
                     })
-                    break;
-            }
+                case '4':
+                    return res.status(200).json({
+                        code: 400,
+                        error: {
+                            message: {
+                                uz: "Bunday telefon mavjud!",
+                                en: "Such a phone is available!",
+                                ru: "Такой телефон есть!"
+                            }
+                        }
+                    })
+                case '5':
+                    return res.status(200).json({
+                        code: 400,
+                        error: {
+                            message: {
+                                uz: "Bunday foydalanuvchi topilmadi!",
+                                en: "No such user found!",
+                                ru: "Такого пользователя не найдено!"
+                            }
+                        }
+                    })
 
+
+                default:
+
+                    return res.status(200).json({
+                        code: 418,
+                        success: {
+                            message: {
+                                uz: "Kutilmagan xatolik adminga xabar bering !",
+                                en: "Report an unexpected error to the admin!",
+                                ru: "Сообщите администратору о непредвиденной ошибке!"
+                            }
+                        }
+                    })
+
+
+
+
+            }
 
         })
 
@@ -127,8 +139,7 @@ router.post("/up", async (req, res) => {
 //LOg in
 router.post("/in", async (req, res) => {
     //validatsiyada xatolik
-    var ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress 
-    const device=req.headers["user-agent"]
+
     const checked = schema.signin.validate(req.body);
     if (checked.error) {
         let s = checked.error.details[0].message.split("#")
@@ -145,8 +156,8 @@ router.post("/in", async (req, res) => {
         });
     }
     let a = req.body;
-    pool.query("call sign_in(?,?,?,?)", [a.login, a.password||1,ip||'not found',device||"Desctop"], (err, rows, fields) => {
-        if (err){
+    pool.query("call login_check(?,?)", [a.tel, a.parol], (err, rows, fields) => {
+        if (err) {
             console.error(err)
             return res.status(200).json({
                 code: 500,
@@ -162,6 +173,18 @@ router.post("/in", async (req, res) => {
         // console.log(rows)
         switch (rows[0][0].natija) {
             case 0:
+                res.status(200).json({
+                    code: 400,
+                    error: {
+                        message: {
+                            uz: "Siz ko'rsatgan telefon va / yoki parol noto'g'ri.",
+                            ru: "Вы указали неверный телефон и / или пароль.",
+                            en: "The phone and/or password you specified are not correct."
+                        }
+                    }
+                })
+                break;
+            case '0':
                 res.status(200).json({
                     code: 400,
                     error: {
