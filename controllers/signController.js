@@ -31,16 +31,16 @@ signController.signUp = function (req, res) {
     var newUser=[
         0,
         3,
-        null,
-        null,
+        "",
+        "",
         a.tel,        
         a.parol,
-        null
+       ""
     ]
 
     userModel.user_edit_insert(newUser, function (err,result) {
         if (err) {
-            console.log(err)
+           
             // req.flash('error', 'There was error in inserting data');
             console.log(err)
             return res.status(200).json({
@@ -59,7 +59,7 @@ signController.signUp = function (req, res) {
                 case '1':
                     return res.status(200).json({
                         code: 201,
-                        error: {
+                        success: {
                             message: {
                                 uz: "Yangi foydalanuvchi yaratildi !",
                                 en: "A new user has been created!",
