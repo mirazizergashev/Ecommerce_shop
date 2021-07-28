@@ -25,12 +25,12 @@ userController.update = function (req, res ) {
     let a=req.body;
     var newUser=[
         req.session.userId||-1,
-        0,
-        a.ism,
-        a.fam,
+        3,
+        a.ism||"",
+        a.fam||"",
         "",        
         "",
-        a.address
+        a.address||""
     ]
 
     userModel.user_edit_insert(newUser, function (err,result) {
