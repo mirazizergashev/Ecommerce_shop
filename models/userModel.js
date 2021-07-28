@@ -3,7 +3,7 @@ var pool= require('../database/db');
 var userModel=function(){}
 
 userModel.user_edit_insert=function(newUser,result){
-    pool.query("call user_edit_insert(?,?,?,?,?,?,?)",newUser,function(err,res,field){
+    pool.query("call user_edit_insert(?,?,?,?,?,?,?,?)",newUser,function(err,res,field){
         if(err){
             return result(err,null);
         }else{
@@ -24,7 +24,7 @@ userModel.user_login=function(newUser,result){
     });
    
 }
-
+/*
 userModel.getAllEmployees=function(result){
     sql.query("SELECT * FROM  `employee`",function(err, rows, fields){
         if(err){
@@ -47,4 +47,5 @@ userModel.getEmployeeById=function(employee_id,result){
         }  
     });
 }
+*/
 module.exports=userModel;
