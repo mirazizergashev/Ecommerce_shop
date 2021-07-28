@@ -193,7 +193,7 @@ signController.signIn = function (req, res) {
                   
                
                 default:
-                
+                req.session.userId=result[0][0].natija
                     return res.status(200).json({
                         code: 200,
                         success: {

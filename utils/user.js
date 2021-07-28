@@ -45,11 +45,7 @@ const signup = Joi.object().keys({
 
 
 const signupdate = Joi.object().keys({
-    id:Joi.
-    number().required()
-    .messages({      
-        "any.required": `Idni kiriting!#Enter the  id!#Введите id !`
-    }),
+  
     ism: Joi.
     string().empty().min(2).max(100).required()
     .messages({
