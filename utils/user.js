@@ -62,10 +62,24 @@ const  signin = Joi.object().keys({
     }),
 })
 
+const blocked = Joi.object().keys({
+    id:Joi.
+    number().required()
+    .messages({      
+        "any.required": `Idni kiriting!#Enter the  id!#Введите id !`
+    }),
+    holat:Joi.
+    number().required()
+    .messages({      
+        "any.required": `Holatni kiriting!#Enter the status!#Введите status !`
+    })
+});
+
 
 
 
 module.exports = {
     signin,
-   signup
+   signup,
+   blocked
 }
