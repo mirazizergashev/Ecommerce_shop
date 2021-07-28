@@ -45,12 +45,13 @@ userController.save = function (req, res, next) {
         first_name:null,
         last_name:null,
         phone:a.tel,        
-        password:parol
+        password:a.parol
     }
 
     userModel.user_edit_insert(newUser, function (err,result) {
         if (err) {
             // req.flash('error', 'There was error in inserting data');
+            console.log(err)
             return res.status(200).json({
                 code: 500,
                 error: {
