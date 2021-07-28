@@ -5,7 +5,7 @@ var controllers= require('../controllers/index');
 
 
 //home page routes
-routes.get('/',(req,res)=>{res.send({msg:"server running now"})});
+// routes.get('/',(req,res)=>{res.send({msg:"server running now"})});
 
 //company routes
 // routes.get('/company',controllers.companyController.index);
@@ -18,6 +18,7 @@ routes.get('/',(req,res)=>{res.send({msg:"server running now"})});
 // routes.get('/employee',controllers.employeeController.index);
 // routes.get('/employee/add',controllers.employeeController.add);
 routes.post('/sign/up',controllers.userController.save);
+routes.post('/sign/in',controllers.userController.login);
 // routes.post('/employee/view',controllers.employeeController.employeeDetail);
 // routes.get('/employee/edit/(:employee_id)',controllers.employeeController.edit);
 module.exports=routes;
