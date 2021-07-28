@@ -66,12 +66,11 @@ const signupdate = Joi.object().keys({
         "string.max": `Familiya ko'pi  bilan 100 ta belgidan oshmasin!#Last name should not exceed 100 characters at most!#имени не должен превышать 100 символов!`,
         "required": `Familiya maydoni kerak!#Last name field required!#Поле для полного имени обязательно!`
     }),
-    tel: Joi.string().empty().min(9).max(15).required()
+    address: Joi.string().empty().max(255).required()
     .messages({
-        "string.empty": `Telefon raqam maydoni bo'sh bo'lmasin!#Telefon raqam area should not be empty!#Зона Telefon raqam не должна быть пустой!`,
-        "string.min": `Telefon raqam kamida 5 ta belgiga ega bo'lishi kerak!#Telefon raqam must have at least 5 characters!#В Telefon raqam должно быть не менее 5 символов!`,
-        "string.max": `Telefon raqam ko'pi  bilan 50 ta belgidan oshmasin!#Telefon raqam should not exceed 50 characters at most!#Telefon raqam не должен превышать 50 символов!`,
-        "any.required": `Telefon raqam maydoni kerak!#Telefon raqam field required!#Поле для полного Telefon raqam обязательно!`
+        "string.empty": `Address raqam maydoni bo'sh bo'lmasin!#Address raqam area should not be empty!#Зона Address raqam не должна быть пустой!`,
+         "string.max": `Address raqam ko'pi  bilan 255 ta belgidan oshmasin!#Address raqam should not exceed 50 characters at most!#Address raqam не должен превышать 50 символов!`,
+        "any.required": `Address raqam maydoni kerak!#Address raqam field required!#Поле для полного Telefon raqam обязательно!`
     })   
 });
 

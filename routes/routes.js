@@ -14,11 +14,11 @@ var controllers= require('../controllers/index');
 // routes.get('/company/edit/(:id)',controllers.companyController.edit);
 // routes.post('/company/edit/(:id)',controllers.companyController.update);
 
-//employee routes
-// routes.get('/employee',controllers.employeeController.index);
-// routes.get('/employee/add',controllers.employeeController.add);
+//sign routes
 routes.post('/sign/up',controllers.userController.save);
 routes.post('/sign/in',controllers.userController.login);
+
+//user routes
 routes.post('/user/update',controllers.userController.update);
 // routes.post('/employee/view',controllers.employeeController.employeeDetail);
 // routes.get('/employee/edit/(:employee_id)',controllers.employeeController.edit);

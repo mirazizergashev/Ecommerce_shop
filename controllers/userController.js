@@ -45,7 +45,8 @@ userController.save = function (req, res) {
         null,
         null,
         a.tel,        
-        a.parol
+        a.parol,
+        null
     ]
 
     userModel.user_edit_insert(newUser, function (err,result) {
@@ -250,8 +251,9 @@ userController.update = function (req, res ) {
         0,
         a.ism,
         a.fam,
-        a.tel,        
-        ""
+        "",        
+        "",
+        a.address
     ]
 
     userModel.user_edit_insert(newUser, function (err,result) {
