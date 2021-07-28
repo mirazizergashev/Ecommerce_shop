@@ -4,7 +4,10 @@ const schema = require('../../utils/user')
 const pool = require('../../database/db');
 const upload = require("../../middleware/upload")
 const path=require("path")
+const userController=require("../../controllers/userController")
 
+
+routes.post('/user/update',userController.update);
 router.get("/img/:url",(req,res)=>{
     pool.query("select id from user_image where user_id=? and url=? limit 1",[req.session.userId,req.params.url||"non"], (err, rows, fields) => {
         if (err) {
