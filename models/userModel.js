@@ -25,4 +25,14 @@ userModel.user_login=function(newUser,result){
    
 }
 
+userModel.editPassword=function(newUser,result){
+    pool.query("call password_edit(?,?,?)",newUser,function(err,res,field){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
+
 module.exports=userModel;

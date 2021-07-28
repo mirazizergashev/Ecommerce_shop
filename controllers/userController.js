@@ -51,10 +51,10 @@ userController.update = function (req, res ) {
             switch (result[0][0].natija) {
                 case '1':
                     return res.status(200).json({
-                        code: 201,
-                        error: {
+                        code: 203,
+                        success: {
                             message: {
-                                uz: "Yangi foydalanuvchi yaratildi !",
+                                uz: "Ma'lumotlar saqlandi!",
                                 en: "A new user has been created!",
                                 ru: "Создан новый пользователь!"
                             }
@@ -231,6 +231,82 @@ userController.uploadImg = function (req,res){
                     break;
             }
         })
+}
+
+userController.block = function (req,res){
+    //validatsiyada xatolik
+
+    const checked = schema.blocked.validate(req.body);
+    if (checked.error) {
+        let s = checked.error.details[0].message.split("#")
+        return res.status(200).json({
+            code: 400,
+            error: {
+                message: {
+                    uz: s[0],
+                    en: s[1],
+                    ru: s[2]
+                }
+            }
+
+        });
+    }
+    let a = req.body;
+    pool.query("call blok_user(?,?)", [a.id, a.holat], (err, rows, fields) => {
+        if (err) {
+            console.error(err)
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+        switch (parseInt(rows[0][0].natija)) {
+            
+            case 0:
+                res.status(200).json({
+                    code: 400,
+                    success: {
+                        message: {
+                            uz: "Foydalanuvchi bloklandi!",
+                            ru: "Пользователь заблокирован!",
+                            en: "User blocked!"
+                        }
+                    }
+                })
+                break;
+                case 1:
+                    res.status(200).json({
+                        code: 400,
+                        success: {
+                            message: {
+                                uz: "Foydalanuvchi blokdan chiqarildi!",
+                                ru: "Пользователь разблокирован!",
+                                en: "User unblocked!"
+                            }
+                        }
+                    })
+                    break;
+
+            default:
+                res.status(200).json({
+                    code: 404,
+                    error: {
+                        message: {
+                                uz: "Bunday foydalanuvchi topilmadi!",
+                                en: "No such user found!",
+                                ru: "Такого пользователя не найдено!"
+                            }
+                    }
+                })
+                break;
+        }
+    })
 }
 
 userController.block = function (req,res){
