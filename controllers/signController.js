@@ -176,7 +176,7 @@ signController.signIn = function (req, res) {
                 }
             })
         } else {
-            // req.flash('success', 'Employee added succesfully');
+            req.session.userId=parseInt(result[0][0].natija)
             switch (result[0][0].natija) {
                 case '0':
                     return res.status(200).json({
@@ -189,7 +189,7 @@ signController.signIn = function (req, res) {
                             }
                         }
                     })
-
+break
                   
                
                 default:
@@ -204,7 +204,7 @@ signController.signIn = function (req, res) {
                             }
                         }
                     })
-                   
+                   break
                  
                 
               

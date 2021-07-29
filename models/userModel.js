@@ -36,7 +36,7 @@ userModel.editPassword=function(data,result){
 }
 
 userModel.getMe=function(userId,result){
-    pool.query("SELECT id,concat(last_name,\" \",first_name) fio,phone,address FROM users where id=?",userId,function(err,res){
+    pool.query("SELECT last_name ism,first_name fam,phone,address FROM users where id=?",userId,function(err,res){
         if(err){
             return result(err,null);
         }else{
