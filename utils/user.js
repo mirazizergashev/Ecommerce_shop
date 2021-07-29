@@ -103,10 +103,32 @@ const blocked = Joi.object().keys({
 });
 
 
+const editPassword = Joi.object().keys({
+    oldPass: Joi.string().
+    min(4).
+    max(100).
+    required()
+    .messages({
+        "string.min": "Eski Parol minimal 4 ta belgidan iborat bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+        "string.max": "Eski Parol maksimal 100 ta belgi iborat bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+        "any.required": `Eski Parol maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
+    }),
+    newPass: Joi.string().
+    min(4).
+    max(100).
+    required()
+    .messages({
+        "string.min": "Yangi Parol minimal 4 ta belgidan iborat bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+        "string.max": "Yangi Parol maksimal 100 ta belgi iborat bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+        "any.required": `Yangi Parol maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
+    })
+});
 
 
 module.exports = {
     signin,
    signup,
-   blocked,signupdate
+   blocked,
+   signupdate,
+   editPassword
 }

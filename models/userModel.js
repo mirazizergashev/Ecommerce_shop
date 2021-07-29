@@ -25,8 +25,8 @@ userModel.user_login=function(newUser,result){
    
 }
 
-userModel.editPassword=function(newUser,result){
-    pool.query("call password_edit(?,?,?)",newUser,function(err,res,field){
+userModel.editPassword=function(data,result){
+    pool.query("call password_edit(?,?,?)",data,function(err,res,field){
         if(err){
             return result(err,null);
         }else{
@@ -34,5 +34,17 @@ userModel.editPassword=function(newUser,result){
         }
     });
 }
+
+userModel.getMe=function(userId,result){
+    pool.query("SELECT id,concat(last_name,\" \",first_name) fio,phone,address FROM users where id=?",userId,function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
+
+
 
 module.exports=userModel;

@@ -3,7 +3,7 @@ const schema = require('../utils/user')
 
 var userController = {}
 
-userController.update = function (req, res ) {
+userController.update = function (req, res) {
 
     //validatsiyada xatolik
     const checked = schema.signupdate.validate(req.body);
@@ -21,18 +21,18 @@ userController.update = function (req, res ) {
 
         });
     }
-    let a=req.body;
-    var newUser=[
-        req.session.userId||-1,
+    let a = req.body;
+    var newUser = [
+        req.session.userId || -1,
         3,
-        a.ism||"",
-        a.fam||"",
-        "",        
+        a.ism || "",
+        a.fam || "",
         "",
-        a.address||""
+        "",
+        a.address || ""
     ]
 
-    userModel.user_edit_insert(newUser, function (err,result) {
+    userModel.user_edit_insert(newUser, function (err, result) {
         if (err) {
             console.log(err)
             // req.flash('error', 'There was error in inserting data');
@@ -61,7 +61,7 @@ userController.update = function (req, res ) {
                         }
                     })
 
-                    case '2':
+                case '2':
                     return res.status(200).json({
                         code: 203,
                         error: {
@@ -73,43 +73,43 @@ userController.update = function (req, res ) {
                         }
                     })
 
-                    case '3':
-                        return res.status(200).json({
-                            code: 400,
-                            error: {
-                                message: {
-                                    uz: "Bunday rol topilmadi!",
-                                    en: "No such role found!",
-                                    ru: "Такой роли не найдено!"
-                                }
+                case '3':
+                    return res.status(200).json({
+                        code: 400,
+                        error: {
+                            message: {
+                                uz: "Bunday rol topilmadi!",
+                                en: "No such role found!",
+                                ru: "Такой роли не найдено!"
                             }
-                        })
-                        case '4':
-                        return res.status(200).json({
-                            code: 400,
-                            error: {
-                                message: {
-                                    uz: "Bunday telefon mavjud!",
-                                    en: "Such a phone is available!",
-                                    ru: "Такой телефон есть!"
-                                }
+                        }
+                    })
+                case '4':
+                    return res.status(200).json({
+                        code: 400,
+                        error: {
+                            message: {
+                                uz: "Bunday telefon mavjud!",
+                                en: "Such a phone is available!",
+                                ru: "Такой телефон есть!"
                             }
-                        })
-                        case '5':
-                        return res.status(200).json({
-                            code: 400,
-                            error: {
-                                message: {
-                                    uz: "Bunday foydalanuvchi topilmadi!",
-                                    en: "No such user found!",
-                                    ru: "Такого пользователя не найдено!"
-                                }
+                        }
+                    })
+                case '5':
+                    return res.status(200).json({
+                        code: 400,
+                        error: {
+                            message: {
+                                uz: "Bunday foydalanuvchi topilmadi!",
+                                en: "No such user found!",
+                                ru: "Такого пользователя не найдено!"
                             }
-                        })
-               
-               
+                        }
+                    })
+
+
                 default:
-                
+
                     return res.status(200).json({
                         code: 418,
                         success: {
@@ -120,20 +120,20 @@ userController.update = function (req, res ) {
                             }
                         }
                     })
-                   
-                 
-                
-              
+
+
+
+
             }
-    
+
         }
-        
+
     });
 
 }
 
-userController.getOneImg = function (req,res){
-    pool.query("select id from user_image where user_id=? and url=? limit 1",[req.session.userId,req.params.url||"non"], (err, rows, fields) => {
+userController.getOneImg = function (req, res) {
+    pool.query("select id from user_image where user_id=? and url=? limit 1", [req.session.userId, req.params.url || "non"], (err, rows, fields) => {
         if (err) {
             console.log(err);
             return res.status(200).json({
@@ -147,24 +147,24 @@ userController.getOneImg = function (req,res){
                 }
             })
         }
-        if(rows.length==0)
-        return res.status(200).json({
-            code: 400,
-            error: {
-                message: {
-                    uz: "Bunday fayl topilmadi",
-                    en: "No such file found",
-                    ru: "Такого файла не найдено"
+        if (rows.length == 0)
+            return res.status(200).json({
+                code: 400,
+                error: {
+                    message: {
+                        uz: "Bunday fayl topilmadi",
+                        en: "No such file found",
+                        ru: "Такого файла не найдено"
+                    }
                 }
-            }
-        })
+            })
         else
-        res.status(200).sendFile(path.join(__dirname.substr(0,__dirname.length-11), 'public/upload/users/'+req.params.url))
-    }) 
+            res.status(200).sendFile(path.join(__dirname.substr(0, __dirname.length - 11), 'public/upload/users/' + req.params.url))
+    })
 }
 
-userController.getAllImges = function (req,res){
-    pool.query("select id,url from user_image where user_id=?",req.session.userId, (err, rows, fields) => {
+userController.getAllImges = function (req, res) {
+    pool.query("select id,url from user_image where user_id=?", req.session.userId, (err, rows, fields) => {
         if (err) {
             console.log(err);
             return res.status(200).json({
@@ -180,12 +180,12 @@ userController.getAllImges = function (req,res){
         }
         res.status(200).json({
             code: 200,
-            success:rows
+            success: rows
         })
     })
 }
 
-userController.uploadImg = function (req,res){
+userController.uploadImg = function (req, res) {
     pool.query("call user_image_insert(?,?)", [req.session.userId, req.linkFile],
         (err, rows, fields) => {
             if (err) {
@@ -233,7 +233,7 @@ userController.uploadImg = function (req,res){
         })
 }
 
-userController.block = function (req,res){
+userController.block = function (req, res) {
     //validatsiyada xatolik
 
     const checked = schema.blocked.validate(req.body);
@@ -267,7 +267,7 @@ userController.block = function (req,res){
             })
         }
         switch (parseInt(rows[0][0].natija)) {
-            
+
             case 0:
                 res.status(200).json({
                     code: 400,
@@ -280,28 +280,28 @@ userController.block = function (req,res){
                     }
                 })
                 break;
-                case 1:
-                    res.status(200).json({
-                        code: 400,
-                        success: {
-                            message: {
-                                uz: "Foydalanuvchi blokdan chiqarildi!",
-                                ru: "Пользователь разблокирован!",
-                                en: "User unblocked!"
-                            }
+            case 1:
+                res.status(200).json({
+                    code: 400,
+                    success: {
+                        message: {
+                            uz: "Foydalanuvchi blokdan chiqarildi!",
+                            ru: "Пользователь разблокирован!",
+                            en: "User unblocked!"
                         }
-                    })
-                    break;
+                    }
+                })
+                break;
 
             default:
                 res.status(200).json({
                     code: 404,
                     error: {
                         message: {
-                                uz: "Bunday foydalanuvchi topilmadi!",
-                                en: "No such user found!",
-                                ru: "Такого пользователя не найдено!"
-                            }
+                            uz: "Bunday foydalanuvchi topilmadi!",
+                            en: "No such user found!",
+                            ru: "Такого пользователя не найдено!"
+                        }
                     }
                 })
                 break;
@@ -309,10 +309,10 @@ userController.block = function (req,res){
     })
 }
 
-userController.block = function (req,res){
+userController.editPassword = function (req, res) {
     //validatsiyada xatolik
 
-    const checked = schema.blocked.validate(req.body);
+    const checked = schema.editPassword.validate(req.body);
     if (checked.error) {
         let s = checked.error.details[0].message.split("#")
         return res.status(200).json({
@@ -327,10 +327,10 @@ userController.block = function (req,res){
 
         });
     }
-    let a = req.body;
-    pool.query("call blok_user(?,?)", [a.id, a.holat], (err, rows, fields) => {
+    let { oldPass, newPass } = req.body;
+    userModel.editPassword([req.session.userId || 0, oldPass, newPass], (err, rows) => {
         if (err) {
-            console.error(err)
+            console.log(err)
             return res.status(200).json({
                 code: 500,
                 error: {
@@ -342,46 +342,75 @@ userController.block = function (req,res){
                 }
             })
         }
-        switch (parseInt(rows[0][0].natija)) {
-            
-            case 0:
-                res.status(200).json({
-                    code: 400,
-                    success: {
+
+        switch (rows[0][0].natija) {
+            case '2':
+                return res.status(200).json({
+                    code: 203,
+                    error: {
                         message: {
-                            uz: "Foydalanuvchi bloklandi!",
-                            ru: "Пользователь заблокирован!",
-                            en: "User blocked!"
+                            uz: "Parol yangilandi!!",
+                            en: "User information has changed!",
+                            ru: "Информация о пользователе изменилась!"
                         }
                     }
                 })
-                break;
-                case 1:
-                    res.status(200).json({
-                        code: 400,
-                        success: {
-                            message: {
-                                uz: "Foydalanuvchi blokdan chiqarildi!",
-                                ru: "Пользователь разблокирован!",
-                                en: "User unblocked!"
-                            }
+
+            case '3':
+                return res.status(200).json({
+                    code: 400,
+                    error: {
+                        message: {
+                            uz: "Eski parol xato kiritildi!",
+                            en: "No such role found!",
+                            ru: "Такой роли не найдено!"
                         }
-                    })
-                    break;
+                    }
+                })
 
             default:
                 res.status(200).json({
-                    code: 404,
-                    error: {
+                    code: 418,
+                    success: {
                         message: {
-                                uz: "Bunday foydalanuvchi topilmadi!",
-                                en: "No such user found!",
-                                ru: "Такого пользователя не найдено!"
-                            }
+                            uz: "Kutilmagan xatolik adminga xabar bering !",
+                            en: "Report an unexpected error to the admin!",
+                            ru: "Сообщите администратору о непредвиденной ошибке!"
+                        }
                     }
                 })
-                break;
+
         }
     })
+
 }
+
+userController.getMe= function (req, res) {
+    userModel.getMe(req.session.userId,(err,rows)=>{
+      
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+        res.status(200).json({
+            code: 200,
+            success: rows
+        })
+    })
+}
+
+
+
+
+
+
 module.exports = userController;
