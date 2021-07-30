@@ -105,30 +105,30 @@ const editPassword = Joi.object().keys({
 
 const  roledit = Joi.object().keys({
     id: Joi.number().
-    min(4).
-    max(100).
+    min(0).
+    max(1000000).
     required()
     .messages({
-        "string.min": "Eski Parol minimal 4 ta belgidan iborat bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
-        "string.max": "Eski Parol maksimal 100 ta belgi iborat bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
-        "any.required": `Eski Parol maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
+        "number.min": "Id minimal 1 ta belgidan iborat bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+        "number.max": "Id maksimal 1000000 ta belgi iborat bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+        "any.required": `Id maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
     }),
     rol: Joi.number().
-    min(4).
-    max(100).
+    min(0).
+    max(10000000).
     required()
     .messages({
-        "string.min": "Yangi Parol minimal 4 ta belgidan iborat bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
-        "string.max": "Yangi Parol maksimal 100 ta belgi iborat bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
-        "any.required": `Yangi Parol maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
+        "number.min": "rol minimal 1 ta belgidan iborat bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+        "number.max": "rol maksimal 10000000 ta belgi iborat bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+        "any.required": `rol maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
     }),
     holat: Joi.number().
     min(0).
     max(1).
     required()
     .messages({
-        "string.min": "Holat minimal 4 ta belgidan iborat bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
-        "string.max": "Holat maksimal 100 ta belgi iborat bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+        "number.min": "Holat minimal 0 bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+        "number.max": "Holat maksimal 1 bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
         "any.required": `Holat maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
     })
 }); 

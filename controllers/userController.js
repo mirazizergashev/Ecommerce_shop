@@ -471,10 +471,44 @@ userController.rolEdit= function (req, res) {
                 }
             })
         }
-        res.status(200).json({
-            code: 200,
-            success: rows
-        })
+        switch (rows[0][0].natija) {
+            case '2':
+                return res.status(200).json({
+                    code: 203,
+                    success: {
+                        message: {
+                            uz: "Ma'lumotlar yangilandi!!",
+                            en: "User information has changed!",
+                            ru: "Информация о пользователе изменилась!"
+                        }
+                    }
+                })
+
+            case '3':
+                return res.status(200).json({
+                    code: 400,
+                    error: {
+                        message: {
+                            uz: "Foydalanuvchi aniqlanmadi!",
+                            en: "No such role found!",
+                            ru: "Такой роли не найдено!"
+                        }
+                    }
+                })
+
+            default:
+                res.status(200).json({
+                    code: 418,
+                    success: {
+                        message: {
+                            uz: "Kutilmagan xatolik adminga xabar bering !",
+                            en: "Report an unexpected error to the admin!",
+                            ru: "Сообщите администратору о непредвиденной ошибке!"
+                        }
+                    }
+                })
+
+        }
     })
 }
 
