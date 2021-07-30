@@ -45,6 +45,16 @@ userModel.getMe=function(userId,result){
     });
 }
 
+userModel.roleEdit=function(data,result){
+    pool.query("call user_role_edit(?,?)",data,function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
+
 
 
 module.exports=userModel;

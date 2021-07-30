@@ -409,6 +409,75 @@ userController.getMe= function (req, res) {
 }
 
 
+userController.getAllUsers= function (req, res) {
+    userModel.getMe(req.session.userId,(err,rows)=>{
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+        res.status(200).json({
+            code: 200,
+            success: rows
+        })
+    })
+}
+
+userController.rolEdit= function (req, res) {
+    //validatsiyada xatolik
+    const checked = schema.roledit.validate(req.body);
+    if (checked.error) {
+        const msg = checked.error.details[0].message.split("#")
+        return res.status(200).json({
+            code: 400,
+            error: {
+                message: {
+                    uz: msg[0],
+                    en: msg[1],
+                    ru: msg[2]
+                }
+            }
+
+        });
+    }
+    let a = req.body;
+    var data = [
+       a.id,
+        a.rol,
+      
+    ]
+
+    userModel.roleEdit(data,(err,rows)=>{
+      
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+        res.status(200).json({
+            code: 200,
+            success: rows
+        })
+    })
+}
+
+
 
 
 
