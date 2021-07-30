@@ -23,21 +23,5 @@ roleModel.getAll=function(result){
     });
 }
 
-roleModel.getAll((err,rows)=>{
-    console.log(rows)
-    if (err) {
-        console.log(err);
-        return res.status(200).json({
-            code: 500,
-            error: {
-                message: {
-                    uz: "Serverda xatolik tufayli rad etildi !",
-                    en: "Rejected due to server error!",
-                    ru: "Отклонено из-за ошибки сервера!"
-                }
-            }
-        })
-    }
-})
 
 module.exports=roleModel;

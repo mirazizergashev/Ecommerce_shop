@@ -1,12 +1,13 @@
 var roleModel = require('../models/roleModel');
-const schema = require('../utils/user')
+const schema = require('../utils/role')
 
 var roleController = {}
 
-roleController.update = function (req, res) {
+
+roleController.create_update = function (req, res) {
 
     //validatsiyada xatolik
-    const checked = schema.signupdate.validate(req.body);
+    const checked = schema.role.validate(req.body);
     if (checked.error) {
         const msg = checked.error.details[0].message.split("#")
         return res.status(200).json({
@@ -22,20 +23,15 @@ roleController.update = function (req, res) {
         });
     }
     let a = req.body;
-    var newUser = [
-        req.session.userId || -1,
-        3,
-        a.ism || "",
-        a.fam || "",
-        "",
-        "",
-        a.address || ""
+    var data = [
+        a.id || 0,
+        a.name || "",
+        a.status
     ]
 
-    roleModel.user_edit_insert(newUser, function (err, result) {
+    roleModel.rol_edit_insert(data, function (err, result) {
         if (err) {
             console.log(err)
-            // req.flash('error', 'There was error in inserting data');
             return res.status(200).json({
                 code: 500,
                 error: {
@@ -66,7 +62,7 @@ roleController.update = function (req, res) {
                         code: 203,
                         error: {
                             message: {
-                                uz: "Foydalanuvchi ma'lumotlari o'zgardi !",
+                                uz: "Rol o'zgartirildi !",
                                 en: "User information has changed!",
                                 ru: "Информация о пользователе изменилась!"
                             }
@@ -84,30 +80,7 @@ roleController.update = function (req, res) {
                             }
                         }
                     })
-                case '4':
-                    return res.status(200).json({
-                        code: 400,
-                        error: {
-                            message: {
-                                uz: "Bunday telefon mavjud!",
-                                en: "Such a phone is available!",
-                                ru: "Такой телефон есть!"
-                            }
-                        }
-                    })
-                case '5':
-                    return res.status(200).json({
-                        code: 400,
-                        error: {
-                            message: {
-                                uz: "Bunday foydalanuvchi topilmadi!",
-                                en: "No such user found!",
-                                ru: "Такого пользователя не найдено!"
-                            }
-                        }
-                    })
-
-
+               
                 default:
 
                     return res.status(200).json({
@@ -131,6 +104,7 @@ roleController.update = function (req, res) {
     });
 
 }
+
 
 roleController.getAll = function (req, res) {
    roleModel.getAll((err,rows)=>{
