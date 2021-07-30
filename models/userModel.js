@@ -47,7 +47,8 @@ userModel.getMe=function(userId,result){
 
 
 userModel.getAllUsers=function(result){
-    pool.query(`SELECT concat(u.last_name,\" \",u.first_name) fio,u.phone,u.isActive status,r.name role,created_on 
+    pool.query(`SELECT u.id,concat(u.last_name,\" \",u.first_name) fio,u.phone,u.isActive status,r.name role,
+    date_format(u.created_on,'%Y-%m-%d, %h:%i:%s') created_on
     FROM users u inner join roles r on r.id=u.role_id where r.id!=1`,function(err,res){
         if(err){
             return result(err,null);
