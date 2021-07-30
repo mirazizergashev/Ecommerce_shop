@@ -410,7 +410,7 @@ userController.getMe= function (req, res) {
 
 
 userController.getAllUsers= function (req, res) {
-    userModel.getMe(req.session.userId,(err,rows)=>{
+    userModel.getAllUsers((err,rows)=>{
         if (err) {
             console.log(err);
             return res.status(200).json({

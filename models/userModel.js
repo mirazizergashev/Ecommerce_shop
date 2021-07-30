@@ -45,6 +45,18 @@ userModel.getMe=function(userId,result){
     });
 }
 
+
+userModel.getAllUsers=function(result){
+    pool.query(`SELECT concat(u.last_name,\" \",u.first_name) fio,u.phone,u.isActive status,r.name role 
+    FROM users u inner join roles r on r.id=u.role_id`,function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
+
 userModel.roleEdit=function(data,result){
     pool.query("call user_role_edit(?,?)",data,function(err,res){
         if(err){
