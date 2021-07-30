@@ -59,7 +59,7 @@ userModel.getAllUsers=function(result){
 }
 
 userModel.roleEdit=function(data,result){
-    pool.query("call user_role_edit(?,?)",data,function(err,res){
+    pool.query("call user_role_edit(?,?,?)",data,function(err,res){
         if(err){
             return result(err,null);
         }else{

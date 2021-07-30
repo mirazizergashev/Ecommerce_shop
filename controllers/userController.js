@@ -452,6 +452,7 @@ userController.rolEdit= function (req, res) {
     var data = [
        a.id,
         a.rol,
+        a.holat
       
     ]
 
