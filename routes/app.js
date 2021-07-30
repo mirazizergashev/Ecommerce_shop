@@ -3,11 +3,13 @@ const app = express();
 const {authCheck}=require('../middleware/auth');
 
 const sign = require("./sign/app");
+const roles = require("./roles/app");
 const user = require("./user/app");
 const static = require("./statik/app");
 
 // sing in , up 
 app.use("/sign", sign);
+app.use("/roles",authCheck, roles);
 app.use("/user",authCheck, user);
 app.use("/static", static);
 
