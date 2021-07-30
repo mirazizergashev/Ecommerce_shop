@@ -347,7 +347,7 @@ userController.editPassword = function (req, res) {
             case '2':
                 return res.status(200).json({
                     code: 203,
-                    error: {
+                    success: {
                         message: {
                             uz: "Parol yangilandi!!",
                             en: "User information has changed!",
