@@ -14,7 +14,7 @@ roleModel.rol_edit_insert=function(idNameStatus,result){
 }
 
 roleModel.getAll=function(result){
-    pool.query("SELECT * FROM roles",function(err,res){
+    pool.query("SELECT * FROM roles where id!=1",function(err,res){
         if(err){
             return result(err,null);
         }else{
