@@ -58,6 +58,18 @@ userModel.getAllUsers=function(result){
     });
 }
 
+userModel.getEmployee=function(result){
+    pool.query(`SELECT u.id,concat(u.last_name,\" \",u.first_name) fio,u.phone,u.role_id,u.isActive status,r.name role,
+    date_format(u.created_on,'%Y-%m-%d, %h:%i:%s') created_on
+    FROM users u inner join roles r on r.id=u.role_id where r.id!=1 and r.id!=3`,function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
+
 userModel.roleEdit=function(data,result){
     pool.query("call user_role_edit(?,?,?)",data,function(err,res){
         if(err){

@@ -27,7 +27,7 @@ categoryController.create_update = function (req, res) {
         a.id ,
         a.nom ,
         a.sub,
-        a.user_id,
+        req.session.userId||0,
         a.foiz,
         a.hol
     ]
