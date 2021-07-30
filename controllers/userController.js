@@ -495,7 +495,17 @@ userController.rolEdit= function (req, res) {
                         }
                     }
                 })
-
+                case '4':
+                    return res.status(200).json({
+                        code: 400,
+                        error: {
+                            message: {
+                                uz: "Rol topilmadi!",
+                                en: "No such role found!",
+                                ru: "Такой роли не найдено!"
+                            }
+                        }
+                    })
             default:
                 res.status(200).json({
                     code: 418,
