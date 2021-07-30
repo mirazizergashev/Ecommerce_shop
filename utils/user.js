@@ -121,6 +121,15 @@ const  roledit = Joi.object().keys({
         "string.min": "Yangi Parol minimal 4 ta belgidan iborat bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
         "string.max": "Yangi Parol maksimal 100 ta belgi iborat bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
         "any.required": `Yangi Parol maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
+    }),
+    holat: Joi.number().
+    min(0).
+    max(1).
+    required()
+    .messages({
+        "string.min": "Holat minimal 4 ta belgidan iborat bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+        "string.max": "Holat maksimal 100 ta belgi iborat bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+        "any.required": `Holat maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
     })
 }); 
 
