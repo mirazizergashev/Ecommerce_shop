@@ -64,7 +64,7 @@ userController.update = function (req, res) {
                 case '2':
                     return res.status(200).json({
                         code: 203,
-                        error: {
+                        success: {
                             message: {
                                 uz: "Foydalanuvchi ma'lumotlari o'zgardi !",
                                 en: "User information has changed!",
@@ -385,9 +385,9 @@ userController.editPassword = function (req, res) {
 
 }
 
-userController.getMe= function (req, res) {
-    userModel.getMe(req.session.userId,(err,rows)=>{
-      
+userController.getMe = function (req, res) {
+    userModel.getMe(req.session.userId, (err, rows) => {
+
         if (err) {
             console.log(err);
             return res.status(200).json({
@@ -409,8 +409,8 @@ userController.getMe= function (req, res) {
 }
 
 
-userController.getAllUsers= function (req, res) {
-    userModel.getAllUsers((err,rows)=>{
+userController.getAllUsers = function (req, res) {
+    userModel.getAllUsers((err, rows) => {
         if (err) {
             console.log(err);
             return res.status(200).json({
@@ -431,7 +431,7 @@ userController.getAllUsers= function (req, res) {
     })
 }
 
-userController.rolEdit= function (req, res) {
+userController.rolEdit = function (req, res) {
     //validatsiyada xatolik
     const checked = schema.roledit.validate(req.body);
     if (checked.error) {
@@ -450,14 +450,14 @@ userController.rolEdit= function (req, res) {
     }
     let a = req.body;
     var data = [
-       a.id,
+        a.id,
         a.rol,
         a.holat
-      
+
     ]
 
-    userModel.roleEdit(data,(err,rows)=>{
-      
+    userModel.roleEdit(data, (err, rows) => {
+
         if (err) {
             console.log(err);
             return res.status(200).json({
@@ -495,17 +495,17 @@ userController.rolEdit= function (req, res) {
                         }
                     }
                 })
-                case '4':
-                    return res.status(200).json({
-                        code: 400,
-                        error: {
-                            message: {
-                                uz: "Rol topilmadi!",
-                                en: "No such role found!",
-                                ru: "Такой роли не найдено!"
-                            }
+            case '4':
+                return res.status(200).json({
+                    code: 400,
+                    error: {
+                        message: {
+                            uz: "Rol topilmadi!",
+                            en: "No such role found!",
+                            ru: "Такой роли не найдено!"
                         }
-                    })
+                    }
+                })
             default:
                 res.status(200).json({
                     code: 418,
