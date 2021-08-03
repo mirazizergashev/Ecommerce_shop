@@ -29,7 +29,8 @@ categoryController.create_update = function (req, res) {
         a.sub,
         req.session.userId||0,
         a.foiz,
-        a.hol
+        a.hol,
+        a.isFoiz
     ]
 
     categoryModel.category_edit_insert(data, function (err, result) {
