@@ -4,7 +4,7 @@ const { category } = require('../utils/category');
 var categoryModel=function(){}
 
 categoryModel.category_edit_insert=function(data,result){
-    pool.query("call category_edit_insert(?,?,?,?,?,?)",data,function(err,res,field){
+    pool.query("call category_edit_insert(?,?,?,?,?,?,?)",data,function(err,res,field){
         if(err){
             return result(err,null);
         }else{
