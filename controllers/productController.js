@@ -113,7 +113,7 @@ productController.create_update = function (req, res) {
 
 
 productController.getAll = function (req, res) {
-   categoryModel.getAll((err,rows)=>{
+   productModel.getAll((err,rows)=>{
     if (err) {
             console.log(err);
             return res.status(200).json({
@@ -137,28 +137,6 @@ productController.getAll = function (req, res) {
 
 
 
-productController.getSub = function (req, res) {
-    categoryModel.getSub(req.params.id,(err,rows)=>{
-     if (err) {
-             console.log(err);
-             return res.status(200).json({
-                 code: 500,
-                 error: {
-                     message: {
-                         uz: "Serverda xatolik tufayli rad etildi !",
-                         en: "Rejected due to server error!",
-                         ru: "Отклонено из-за ошибки сервера!"
-                     }
-                 }
-             })
-         }
-        
-         res.status(200).json({
-             code: 200,
-             success: rows
-         })
-     })
- }
 
 //xususiyatlar
 
@@ -189,7 +167,7 @@ productController.getSub = function (req, res) {
         a.hol
     ]
 
-    categoryModel.category_properties_edit_insert(data, function (err, result) {
+    productModel.category_properties_edit_insert(data, function (err, result) {
         if (err) {
             console.log(err)
             return res.status(200).json({
@@ -279,7 +257,7 @@ productController.getSub = function (req, res) {
 
 
 productController.getProperties = function (req, res) {
-    categoryModel.getProperties(req.params.id,(err,rows)=>{
+    productModel.getProperties(req.params.id,(err,rows)=>{
      if (err) {
              console.log(err);
              return res.status(200).json({
