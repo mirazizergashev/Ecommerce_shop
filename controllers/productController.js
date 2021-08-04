@@ -1,13 +1,13 @@
-var categoryModel = require('../models/categoryModel');
-const schema = require('../utils/category')
+var productModel = require('../models/productModel');
+const schema = require('../utils/product')
 
-var categoryController = {}
+var productController = {}
 
 
-categoryController.create_update = function (req, res) {
+productController.create_update = function (req, res) {
 
     //validatsiyada xatolik
-    const checked = schema.category.validate(req.body);
+    const checked = schema.product.validate(req.body);
     if (checked.error) {
         const msg = checked.error.details[0].message.split("#")
         return res.status(200).json({
@@ -26,14 +26,14 @@ categoryController.create_update = function (req, res) {
     var data = [
         a.id ,
         a.nom ,
-        a.sub,
+        a.izoh,
+        a.narx,
+        a.son,
         req.session.userId||0,
-        a.foiz,
-        a.hol,
-        a.isFoiz
+        a.hol
     ]
 
-    categoryModel.category_edit_insert(data, function (err, result) {
+    productModel.product_edit_insert(data, function (err, result) {
         if (err) {
             console.log(err)
             return res.status(200).json({
@@ -51,12 +51,12 @@ categoryController.create_update = function (req, res) {
             switch (result[0][0].natija) {
                 case '1':
                     return res.status(200).json({
-                        code: 203,
+                        code: 201,
                         success: {
                             message: {
-                                uz: "Ma'lumotlar saqlandi!",
-                                en: "A new user has been created!",
-                                ru: "Создан новый пользователь!"
+                                uz: "Yangi maxsulot yaratildi!",
+                                en: "New product created!",
+                                ru: "Создан новый продукт!"
                             }
                         }
                     })
@@ -66,25 +66,15 @@ categoryController.create_update = function (req, res) {
                         code: 203,
                         error: {
                             message: {
-                                uz: "Ma'lumotlar o'zgartirildi !",
-                                en: "User information has changed!",
-                                ru: "Информация о пользователе изменилась!"
+                                uz: "Maxsulot o'zgartirildi !",
+                                en: "Product changed!",
+                                ru: "Товар изменен!"
                             }
                         }
                     })
 
-                    case '3':
-                        return res.status(200).json({
-                            code: 400,
-                            error: {
-                                message: {
-                                    uz: "Sub category topilmadi!",
-                                    en: "No such role found!",
-                                    ru: "Такой роли не найдено!"
-                                }
-                            }
-                        })
-                        case '4':
+                    
+                        case '3':
                             return res.status(200).json({
                                 code: 400,
                                 error: {
@@ -95,17 +85,7 @@ categoryController.create_update = function (req, res) {
                                     }
                                 }
                             })
-                            case '5':
-                            return res.status(200).json({
-                                code: 400,
-                                error: {
-                                    message: {
-                                        uz: "Kategoriya topilmadi!",
-                                        en: "No such role found!",
-                                        ru: "Такой роли не найдено!"
-                                    }
-                                }
-                            })
+                           
                            
                 default:
 
@@ -132,7 +112,7 @@ categoryController.create_update = function (req, res) {
 }
 
 
-categoryController.getAll = function (req, res) {
+productController.getAll = function (req, res) {
    categoryModel.getAll((err,rows)=>{
     if (err) {
             console.log(err);
@@ -155,32 +135,9 @@ categoryController.getAll = function (req, res) {
     })
 }
 
-categoryController.getType = function (req, res) {
-    categoryModel.getType((err,rows)=>{
-     if (err) {
-             console.log(err);
-             return res.status(200).json({
-                 code: 500,
-                 error: {
-                     message: {
-                         uz: "Serverda xatolik tufayli rad etildi !",
-                         en: "Rejected due to server error!",
-                         ru: "Отклонено из-за ошибки сервера!"
-                     }
-                 }
-             })
-         }
-        
-         res.status(200).json({
-             code: 200,
-             success: rows
-         })
-     })
- }
 
 
-
-categoryController.getSub = function (req, res) {
+productController.getSub = function (req, res) {
     categoryModel.getSub(req.params.id,(err,rows)=>{
      if (err) {
              console.log(err);
@@ -205,10 +162,10 @@ categoryController.getSub = function (req, res) {
 
 //xususiyatlar
 
- categoryController.categoryPropertiesCU = function (req, res) {
+ productController.productPropertiesCU = function (req, res) {
 
     //validatsiyada xatolik
-    const checked = schema.category_properties.validate(req.body);
+    const checked = schema.product_properties.validate(req.body);
     if (checked.error) {
         const msg = checked.error.details[0].message.split("#")
         return res.status(200).json({
@@ -226,9 +183,9 @@ categoryController.getSub = function (req, res) {
     let a = req.body;
     var data = [
         a.id ,
-        a.nom ,
-        a.category_id,
-        a.tip_id,
+        a.product_id,
+        a.cat_prop_id,
+        a.qiymat ,
         a.hol
     ]
 
@@ -253,9 +210,9 @@ categoryController.getSub = function (req, res) {
                         code: 203,
                         success: {
                             message: {
-                                uz: "Ma'lumotlar saqlandi!",
-                                en: "A new user has been created!",
-                                ru: "Создан новый пользователь!"
+                                uz: "Maxsulot xusuiyati saqlandi!",
+                                en: "Product feature saved!",
+                                ru: "Функция продукта сохранена!"
                             }
                         }
                     })
@@ -265,9 +222,9 @@ categoryController.getSub = function (req, res) {
                         code: 203,
                         error: {
                             message: {
-                                uz: "Ma'lumotlar o'zgartirildi !",
-                                en: "User information has changed!",
-                                ru: "Информация о пользователе изменилась!"
+                                uz: "Maxsulot xusuiyati o'zgartirildi !",
+                                en: "Product feature changed!",
+                                ru: "Характеристики продукта изменены!"
                             }
                         }
                     })
@@ -277,9 +234,9 @@ categoryController.getSub = function (req, res) {
                             code: 400,
                             error: {
                                 message: {
-                                    uz: "Kategoriya topilmadi!",
-                                    en: "No such role found!",
-                                    ru: "Такой роли не найдено!"
+                                    uz: "Maxsulot topilmadi!",
+                                    en: "No product found!",
+                                    ru: "Товар не найден!"
                                 }
                             }
                         })
@@ -288,23 +245,13 @@ categoryController.getSub = function (req, res) {
                                 code: 400,
                                 error: {
                                     message: {
-                                        uz: "Berilgan ID ga ega tip topilmadi!",
-                                        en: "No such role found!",
-                                        ru: "Такой роли не найдено!"
+                                        uz: "Kategoriya xususiyati topilmadi!",
+                                        en: "Category feature not found!",
+                                        ru: "Функция категории не найдена!"
                                     }
                                 }
                             })
-                            case '5':
-                            return res.status(200).json({
-                                code: 400,
-                                error: {
-                                    message: {
-                                        uz: "Bunday ID ga ega xususiyat mavjud emas!",
-                                        en: "No such role found!",
-                                        ru: "Такой роли не найдено!"
-                                    }
-                                }
-                            })
+                           
                            
                 default:
 
@@ -331,7 +278,7 @@ categoryController.getSub = function (req, res) {
 }
 
 
-categoryController.getProperties = function (req, res) {
+productController.getProperties = function (req, res) {
     categoryModel.getProperties(req.params.id,(err,rows)=>{
      if (err) {
              console.log(err);
@@ -355,4 +302,4 @@ categoryController.getProperties = function (req, res) {
  }
 
 
-module.exports = categoryController;
+module.exports = productController;
