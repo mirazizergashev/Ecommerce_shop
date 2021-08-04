@@ -24,8 +24,8 @@ promokodController.generate = function (req, res) {
     }
     let a = req.body;
     var data = [
-        a.token || 0,
-        a.user_id ,
+        "create",
+        null ,
         a.isFoiz,
         a.amount
     ]
@@ -142,6 +142,52 @@ promokodController.getAll = function (req, res) {
 }
 
 
+promokodController.getBusy = function (req, res) {
+    promokodModel.getBusy((err,rows)=>{
+     if (err) {
+             console.log(err);
+             return res.status(200).json({
+                 code: 500,
+                 error: {
+                     message: {
+                         uz: "Serverda xatolik tufayli rad etildi !",
+                         en: "Rejected due to server error!",
+                         ru: "Отклонено из-за ошибки сервера!"
+                     }
+                 }
+             })
+         }
+        
+         res.status(200).json({
+             code: 200,
+             success: rows
+         })
+     })
+ }
+
+ promokodController.getFresh = function (req, res) {
+    promokodModel.getFresh((err,rows)=>{
+     if (err) {
+             console.log(err);
+             return res.status(200).json({
+                 code: 500,
+                 error: {
+                     message: {
+                         uz: "Serverda xatolik tufayli rad etildi !",
+                         en: "Rejected due to server error!",
+                         ru: "Отклонено из-за ошибки сервера!"
+                     }
+                 }
+             })
+         }
+        
+         res.status(200).json({
+             code: 200,
+             success: rows
+         })
+     })
+ }
+  
 
 
 
