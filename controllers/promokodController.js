@@ -82,7 +82,7 @@ promokodController.generate = function (req, res) {
                         }
                     })
                
-                    case '3':
+                    case '4':
                         return res.status(200).json({
                             code: 400,
                             error: {
