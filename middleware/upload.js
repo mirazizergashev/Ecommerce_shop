@@ -20,18 +20,44 @@ const upload = (req, res, next) => {
 
     let sampleFile = req.files.file;
     if (sampleFile.size > 4 * 1024 * 1024)
-    return res.status(200).json({
-        code: 400,
-        error: {
-            message: {
-                uz: "Kechrasiz bu faylni hajmi juda katta !.",
-                ru: "Извините, этот файл слишком велик.",
-                en: "Sorry, this file is too large."
+        return res.status(200).json({
+            code: 400,
+            error: {
+                message: {
+                    uz: "Kechrasiz bu faylni hajmi juda katta !.",
+                    ru: "Извините, этот файл слишком велик.",
+                    en: "Sorry, this file is too large."
+                }
             }
-        }
-    })
+        })
     let mimi = req.files.file.mimetype.split("/");
-    if (!(mimi[0] == 'image'))
+    console.log(mimi)
+
+    if ((mimi[0] == 'video') || (mimi[0] == 'image')) {
+
+        const ext = req.files.file.name.split('.');
+        fileName = fileName + '.' + ext[ext.length - 1]
+
+        sampleFile.mv(path.join(__dirname, `../public/upload/products/${fileName}`),
+            async (err) => {
+                if (err) {
+                    console.log(err)
+                    return res.status(403).json({
+                        code: 400,
+                        error: {
+                            message: {
+                                uz: "Kechrasiz bu faylni yuklab bo'lmadi!.",
+                                ru: "Извините, этот файл не может быть загружен.",
+                                en: "Sorry, this file could not be downloaded."
+                            }
+                        }
+                    })
+                }
+                req.linkFile = fileName;
+                next()
+            })
+    }
+    else{
         return res.status(200).json({
             code: 400,
             error: {
@@ -42,30 +68,11 @@ const upload = (req, res, next) => {
                 }
             }
         })
+    }
 
-   
 
-        const ext = req.files.file.name.split('.');
-        fileName = fileName + '.' + ext[ext.length - 1]
-    
-    sampleFile.mv(path.join(__dirname, `../public/upload/users/${fileName}`),
-        async (err) => {
-            if (err){
-                console.log(err)
-                return res.status(403).json({
-                code: 400,
-                error: {
-                    message: {
-                        uz: "Kechrasiz bu faylni yuklab bo'lmadi!.",
-                        ru: "Извините, этот файл не может быть загружен.",
-                        en: "Sorry, this file could not be downloaded."
-                    }
-                }
-            })
-        }
-            req.linkFile = fileName;
-            next()
-        })
+
+
 }
 
 module.exports = upload;
