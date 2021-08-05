@@ -70,12 +70,10 @@ const check_product = Joi.object().keys({
 
         izoh: Joi.string().
         min(1).
-        max(255).
-        required()
+        max(255)
         .messages({
             "string.min": "Izoh minimal 1 ta belgidan iborat bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
             "string.max": "Izoh maksimal 255 ta belgi iborat bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
-            "any.required": `Izoh maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
         }),
 
 

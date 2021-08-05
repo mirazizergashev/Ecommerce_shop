@@ -1,3 +1,4 @@
+const e = require('express');
 var pool= require('../database/db');
 const { product } = require('../utils/product');
 
@@ -41,8 +42,15 @@ productModel.check_product=function(data,result){
 }
 
 productModel.getAll=function(id,ses,result){
+    let s='';
+    if(id==3){
+        s='checked'
+    }
+    else{
+        s=id;
+    }
     
-    pool.query(`SELECT * FROM product where isActive=1 and checked=? and user_id=?`,[id,ses],function(err,res){
+    pool.query(`SELECT * FROM product where isActive=1 and checked=? and user_id=?`,[s,ses],function(err,res){
         if(err){
             return result(err,null);
         }else{
