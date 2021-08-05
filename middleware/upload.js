@@ -48,7 +48,7 @@ const upload = (req, res, next) => {
         const ext = req.files.file.name.split('.');
         fileName = fileName + '.' + ext[ext.length - 1]
     
-    sampleFile.mv(path.join(__dirname, `../public/upload/users/${fileName}`),
+    sampleFile.mv(path.join(__dirname, `../public/upload/products/${fileName}`),
         async (err) => {
             if (err){
                 console.log(err)

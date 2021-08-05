@@ -218,7 +218,7 @@ productController.check_product = function (req, res) {
 
 
 productController.getAll = function (req, res) {
-    productModel.getAll((err, rows) => {
+    productModel.getAll(req.params.id, req.session.userId,(err, rows) => {
         if (err) {
             console.log(err);
             return res.status(200).json({
@@ -232,6 +232,12 @@ productController.getAll = function (req, res) {
                 }
             })
         }
+
+        console.log(err)
+        console.log(rows)
+        console.log(req.params.id)
+        console.log(req.session.userId)
+
 
         res.status(200).json({
             code: 200,
@@ -272,7 +278,7 @@ productController.productPropertiesCU = function (req, res) {
         a.hol
     ]
 
-    productModel.category_properties_edit_insert(data, function (err, result) {
+    productModel.product_properties_edit_insert(data, function (err, result) {
         if (err) {
             console.log(err)
             return res.status(200).json({
