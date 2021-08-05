@@ -3,6 +3,8 @@ const path = require("path")
 
 const upload = (req, res, next) => {
 
+    console.log(req.body)
+    console.log(req.files)
     let fileName = sha256((new Date() + Math.random()).toString())
 
     if (!req.files || !req.files.file) {
