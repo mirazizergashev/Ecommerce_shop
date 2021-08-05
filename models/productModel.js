@@ -26,8 +26,23 @@ productModel.check_product=function(data,result){
    
 }
 
-productModel.getAll=function(result){
-    pool.query("SELECT * FROM product",function(err,res){
+
+
+//rasm yuklash
+productModel.check_product=function(data,result){
+    pool.query("call check_product(?,?,?,?)",data,function(err,res,field){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+   
+}
+
+productModel.getAll=function(id,ses,result){
+    
+    pool.query(`SELECT * FROM product where isActive=1 and checked=? and user_id=?`,[id,ses],function(err,res){
         if(err){
             return result(err,null);
         }else{
