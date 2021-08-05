@@ -68,7 +68,45 @@ const check_product = Joi.object().keys({
             "number": "Butun son kirit !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!"
         }),
 
-        izoh: Joi.string().
+    izoh: Joi.string().
+        min(1).
+        max(255)
+        .messages({
+            "string.min": "Izoh minimal 1 ta belgidan iborat bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+            "string.max": "Izoh maksimal 255 ta belgi iborat bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+        }),
+
+
+    hol: Joi
+        .number()
+        .min(0)
+        .max(2)
+        .required()
+        .messages({
+            "number.min": "hol minimal 0 ga teng bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+            "number.max": "hol maksimal 2 ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+            "any.required": `hol maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
+        }),
+
+
+});
+
+const product_image = Joi.object().keys({
+    id: Joi
+        .number()
+        .required()
+        .messages({
+            "number": "Butun son kirit !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!"
+        }),
+
+    product_id: Joi
+        .number()
+        .required()
+        .messages({
+            "number": "Butun son kirit !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!"
+        }),
+
+    url: Joi.string().
         min(1).
         max(255)
         .messages({
@@ -149,5 +187,6 @@ const product_properties = Joi.object().keys({
 module.exports = {
     product_properties,
     product,
-    check_product
+    check_product,
+    product_image
 }

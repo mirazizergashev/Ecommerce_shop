@@ -30,8 +30,8 @@ productModel.check_product=function(data,result){
 
 
 //rasm yuklash
-productModel.check_product=function(data,result){
-    pool.query("call check_product(?,?,?,?)",data,function(err,res,field){
+productModel.product_image=function(data,result){
+    pool.query("call product_image(?,?,?,?)",data,function(err,res,field){
         if(err){
             return result(err,null);
         }else{
