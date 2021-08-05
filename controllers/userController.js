@@ -132,6 +132,109 @@ userController.update = function (req, res) {
 
 }
 
+userController.blok = function (req, res) {
+
+    //validatsiyada xatolik
+    const checked = schema.blocked.validate(req.body);
+    if (checked.error) {
+        const msg = checked.error.details[0].message.split("#")
+        return res.status(200).json({
+            code: 400,
+            error: {
+                message: {
+                    uz: msg[0],
+                    en: msg[1],
+                    ru: msg[2]
+                }
+            }
+
+        });
+    }
+    let a = req.body;
+    var newUser = [
+        a.id,
+        a.holat
+    ]
+
+    userModel.blok(newUser, function (err, result) {
+        if (err) {
+            console.log(err)
+            // req.flash('error', 'There was error in inserting data');
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        } else {
+            // req.flash('success', 'Employee added succesfully');
+            switch (parseInt(result[0][0].natija)) {
+                case 1:
+                    return res.status(200).json({
+                        code: 200,
+                        success: {
+                            message: {
+                                uz: "Blokdan chiqarildi",
+                                en: "A new user has been created!",
+                                ru: "Создан новый пользователь!"
+                            }
+                        }
+                    })
+
+                    case 0:
+                    return res.status(200).json({
+                        code: 200,
+                        success: {
+                            message: {
+                                uz: "Blokga kiritildi",
+                                en: "A new user has been created!",
+                                ru: "Создан новый пользователь!"
+                            }
+                        }
+                    })
+
+                case '2':
+                    return res.status(200).json({
+                        code: 203,
+                        success: {
+                            message: {
+                                uz: "Foydalanuvchi topilmadi !",
+                                en: "User information has changed!",
+                                ru: "Информация о пользователе изменилась!"
+                            }
+                        }
+                    })
+
+                
+
+                default:
+
+                    return res.status(200).json({
+                        code: 418,
+                        success: {
+                            message: {
+                                uz: "Kutilmagan xatolik adminga xabar bering !",
+                                en: "Report an unexpected error to the admin!",
+                                ru: "Сообщите администратору о непредвиденной ошибке!"
+                            }
+                        }
+                    })
+
+
+
+
+            }
+
+        }
+
+    });
+
+}
+
 userController.getOneImg = function (req, res) {
     pool.query("select id from user_image where user_id=? and url=? limit 1", [req.session.userId, req.params.url || "non"], (err, rows, fields) => {
         if (err) {
