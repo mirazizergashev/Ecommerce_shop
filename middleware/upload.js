@@ -31,6 +31,7 @@ const upload = (req, res, next) => {
         }
     })
     let mimi = req.files.file.mimetype.split("/");
+    console.log(mimi)
     if (!(mimi[0] == 'image'))
         return res.status(200).json({
             code: 400,
