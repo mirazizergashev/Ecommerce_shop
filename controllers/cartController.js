@@ -24,7 +24,7 @@ cartController.create = function (req, res) {
     }
     let a = req.body;
     var data = [0,
-        a.user_id || 0,
+        req.session.userId || 0,
         a.product_id || 0,
         a.count,
         null
@@ -93,6 +93,18 @@ cartController.create = function (req, res) {
                             }
                         })
                         case '5':
+                            return res.status(200).json({
+                                code: 400,
+                                error: {
+                                    message: {
+                                        uz: "Bunday ID ega buyurtma mavjud emas!",
+                                        en: "No such role found!",
+                                        ru: "Такой роли не найдено!"
+                                    }
+                                }
+                            })
+
+                                case '5':
                             return res.status(200).json({
                                 code: 400,
                                 error: {

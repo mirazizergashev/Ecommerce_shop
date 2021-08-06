@@ -2,19 +2,19 @@ const Joi = require("joi")
 
 const cart_create = Joi.object().keys({
     
-    user_id:Joi
-    .number()
-    .required()
-    .messages({
-        "number": "user_id butun son bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!"
-        ,"any.required": `cart_id maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
-    }),
+    // user_id:Joi
+    // .number()
+    // .required()
+    // .messages({
+    //     "number": "user_id butun son bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!"
+    //     ,"any.required": `user_id maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
+    // }),
     product_id:Joi
     .number()
     .required()
     .messages({
         "number": "product_id butun son bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!"
-        ,"any.required": `cart_id maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
+        ,"any.required": `product_id maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
     }),
     count: Joi
         .number()
@@ -22,9 +22,9 @@ const cart_create = Joi.object().keys({
         .max(100000000)
         .required()
         .messages({
-            "number.min": "Son minimal 0 ga teng bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
-            "number.max": "Son maksimal 10000000 ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
-            "any.required": `Son maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
+            "number.min": "count minimal 0 ga teng bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+            "number.max": "count maksimal 10000000 ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+            "any.required": `count maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
         }),
        
 });
@@ -43,11 +43,11 @@ const cart_update = Joi.object().keys({
 status:Joi
 .number()
 .min(0)
-.max(1)
+.max(20)
 .required()
 .messages({
-    "string.min": "Status minimal 0 ga teng bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
-    "string.max": "Status maksimal 1 ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+    "number.min": "Status minimal 0 ga teng bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+    "number.max": "Status maksimal 20 ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
     "any.required": `Status maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
 }),
 
@@ -106,8 +106,8 @@ status:Joi
 .max(1)
 .required()
 .messages({
-    "string.min": "Status minimal 0 ga teng bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
-    "string.max": "Status maksimal 1 ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+    "number.min": "Status minimal 0 ga teng bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+    "number.max": "Status maksimal 1 ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
     "any.required": `Status maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
 }),
 

@@ -20,7 +20,6 @@ app.use((req, res, next) => {
     if (req.method === 'OPTIONS') {
         return res.sendStatus(200); // to deal with chrome sending an extra options request
     }
-    console.log(req.body)
     next();
   });
 
