@@ -42,13 +42,11 @@ productModel.product_image=function(data,result){
 }
 
 productModel.getAll=function(id,ses,result){
-    let s='';
-    if(id==3){
-        s='checked'
+    let s='checked';
+    if(id!=3){
+        s=id
     }
-    else{
-        s=id;
-    }
+    
     
     pool.query(`SELECT * FROM product where isActive=1 and checked=? and user_id=?`,[s,ses],function(err,res){
         if(err){

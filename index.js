@@ -51,7 +51,7 @@ app.use('/', main);
 app.get('/', (req, res) => {
     return res.status(200).json({
         success: {
-            message: "Elektron magazinga xush kelibsiz !"
+            message: "Elektron magazinga xush kelibsiz akasi!"
         }
     })
 });
