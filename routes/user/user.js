@@ -20,6 +20,7 @@ router.post("/block", userController.block);//blok qilish
 //promokodlar
 
 router.post('/promokod/generate',promokodController.generate)
+router.post('/promokod/attachUser',promokodController.attacheUser)
 router.get('/promokod/getAll',promokodController.getAll)
 router.get('/promokod/getBusy',promokodController.getBusy)
 router.get('/promokod/getFresh',promokodController.getFresh)

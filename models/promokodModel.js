@@ -14,8 +14,8 @@ promokodModel.promokod_edit_insert=function(tokIdIsFoizAmount,result){
 }
 
 promokodModel.getAll=function(result){
-    pool.query("SELECT p.*,concat(u.lname,\" \",u.fname) username"
-    +" FROM promocode p left join users u on u.id=p.user_id",function(err,res){
+    pool.query("SELECT p.*,concat(u.last_name,\" \",u.first_name) username"
+    +" FROM promokod p left join users u on u.id=p.user_id",function(err,res){
         if(err){
             return result(err,null);
         }else{
@@ -26,7 +26,7 @@ promokodModel.getAll=function(result){
 
 
 promokodModel.getFresh=function(result){
-    pool.query("SELECT * FROM promocode where user_id is null",function(err,res){
+    pool.query("SELECT * FROM promokod where user_id is null",function(err,res){
         if(err){
             return result(err,null);
         }else{
@@ -37,8 +37,8 @@ promokodModel.getFresh=function(result){
 
 
 promokodModel.getBusy=function(result){
-    pool.query("SELECT p.*,concat(u.lname,\" \",u.fname) username"
-    +" FROM promocode p inner join users u on u.id=p.user_id",function(err,res){
+    pool.query("SELECT p.*,concat(u.last_name,\" \",u.first_name) username"
+    +" FROM promokod p inner join users u on u.id=p.user_id",function(err,res){
         if(err){
             return result(err,null);
         }else{
