@@ -14,8 +14,8 @@ const promokod = Joi.object().keys({
       .min(0)
       .max(1)
       .messages({
-          "string.min": "isFoiz minimal 0 ga teng bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
-          "string.max": "isFoiz maksimal 1 ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+          "number.min": "isFoiz minimal 0 ga teng bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+          "number.max": "isFoiz maksimal 1 ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
        }),
        
        amount:Joi
@@ -23,18 +23,24 @@ const promokod = Joi.object().keys({
        .min(0)
        .max(100000000)
        .messages({
-           "string.min": "amount minimal 0 ga teng bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
-           "string.max": "amount maksimal 100000000 ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+           "number.min": "amount minimal 0 ga teng bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+           "number.max": "amount maksimal 100000000 ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
         }),
         user_id:Joi
     .number()
     .min(0)
     .max(100000000)
     .messages({
-        "string.min": "user_id minimal 0 ga teng bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
-        "string.max": "user_id maksimal 100000000 ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+        "number.min": "user_id minimal 0 ga teng bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+        "number.max": "user_id maksimal 100000000 ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
      }),
-
+     deadline:Joi
+     .date()
+     .min(new Date())
+     .messages({
+         "date": "deadline vaqt tipida bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+         "date.min": "deadline Hozirgi vaqtdan katta bo'lishi kerak bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+      }),
    
 });
 

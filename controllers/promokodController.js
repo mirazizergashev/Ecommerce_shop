@@ -28,6 +28,7 @@ promokodController.generate = function (req, res) {
         null ,
         a.amount,
         a.isFoiz,
+        a.deadline
     ]
 
     promokodModel.promokod_edit_insert(data, function (err, result) {
