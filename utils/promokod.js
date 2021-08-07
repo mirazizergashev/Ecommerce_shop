@@ -38,7 +38,7 @@ const promokod = Joi.object().keys({
      .date()
      .min(new Date())
      .messages({
-         "date": "deadline vaqt tipida bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+         "date.base": "deadline vaqt tipida bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
          "date.min": "deadline Hozirgi vaqtdan katta bo'lishi kerak bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
       }),
    
