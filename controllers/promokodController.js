@@ -413,7 +413,7 @@ promokodController.delete = function (req, res) {
                 case '2':
                     return res.status(200).json({
                         code: 203,
-                        error: {
+                        success: {
                             message: {
                                 uz: "Promokod muvaffaqiyatli tahrirlandi!",
                                 en: "User information has changed!",
@@ -448,7 +448,7 @@ promokodController.delete = function (req, res) {
                     case '11':
                     return res.status(200).json({
                         code: 200,
-                        error: {
+                        success: {
                             message: {
                                 uz: "Promokod o'chirildi!",
                                 en: "No such promokod found!",
