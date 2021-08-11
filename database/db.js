@@ -12,7 +12,7 @@ const pool = mysql.createPool({
     // multipleStatements: true,
     host: 'localhost',
     user: 'root',
-    // password: "Admin*2021",
+    password: "Admin*2021",
     database: 'ecommerce_shop',
     waitForConnections: true,
     connectionLimit: 10,
