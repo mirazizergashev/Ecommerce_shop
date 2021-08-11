@@ -11,7 +11,7 @@ const pool = mysql.createPool({
     // queueLimit: 0,
     // multipleStatements: true,
     host: 'localhost',
-    user: 'root',
+    user: 'admin',
     password: "Admin*2021",
     database: 'ecommerce_shop',
     waitForConnections: true,
