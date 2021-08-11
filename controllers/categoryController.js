@@ -150,7 +150,8 @@ categoryController.getAll = function (req, res) {
        
         res.status(200).json({
             code: 200,
-            success: rows
+            success: rows[0],
+            title:rows[1]
         })
     })
 }
@@ -198,7 +199,8 @@ categoryController.getSub = function (req, res) {
         
          res.status(200).json({
              code: 200,
-             success: rows
+             success: rows[0],
+             title:rows[1]
          })
      })
  }
