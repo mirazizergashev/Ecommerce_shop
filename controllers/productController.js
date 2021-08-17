@@ -344,6 +344,33 @@ productController.getAll = function (req, res) {
 }
 
 
+productController.All = function (req, res) {
+    productModel.All((err, rows) => {
+ 
+
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+
+
+        res.status(200).json({
+            code: 200,
+            success: rows
+        })
+    })
+}
+
+
 
 
 //xususiyatlar

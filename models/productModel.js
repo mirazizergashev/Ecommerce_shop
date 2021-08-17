@@ -56,6 +56,17 @@ productModel.getAll=function(id,ses,result){
         }
     });
 }
+productModel.All=function(result){
+   
+    
+    pool.query(`SELECT * FROM product;`,function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
 
 
 
