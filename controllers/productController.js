@@ -30,7 +30,8 @@ productController.create_update = function (req, res) {
         a.narx,
         a.son,
         req.session.userId || 0,
-        a.hol
+        1,
+        a.kategoriya
     ]
 
     productModel.product_edit_insert(data, function (err, result) {
