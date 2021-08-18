@@ -65,17 +65,37 @@ productModel.All=function(result){
     
     pool.query(`SELECT p.*,pi.img_url,pp.cat_prop_id,pp.values FROM product p left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1) left join 
-    product_properties pp on pp.product_id=p.id`,function(err,res){
+    product_properties pp on pp.product_id=p.id;select * from category;`,function(err,res){
         if(err){
             return result(err,null);
         }else{
-            return result(null,res);
+            let data=changeCosts(res[1],res[0])
+            console.log(data)
+            return result(null,data);
         }
     });
 }
 
 
 
+function changeCosts(c,data) {
+   
+    data.forEach((e,i) => {
+        let k=e.category_id,cost=e.cost,ind=c.findIndex(x=>x.id==k);
+        console.log(ind)
+
+        while(ind!=-1){
+            console.log(ind)
+            if(c[ind].isFoiz)
+                cost=cost*(100+c[ind].percent)/100
+            else 
+                cost=cost+c[ind].percent
+                ind=c.findIndex(x=>x.id==c[ind].sub)            
+        }
+        data[i].cost=cost
+    });
+return data    
+}
 
 productModel.product_properties_edit_insert=function(data,result){
     pool.query("call product_properties_edit_insert(?,?,?,?,?)",data,function(err,res,field){
