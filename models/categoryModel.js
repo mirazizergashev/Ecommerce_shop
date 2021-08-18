@@ -24,6 +24,16 @@ categoryModel.getAll=function(result){
     });
 }
 
+categoryModel.getAllProp=function(result){
+    pool.query("SELECT * FROM category_properties;",function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
+
 categoryModel.getType=function(result){
     pool.query("SELECT * FROM types",function(err,res){
         if(err){

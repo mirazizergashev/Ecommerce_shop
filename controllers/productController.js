@@ -30,7 +30,7 @@ productController.create_update = function (req, res) {
         a.narx,
         a.son,
         req.session.userId || 0,
-        1,
+        a.hol,
         a.kategoriya
     ]
 
@@ -492,6 +492,29 @@ productController.productPropertiesCU = function (req, res) {
 
 productController.getProperties = function (req, res) {
     productModel.getProperties(req.params.id, (err, rows) => {
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+
+        res.status(200).json({
+            code: 200,
+            success: rows
+        })
+    })
+}
+
+productController.getImage = function (req, res) {
+    productModel.getImage(req.params.id, (err, rows) => {
         if (err) {
             console.log(err);
             return res.status(200).json({

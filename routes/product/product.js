@@ -6,6 +6,7 @@ const productController=require("../../controllers/productController")
 
 router.get('/all', productController.All);
 router.get('/getAll/:id', productController.getAll);
+router.get('/getImage/:id', productController.getImage);
 router.post('/', productController.create_update);
 router.post('/check', productController.check_product);
 router.post('/image',upload, productController.product_image);
