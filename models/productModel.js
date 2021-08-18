@@ -50,13 +50,13 @@ productModel.getAll=function(id,ses,result){
         s=id
     }
     
-    console.log(s)
-    pool.query(`SELECT * FROM product where isActive=1 and checked=${s} and user_id=${ses}`,function(err,res){
+    pool.query(`SELECT * FROM product where isActive=1 and checked=${s} and user_id=${ses};select * from category;`,function(err,res){
         if(err){
             return result(err,null);
-        }else{
-            console.log(res)
-            return result(null,res);
+        }else{ 
+            let data=changeCosts(res[1],res[0])
+            console.log(data)
+            return result(null,data);
         }
     });
 }
@@ -70,7 +70,6 @@ productModel.All=function(result){
             return result(err,null);
         }else{
             let data=changeCosts(res[1],res[0])
-            console.log(data)
             return result(null,data);
         }
     });
