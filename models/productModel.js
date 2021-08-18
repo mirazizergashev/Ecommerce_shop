@@ -63,7 +63,7 @@ productModel.getAll=function(id,ses,result){
 productModel.All=function(result){
    
     
-    pool.query(`SELECT p.*,pi.img_url,pp.cat_prop_id,pp.values FROM product p left join product_image pi on pi.product_id=p.id and 
+    pool.query(`SELECT p.*,pi.id as idcha,pi.img_url,pp.cat_prop_id,pp.values FROM product p left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1) left join 
     product_properties pp on pp.product_id=p.id;select * from category;`,function(err,res){
         if(err){
