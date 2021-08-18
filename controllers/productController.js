@@ -313,9 +313,7 @@ productController.product_image = function (req, res) {
 
 productController.getAll = function (req, res) {
     productModel.getAll(req.params.id, req.session.userId,(err, rows) => {
-    console.log(req.params.id)
-    console.log(rows)
-
+    
         if (err) {
             console.log(err);
             return res.status(200).json({
@@ -330,8 +328,8 @@ productController.getAll = function (req, res) {
             })
         }
 
-        console.log(err)
-        console.log(rows)
+        // console.log(err)
+        // console.log(rows)
         console.log(req.params.id)
         console.log(req.session.userId)
 
