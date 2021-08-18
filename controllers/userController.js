@@ -489,7 +489,7 @@ userController.editPassword = function (req, res) {
 }
 
 userController.getMe = function (req, res) {
-    userModel.getMe(req.session.userId, (err, rows) => {
+    userModel.getMe(req.session.userId||0, (err, rows) => {
 
         if (err) {
             console.log(err);

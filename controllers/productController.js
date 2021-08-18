@@ -30,7 +30,8 @@ productController.create_update = function (req, res) {
         a.narx,
         a.son,
         req.session.userId || 0,
-        a.hol
+        1,
+        a.kategoriya
     ]
 
     productModel.product_edit_insert(data, function (err, result) {
@@ -332,6 +333,33 @@ productController.getAll = function (req, res) {
         // console.log(rows)
         console.log(req.params.id)
         console.log(req.session.userId)
+
+
+        res.status(200).json({
+            code: 200,
+            success: rows
+        })
+    })
+}
+
+
+productController.All = function (req, res) {
+    productModel.All((err, rows) => {
+ 
+
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
 
 
         res.status(200).json({
