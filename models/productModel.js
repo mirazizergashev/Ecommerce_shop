@@ -50,13 +50,13 @@ productModel.getAll=function(id,ses,result){
         s=id
     }
     
-    pool.query(`SELECT * FROM product where isActive=1 and checked=${s} and user_id=${ses};select * from category;`,function(err,res){
+    console.log(s)
+    pool.query(`SELECT * FROM product where isActive=1 and checked=${s} and user_id=${ses}`,function(err,res){
         if(err){
             return result(err,null);
-        }else{ 
-            let data=changeCosts(res[1],res[0])
-            console.log(data)
-            return result(null,data);
+        }else{
+            console.log(res)
+            return result(null,res);
         }
     });
 }
@@ -70,6 +70,23 @@ productModel.All=function(result){
             return result(err,null);
         }else{
             let data=changeCosts(res[1],res[0])
+            console.log(data)
+            return result(null,data);
+        }
+    });
+}
+
+productModel.BigGet=function(result){
+   
+    
+    pool.query(`SELECT p.*,pi.id as idcha,pi.img_url,pp.cat_prop_id,pp.values FROM product p left join product_image pi on pi.product_id=p.id and 
+    pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1) left join 
+    product_properties pp on pp.product_id=p.id;select * from category;`,function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            let data=changeCosts(res[1],res[0])
+            console.log(data)
             return result(null,data);
         }
     });
