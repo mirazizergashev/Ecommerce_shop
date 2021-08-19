@@ -50,12 +50,10 @@ productModel.getAll=function(id,ses,result){
         s=id
     }
     
-    console.log(s)
     pool.query(`SELECT * FROM product where isActive=1 and checked=${s} and user_id=${ses}`,function(err,res){
         if(err){
             return result(err,null);
         }else{
-            console.log(res)
             return result(null,res);
         }
     });
@@ -63,14 +61,12 @@ productModel.getAll=function(id,ses,result){
 productModel.All=function(result){
    
     
-    pool.query(`SELECT p.*,pi.id as idcha,pi.img_url,pp.cat_prop_id,pp.values FROM product p left join product_image pi on pi.product_id=p.id and 
-    pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1) left join 
-    product_properties pp on pp.product_id=p.id;select * from category;`,function(err,res){
+    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p left join product_image pi on pi.product_id=p.id and 
+    pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1);select * from category;`,function(err,res){
         if(err){
             return result(err,null);
         }else{
             let data=changeCosts(res[1],res[0])
-            console.log(data)
             return result(null,data);
         }
     });
@@ -86,32 +82,28 @@ productModel.BigGet=function(result){
             return result(err,null);
         }else{
             let data=changeCosts(res[1],res[0])
-            console.log(data)
             return result(null,data);
         }
     });
 }
 
 
-
-function changeCosts(c,data) {
+productModel.BigGet=function(result){
    
-    data.forEach((e,i) => {
-        let k=e.category_id,cost=e.cost,ind=c.findIndex(x=>x.id==k);
-        console.log(ind)
-
-        while(ind!=-1){
-            console.log(ind)
-            if(c[ind].isFoiz)
-                cost=cost*(100+c[ind].percent)/100
-            else 
-                cost=cost+c[ind].percent
-                ind=c.findIndex(x=>x.id==c[ind].sub)            
+    
+    pool.query(`SELECT p.*,pi.id as idcha,pi.img_url,pp.cat_prop_id,pp.values FROM product p left join product_image pi on pi.product_id=p.id and 
+    pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1) left join 
+    product_properties pp on pp.product_id=p.id;select * from category;`,function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            let data=changeCosts(res[1],res[0])
+            return result(null,data);
         }
-        data[i].cost=cost
     });
-return data    
 }
+
+
 
 productModel.product_properties_edit_insert=function(data,result){
     pool.query("call product_properties_edit_insert(?,?,?,?,?)",data,function(err,res,field){
@@ -125,7 +117,7 @@ productModel.product_properties_edit_insert=function(data,result){
 }
 
 productModel.getProperties=function(id,result){
-    pool.query(`SELECT cp.* FROM product_properties cp  where cp.product_id=?;`,id||0,function(err,res){
+    pool.query(`SELECT pp.*,cp.field_name pname FROM product_properties pp inner join category_properties cp on pp.cat_prop_id=cp.id where pp.product_id=?;`,id||0,function(err,res){
         if(err){
             return result(err,null);
         }else{
@@ -147,5 +139,91 @@ productModel.getImage=function(id,result){
 }
 
 
+productModel.productByCategory=function(id=0,result){
+   
+    
+    pool.query(`select * from category;`,function(err,rows){
+        if(err){
+            return result(err,null);
+        }else{
+            let ids=(id||0)+","+filterProd(id,rows)
+            // if(ids.length==0)
+            ids=ids.slice(0, -1)
+            console.log("|"+ids+"|")
+            
+            pool.query(`SELECT p.*,pi.id as idcha,pi.img_url,pp.cat_prop_id,pp.values FROM product p left join product_image pi on pi.product_id=p.id and 
+            pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1) left join 
+            product_properties pp on pp.product_id=p.id where p.category_id in (${ids || null});`,function(err2,res){
+                if(err2){
+                    console.log("err2")
+                    return result(err2,null);
+                }else{
+                    let data=changeCosts(rows,res)
+                    return result(null,data);
+                }
+            });
+        }
+    });
+}
+
+productModel.prodPropsByValue=function(id=0,result){
+   
+    
+    pool.query(`SELECT pp.id,pp.values,count(pp.product_id) count 
+    FROM product_prop   erties pp
+    where pp.cat_prop_id=?
+    group by pp.values;`,id,function(err,rows){
+        if(err){
+            return result(err,null);
+        }else{
+            result(null,rows)
+        }
+    });
+}
+
+
+function changeCosts(c,data) {
+   
+    data.forEach((e,i) => {
+        let k=e.category_id,cost=e.cost,ind=c.findIndex(x=>x.id==k);
+
+        while(ind!=-1){
+            if(c[ind].isFoiz)
+                cost=cost*(100+c[ind].percent)/100
+            else 
+                cost=cost+c[ind].percent
+                ind=c.findIndex(x=>x.id==c[ind].sub)            
+        }
+        data[i].cost=cost
+    });
+return data    
+}
+
+
+function filterProd(id,data) {
+   
+    const category=data.filter(e=>e.sub==id)
+    let s=""
+    category.forEach((e)=>{
+        s+=e.id+","+filterProd(e.id,data)
+    })
+    
+return s;    
+}
+
+// console.log("data:",filterProd(5,[
+//     {id:1,sub:0},
+//     {id:2,sub:1},
+//     {id:3,sub:2},
+//     {id:4,sub:0},
+//     {id:5,sub:4},
+//     {id:6,sub:3}]),"|||")
+
+// productModel.productByCategory(0,(err,result)=>{
+//     if(err){
+//         return console.log("last:",err)
+//     }
+//     console.log(result)
+// })
 
 module.exports=productModel;
