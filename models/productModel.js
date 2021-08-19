@@ -206,8 +206,35 @@ productModel.prodPropsByValue = function (id = 0, result) {
 }
 
 
-function changeCosts(c, data) {
+productModel.productFilter=function(query,result){
+    let a=[],ss=""
+    Object.keys(query).forEach((id,i)=>{
+        let s=""
+        a.push(id)
+    //    for (let i = 0; i < query[id].length; i++) 
+    //    if(query[id][i]=='"'){
+    //     query[id][i]="'"
+    //    } 
+        query[id].split(" ").forEach(e=>{s+='"'+e+'",'})
+        ss+=`inner join product_properties pp${i} 
+        on p.id=pp${i}.product_id and pp${i}.cat_prop_id=? and pp${i}.values in (${s.slice(0,-1)})
+        `
+        
+    })
+    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p left join product_image pi on pi.product_id=p.id and 
+    pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
+    ${ss}
+    ;select * from category;`,a,function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            let data=changeCosts(res[1],res[0])
+            return result(null,data);
+        }
+    });
+}
 
+function changeCosts(c,data) {
     data.forEach((e, i) => {
         let k = e.category_id, cost = e.cost, ind = c.findIndex(x => x.id == k);
 
