@@ -158,7 +158,7 @@ productController.check_product = function (req, res) {
                 case 0:
                     return res.status(200).json({
                         code: 200,
-                        success: {
+                        error: {
                             message: {
                                 uz: "Maxsulot rad etildi!",
                                 en: "Product Rejected!",
@@ -170,7 +170,7 @@ productController.check_product = function (req, res) {
                 case 1:
                     return res.status(200).json({
                         code: 200,
-                        error: {
+                        success: {
                             message: {
                                 uz: "Maxsulot qabul qilindi!",
                                 en: "Product accepted!",
@@ -179,8 +179,20 @@ productController.check_product = function (req, res) {
                         }
                     })
 
+                    case 2:
+                        return res.status(200).json({
+                            code: 200,
+                            success: {
+                                message: {
+                                    uz: "Maxsulot qabul qilindi!",
+                                    en: "Product accepted!",
+                                    ru: "Товар принят!"
+                                }
+                            }
+                        })
 
-                case 2:
+
+                case 3:
                     return res.status(200).json({
                         code: 400,
                         error: {
@@ -197,7 +209,84 @@ productController.check_product = function (req, res) {
 
                     return res.status(200).json({
                         code: 418,
+                        error: {
+                            message: {
+                                uz: "Kutilmagan xatolik adminga xabar bering !",
+                                en: "Report an unexpected error to the admin!",
+                                ru: "Сообщите администратору о непредвиденной ошибке!"
+                            }
+                        }
+                    })
+
+
+
+
+            }
+
+        }
+
+    });
+
+}
+
+//admin tasdiqlashi
+productController.img_del = function (req, res) {
+
+   
+    let a = req.body;
+    var data = [
+        a.rasm
+    ]
+
+    productModel.img_del(data, function (err, result) {
+        if (err) {
+            console.log(err)
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        } else {
+            // req.flash('success', 'Employee added succesfully');
+            switch (parseInt(result[0][0].natija)) {
+                case 0:
+                
+                case 1:
+                    return res.status(200).json({
+                        code: 200,
                         success: {
+                            message: {
+                                uz: "Rasm ochirildi!",
+                                en: "Product accepted!",
+                                ru: "Товар принят!"
+                            }
+                        }
+                    })
+
+
+                case 2:
+                    return res.status(200).json({
+                        code: 400,
+                        success: {
+                            message: {
+                                uz: "Rasm topilmadi!",
+                                en: "No such product found!",
+                                ru: "Такой product не найдено!"
+                            }
+                        }
+                    })
+
+
+                default:
+
+                    return res.status(200).json({
+                        code: 418,
+                        error: {
                             message: {
                                 uz: "Kutilmagan xatolik adminga xabar bering !",
                                 en: "Report an unexpected error to the admin!",
@@ -329,10 +418,6 @@ productController.getAll = function (req, res) {
             })
         }
 
-        // console.log(err)
-        // console.log(rows)
-        console.log(req.params.id)
-        console.log(req.session.userId)
 
 
         res.status(200).json({
@@ -345,6 +430,32 @@ productController.getAll = function (req, res) {
 
 productController.All = function (req, res) {
     productModel.All((err, rows) => {
+ 
+
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+
+
+        res.status(200).json({
+            code: 200,
+            success: rows
+        })
+    })
+}
+
+productController.Retcomment = function (req, res) {
+    productModel.Retcomment(req.params.id,(err, rows) => {
  
 
         if (err) {

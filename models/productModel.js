@@ -1,214 +1,238 @@
 const e = require('express');
-var pool= require('../database/db');
+var pool = require('../database/db');
 const { product } = require('../utils/product');
 
-var productModel=function(){}
+var productModel = function () { }
 
-productModel.product_edit_insert=function(data,result){
-    pool.query("call product_edit_insert(?,?,?,?,?,?,?,?)",data,function(err,res,field){
-        if(err){
-            return result(err,null);
-        }else{
-            return result(null,res);
+//maxsulot qoshish
+productModel.product_edit_insert = function (data, result) {
+    pool.query("call product_edit_insert(?,?,?,?,?,?,?,?)", data, function (err, res, field) {
+        if (err) {
+            return result(err, null);
+        } else {
+            return result(null, res);
         }
     });
-   
+
 }
 
 //admin tasdiqlashi
-productModel.check_product=function(data,result){
-    pool.query("call check_product(?,?,?,?)",data,function(err,res,field){
-        if(err){
-            return result(err,null);
-        }else{
-            return result(null,res);
+productModel.check_product = function (data, result) {
+    pool.query("call check_product(?,?,?,?)", data, function (err, res, field) {
+        if (err) {
+            return result(err, null);
+        } else {
+            return result(null, res);
         }
     });
-   
 }
 
+//rasm ochirish
+productModel.img_del = function (data, result) {
+    pool.query("call img_del(?)", data, function (err, res, field) {
+        if (err) {
+            return result(err, null);
+        } else {
+            return result(null, res);
+        }
+    });
+
+}
 
 
 //rasm yuklash
-productModel.product_image=function(data,result){
-    pool.query("call product_image(?,?,?,?)",data,function(err,res,field){
-        if(err){
-            return result(err,null);
-        }else{
-            return result(null,res);
+productModel.product_image = function (data, result) {
+    pool.query("call product_image(?,?,?,?)", data, function (err, res, field) {
+        if (err) {
+            return result(err, null);
+        } else {
+            return result(null, res);
         }
     });
-   
+
 }
 
-productModel.getAll=function(id,ses,result){
-    let s='';
-    if(id==3){
-        s='checked';
+productModel.getAll = function (id, ses, result) {
+    let s = '';
+    if (id == 3) {
+        s = 'checked';
     }
-    else{
-        s=id
+    else {
+        s = id
     }
-    
-    pool.query(`SELECT * FROM product where isActive=1 and checked=${s} and user_id=${ses}`,function(err,res){
-        if(err){
-            return result(err,null);
-        }else{
-            return result(null,res);
+
+    pool.query(`SELECT * FROM product where isActive=1 and checked=${s} and user_id=${ses}`, function (err, res) {
+        if (err) {
+            return result(err, null);
+        } else {
+            return result(null, res);
         }
     });
 }
-productModel.All=function(result){
-   
-    
+productModel.All = function (result) {
+
+
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p left join product_image pi on pi.product_id=p.id and 
-    pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1);select * from category;`,function(err,res){
-        if(err){
-            return result(err,null);
-        }else{
-            let data=changeCosts(res[1],res[0])
-            return result(null,data);
+    pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1);select * from category where isActive=1;`, function (err, res) {
+        if (err) {
+            return result(err, null);
+        } else {
+            let data = changeCosts(res[1], res[0])
+            return result(null, data);
         }
     });
 }
 
-productModel.BigGet=function(result){
-   
-    
+productModel.Retcomment = function (id, result) {
+
+
+    pool.query(`SELECT * FROM ecommerce_shop.product_check where product_id=? order by created_on desc limit 1`, id||0, function (err, res) {
+        if (err) {
+            return result(err, null);
+        } else {
+            return result(null, res);
+        }
+    });
+}
+
+productModel.BigGet = function (result) {
+
+
     pool.query(`SELECT p.*,pi.id as idcha,pi.img_url,pp.cat_prop_id,pp.values FROM product p left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1) left join 
-    product_properties pp on pp.product_id=p.id;select * from category;`,function(err,res){
-        if(err){
-            return result(err,null);
-        }else{
-            let data=changeCosts(res[1],res[0])
-            return result(null,data);
+    product_properties pp on pp.product_id=p.id;select * from category where isActive=1`, function (err, res) {
+        if (err) {
+            return result(err, null);
+        } else {
+            let data = changeCosts(res[1], res[0])
+            return result(null, data);
         }
     });
 }
 
 
-productModel.BigGet=function(result){
-   
-    
+productModel.BigGet = function (result) {
+
+
     pool.query(`SELECT p.*,pi.id as idcha,pi.img_url,pp.cat_prop_id,pp.values FROM product p left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1) left join 
-    product_properties pp on pp.product_id=p.id;select * from category;`,function(err,res){
-        if(err){
-            return result(err,null);
-        }else{
-            let data=changeCosts(res[1],res[0])
-            return result(null,data);
+    product_properties pp on pp.product_id=p.id;select * from category where isActive=1;`, function (err, res) {
+        if (err) {
+            return result(err, null);
+        } else {
+            let data = changeCosts(res[1], res[0])
+            return result(null, data);
         }
     });
 }
 
 
 
-productModel.product_properties_edit_insert=function(data,result){
-    pool.query("call product_properties_edit_insert(?,?,?,?,?)",data,function(err,res,field){
-        if(err){
-            return result(err,null);
-        }else{
-            return result(null,res);
+productModel.product_properties_edit_insert = function (data, result) {
+    pool.query("call product_properties_edit_insert(?,?,?,?,?)", data, function (err, res, field) {
+        if (err) {
+            return result(err, null);
+        } else {
+            return result(null, res);
         }
     });
-   
+
 }
 
-productModel.getProperties=function(id,result){
-    pool.query(`SELECT pp.*,cp.field_name pname FROM product_properties pp inner join category_properties cp on pp.cat_prop_id=cp.id where pp.product_id=?;`,id||0,function(err,res){
-        if(err){
-            return result(err,null);
-        }else{
-            return result(null,res);
+productModel.getProperties = function (id, result) {
+    pool.query(`SELECT pp.*,cp.field_name pname FROM product_properties pp 
+    inner join category_properties cp on pp.cat_prop_id=cp.id where pp.product_id=?;`, id || 0, function (err, res) {
+        if (err) {
+            return result(err, null);
+        } else {
+            return result(null, res);
         }
     });
 }
 
 
-productModel.getImage=function(id,result){
+productModel.getImage = function (id, result) {
     pool.query(`SELECT p.*,pi.id as idcha,pi.img_url FROM product p left join product_image pi on 
-    pi.product_id=p.id where p.id=?`,id||0,function(err,res){
-        if(err){
-            return result(err,null);
-        }else{
-            return result(null,res);
+    pi.product_id=p.id where p.id=? and pi.isActive=1`, id || 0, function (err, res) {
+        if (err) {
+            return result(err, null);
+        } else {
+            return result(null, res);
         }
     });
 }
 
 
-productModel.productByCategory=function(id=0,result){
-   
-    
-    pool.query(`select * from category;`,function(err,rows){
-        if(err){
-            return result(err,null);
-        }else{
-            let ids=(id||0)+","+filterProd(id,rows)
+productModel.productByCategory = function (id = 0, result) {
+
+
+    pool.query(`select * from category where isActive=1`, function (err, rows) {
+        if (err) {
+            return result(err, null);
+        } else {
+            let ids = (id || 0) + "," + filterProd(id, rows)
             // if(ids.length==0)
-            ids=ids.slice(0, -1)
-            console.log("|"+ids+"|")
-            
+            ids = ids.slice(0, -1)
+            console.log("|" + ids + "|")
+
             pool.query(`SELECT p.*,pi.id as idcha,pi.img_url,pp.cat_prop_id,pp.values FROM product p left join product_image pi on pi.product_id=p.id and 
             pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1) left join 
-            product_properties pp on pp.product_id=p.id where p.category_id in (${ids || null});`,function(err2,res){
-                if(err2){
+            product_properties pp on pp.product_id=p.id where p.category_id in (${ids || null});`, function (err2, res) {
+                if (err2) {
                     console.log("err2")
-                    return result(err2,null);
-                }else{
-                    let data=changeCosts(rows,res)
-                    return result(null,data);
+                    return result(err2, null);
+                } else {
+                    let data = changeCosts(rows, res)
+                    return result(null, data);
                 }
             });
         }
     });
 }
 
-productModel.prodPropsByValue=function(id=0,result){
-   
-    
+productModel.prodPropsByValue = function (id = 0, result) {
+
+
     pool.query(`SELECT pp.id,pp.values,count(pp.product_id) count 
     FROM product_prop   erties pp
     where pp.cat_prop_id=?
-    group by pp.values;`,id,function(err,rows){
-        if(err){
-            return result(err,null);
-        }else{
-            result(null,rows)
+    group by pp.values;`, id, function (err, rows) {
+        if (err) {
+            return result(err, null);
+        } else {
+            result(null, rows)
         }
     });
 }
 
 
-function changeCosts(c,data) {
-   
-    data.forEach((e,i) => {
-        let k=e.category_id,cost=e.cost,ind=c.findIndex(x=>x.id==k);
+function changeCosts(c, data) {
 
-        while(ind!=-1){
-            if(c[ind].isFoiz)
-                cost=cost*(100+c[ind].percent)/100
-            else 
-                cost=cost+c[ind].percent
-                ind=c.findIndex(x=>x.id==c[ind].sub)            
+    data.forEach((e, i) => {
+        let k = e.category_id, cost = e.cost, ind = c.findIndex(x => x.id == k);
+
+        while (ind != -1) {
+            if (c[ind].isFoiz)
+                cost = cost * (100 + c[ind].percent) / 100
+            else
+                cost = cost + c[ind].percent
+            ind = c.findIndex(x => x.id == c[ind].sub)
         }
-        data[i].cost=cost
+        data[i].cost = cost
     });
-return data    
+    return data
 }
 
 
-function filterProd(id,data) {
-   
-    const category=data.filter(e=>e.sub==id)
-    let s=""
-    category.forEach((e)=>{
-        s+=e.id+","+filterProd(e.id,data)
+function filterProd(id, data) {
+
+    const category = data.filter(e => e.sub == id)
+    let s = ""
+    category.forEach((e) => {
+        s += e.id + "," + filterProd(e.id, data)
     })
-    
-return s;    
+
+    return s;
 }
 
 // console.log("data:",filterProd(5,[
@@ -226,4 +250,4 @@ return s;
 //     console.log(result)
 // })
 
-module.exports=productModel;
+module.exports = productModel;
