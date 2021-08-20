@@ -10,6 +10,7 @@ router.post('/update',userController.update);
 router.post('/changePassword',userController.editPassword);
 router.post('/roledit',userController.rolEdit);
 
+router.get("/getMe",userController.getMe)
 router.get("/getAllUsers",userController.getAllUsers)
 router.get("/img/:url",userController.getOneImg)
 router.get("/images", userController.getAllImges)
