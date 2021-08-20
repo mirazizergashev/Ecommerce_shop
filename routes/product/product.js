@@ -5,6 +5,7 @@ const upload=require('../../middleware/upload')
 const productController=require("../../controllers/productController")
 
 router.get('/all', productController.All);
+router.get('/Retcomment/:id', productController.Retcomment);
 router.get('/productFilter', productController.productFilter);
 router.get('/productByCategory', productController.productByCategory);
 router.get('/prodPropsByValue', productController.prodPropsByValue);
@@ -12,6 +13,7 @@ router.get('/getAll/:id', productController.getAll);
 router.get('/getImage/:id', productController.getImage);
 router.post('/', productController.create_update);
 router.post('/check', productController.check_product);
+router.post('/img_del', productController.img_del);
 router.post('/image',upload, productController.product_image);
 
 router.get('/Properties/:id', productController.getProperties);
