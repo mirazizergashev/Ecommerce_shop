@@ -209,6 +209,7 @@ productModel.prodPropsByValue = function (id = 0, result) {
 productModel.productFilter=function(query,result){
     let a=[],ss=""
     Object.keys(query).forEach((id,i)=>{
+        if(id=="fcost"||id=="lcost")return;
         let s=""
         a.push(id)
     //    for (let i = 0; i < query[id].length; i++) 
@@ -228,7 +229,7 @@ productModel.productFilter=function(query,result){
         if(err){
             return result(err,null);
         }else{
-            let data=changeCosts(res[1],res[0])
+            let data=changeCosts(res[1],res[0]).filter(e=>(e.cost>=(query.fcost||0)*1 && e.cost<=(query.lcost||1000000000000)*1))
             return result(null,data);
         }
     });

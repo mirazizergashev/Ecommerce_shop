@@ -3,7 +3,6 @@ const router = express.Router();
 
 const upload = require("../../middleware/upload")
 const userController=require("../../controllers/userController")
-const promokodController=require("../../controllers/promokodController")
 
 
 router.post('/update',userController.update);
