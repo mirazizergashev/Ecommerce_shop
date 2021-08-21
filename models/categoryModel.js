@@ -78,4 +78,15 @@ categoryModel.getProperties=function(id,result){
         }
     });
 }
+
+
+categoryModel.getPropertiesByCat=function(id,result){
+    pool.query(`call getPropertiesByCat(?);`,id||0,function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
 module.exports=categoryModel;

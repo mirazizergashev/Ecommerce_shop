@@ -381,4 +381,29 @@ categoryController.getProperties = function (req, res) {
  }
 
 
+ categoryController.getPropertiesByCat = function (req, res) {
+    categoryModel.getPropertiesByCat(req.params.id,(err,rows)=>{
+     if (err) {
+             console.log(err);
+             return res.status(200).json({
+                 code: 500,
+                 error: {
+                     message: {
+                         uz: "Serverda xatolik tufayli rad etildi !",
+                         en: "Rejected due to server error!",
+                         ru: "Отклонено из-за ошибки сервера!"
+                     }
+                 }
+             })
+         }
+         let result=[]
+         for (let i = 0; i < rows[0].length; i++)
+            result.push([rows[0][i],rows[i+1]])  
+         
+         res.status(200).json({
+             code: 200,
+             success: result
+         })
+     })
+ }
 module.exports = categoryController;
