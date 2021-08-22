@@ -89,4 +89,28 @@ categoryModel.getPropertiesByCat=function(id,result){
         }
     });
 }
+
+
+categoryModel.getSubs=function(result){
+    pool.query("SELECT * FROM category",function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,getSubs(res,0));
+        }
+    });
+}
+
+function getSubs(a,id) {
+    let b=[]
+    a.filter(e=>e.sub==id)
+    .forEach(e => {
+        b.push({data:e,
+        sub:getSubs(a,e.id)})
+    });
+    return b
+}
+
+
+
 module.exports=categoryModel;
