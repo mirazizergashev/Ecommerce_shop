@@ -6,7 +6,7 @@ var productModel = function () { }
 
 //maxsulot qoshish
 productModel.product_edit_insert = function (data, result) {
-    pool.query("call product_edit_insert(?,?,?,?,?,?,?,?)", data, function (err, res, field) {
+    pool.query("call product_edit_insert(?,?,?,?,?,?,?,?,?)", data, function (err, res, field) {
         if (err) {
             return result(err, null);
         } else {
@@ -266,7 +266,7 @@ function changeCosts(c,data) {
                 cost = cost + c[ind].percent
             ind = c.findIndex(x => x.id == c[ind].sub)
         }
-        data[i].cost = cost
+        data[i].cost = cost*(100-data[i].discount);
     });
     return data
 }
