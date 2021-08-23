@@ -5,6 +5,7 @@ const upload=require('../../middleware/upload')
 const productController=require("../../controllers/productController")
 
 router.get('/all', productController.All);
+router.get('/search', productController.searchAll);
 router.get('/Retcomment/:id', productController.Retcomment);
 router.get('/productFilter', productController.productFilter);
 router.get('/productByCategory', productController.productByCategory);
