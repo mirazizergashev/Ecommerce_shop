@@ -45,6 +45,16 @@ const product = Joi.object().keys({
             "number.max": "Son maksimal 10000000 ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
             "any.required": `Son maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
         }),
+        skidka: Joi
+        .number()
+        .min(0)
+        .max(999)
+        .required()
+        .messages({
+            "number.min": "Skidka minimal 0 ga teng bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+            "number.max": "Skidka maksimal 999 ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+            "any.required": `Skidka maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
+        }),
 
     hol: Joi
         .number()

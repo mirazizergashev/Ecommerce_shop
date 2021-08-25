@@ -2,7 +2,7 @@ const mysql = require('mysql2');
 
 // db pool orqali ulanish hosil qilamiz .....
 const pool = mysql.createPool({
-    host: 'localhost',
+    host: '80.85.142.207',
     user: 'admin',
     password: "Admin*2021",
     database: 'ecommerce_shop',

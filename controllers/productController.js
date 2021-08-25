@@ -31,7 +31,8 @@ productController.create_update = function (req, res) {
         a.son,
         req.session.userId || 0,
         a.hol,
-        a.kategoriya
+        a.kategoriya,
+        a.skidka,
     ]
 
     productModel.product_edit_insert(data, function (err, result) {
@@ -49,6 +50,7 @@ productController.create_update = function (req, res) {
             })
         } else {
             // req.flash('success', 'Employee added succesfully');
+            console.log(result[0][0].natija)
             switch (result[0][0].natija) {
                 case '1':
                     return res.status(200).json({
@@ -457,6 +459,32 @@ productController.All = function (req, res) {
 
 productController.getOne = function (req, res) {
     productModel.getOne(req.params.id,(err, rows) => {
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+
+
+        res.status(200).json({
+            code: 200,
+            success: rows
+        })
+    })
+}
+
+productController.searchAll = function (req, res) {
+    productModel.searchAll(req.query.text,(err, rows) => {
+ 
+
         if (err) {
             console.log(err);
             return res.status(200).json({

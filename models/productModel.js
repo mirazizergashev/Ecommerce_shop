@@ -6,7 +6,7 @@ var productModel = function () { }
 
 //maxsulot qoshish
 productModel.product_edit_insert = function (data, result) {
-    pool.query("call product_edit_insert(?,?,?,?,?,?,?,?)", data, function (err, res, field) {
+    pool.query("call product_edit_insert(?,?,?,?,?,?,?,?,?)", data, function (err, res, field) {
         if (err) {
             return result(err, null);
         } else {
@@ -86,7 +86,6 @@ productModel.All = function (result) {
     });
 }
 
-
 productModel.getOne = function (id=0,result) {
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
     left join product_image pi on pi.product_id=p.id and 
@@ -94,8 +93,24 @@ productModel.getOne = function (id=0,result) {
     where p.isActive=1 and p.id=?;
     select * from category where isActive=1;`,id, function (err, res) {
         if (err) {
-            return result(err, null);
-        } else {
+            return result(err, null);}
+            else{
+            let data = changeCosts(res[1], res[0])
+            return result(null, data);}
+        
+    });
+}
+
+productModel.searchAll = function (text,result) {
+
+    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
+    left join product_image pi on pi.product_id=p.id and 
+    pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
+    where p.isActive=1 and p.name LIKE '%${text}%';
+    select * from category where isActive=1;`, function (err, res) {
+        if (err) {
+            return result(err, null);}
+            else{
             let data = changeCosts(res[1], res[0])
             return result(null, data);
         }
@@ -265,7 +280,7 @@ function changeCosts(c,data) {
                 cost = cost + c[ind].percent
             ind = c.findIndex(x => x.id == c[ind].sub)
         }
-        data[i].cost = cost
+        data[i].cost = cost*(100-data[i].discount);
     });
     return data
 }
