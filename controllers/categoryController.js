@@ -26,7 +26,7 @@ categoryController.create_update = function (req, res) {
     var data = [
         a.id ,
         a.nom ,
-        a.sub,
+        a.sub||0,
         req.session.userId||0,
         a.foiz,
         a.hol,
