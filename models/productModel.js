@@ -90,7 +90,7 @@ productModel.getTop = function (count,result) {
 productModel.changeTop = function (id,isTop,result) {
 
 
-    pool.query(`update product set isTop=? where id=?`,[id,isTop], function (err, res) {
+    pool.query(`update product set isTop=? where id=?`,[isTop,id], function (err, res) {
         if (err) {
             return result(err, null);
         } else {
