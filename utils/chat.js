@@ -23,6 +23,19 @@ const chatAll = Joi.object().keys({
    
 });
 
+const chatStop = Joi.object().keys({
+   
+
+    user_id:Joi
+    .number()
+    
+    .messages({
+        "number": "Butun son kirit !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!"
+        })
+   
+   
+});
+
 const chatAdmin = Joi.object().keys({
    
 
@@ -42,5 +55,5 @@ const chatAdmin = Joi.object().keys({
 
 
 module.exports = {
-    chatAll,chatAdmin
+    chatAll,chatAdmin,chatStop
 }

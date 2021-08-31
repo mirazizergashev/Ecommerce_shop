@@ -33,6 +33,18 @@ chatModel.smsAdmin=function(text,result){
     });
    
 }
+
+chatModel.chatStop=function(text,result){
+    pool.query("call chatStop(?)",text,function(err,res,field){//id,file,text,stars,expire_date,isActive
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+   
+}
+
 chatModel.getMyMessage=function(id,result){
     console.log(id)
     pool.query("SELECT * FROM chats where user_id=? ",id,function(err,res){

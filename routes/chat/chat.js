@@ -7,6 +7,7 @@ router.get('/getChat/:id', chatController.getChatId);
 router.get('/getMyMessage', chatController.getMyMessage);
 
 router.post('/smsAdmin', chatController.smsAdmin);
+router.post('/chatStop', chatController.chatStop);
 router.post('/', chatController.send_edit);
 
 

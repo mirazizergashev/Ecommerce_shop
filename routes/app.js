@@ -10,10 +10,12 @@ const roles = require("./roles/app");
 const user = require("./user/app");
 const static = require("./statik/app");
 const promokod = require("./promokod/app");
+const chat = require("./chat/app");
 
 // sing in , up 
 app.use("/sign", sign);
 app.use("/promokod",authCheck, promokod);
+app.use("/chat",authCheck, chat);
 app.use("/cart",authCheck, cart);
 // app.use("/category",authCheck, category);
 // app.use("/product",authCheck, product);
