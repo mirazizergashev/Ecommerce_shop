@@ -478,8 +478,14 @@ productController.changeTop = function (req, res) {
 
 
         res.status(200).json({
-            code: 200,
-            success: rows
+            code: 203,
+            success: {
+                message: {
+                    uz: "Muvaffaqiyatli o'zgartirildi !",
+                    en: "Rejected due to server error!",
+                    ru: "Отклонено из-за ошибки сервера!"
+                }
+            }
         })
     })
 }
