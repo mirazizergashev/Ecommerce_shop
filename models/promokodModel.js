@@ -61,4 +61,8 @@ promokodModel.getBusy=function(query,result){
     });
 }
 
+
+
+
+
 module.exports=promokodModel;
