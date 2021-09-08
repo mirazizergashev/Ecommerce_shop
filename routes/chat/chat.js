@@ -4,6 +4,7 @@ const chatController=require("../../controllers/chatController")
 
 router.get('/getChat/:id', chatController.getChatId);
 
+router.get('/getChats', chatController.getChats);
 router.get('/getMyMessage', chatController.getMyMessage);
 
 router.post('/smsAdmin', chatController.smsAdmin);

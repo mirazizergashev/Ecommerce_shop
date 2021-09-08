@@ -222,8 +222,8 @@ chatController.getChatId = function (req, res) {
 }
 
 
+
 chatController.getMyMessage = function (req, res) {
-    console.log(req.session)
     chatModel.getMyMessage(req.session.userId,(err, rows) => {
         if (err) {
             console.log(err);
@@ -247,5 +247,27 @@ chatController.getMyMessage = function (req, res) {
 }
 
 
+chatController.getChats = function (req, res) {
+    chatModel.getChats(req.query.isAdmin||0,(err, rows) => {
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+
+        res.status(200).json({
+            code: 200,
+            success: rows
+        })
+    })
+}
 
 module.exports = chatController;
