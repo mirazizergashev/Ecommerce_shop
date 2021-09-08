@@ -22,12 +22,9 @@ chatModel.getChats=function(isAdmin,result){
         if(err){
             return result(err,null);
         }else{
-            // console.log(isAdmin)
             let data=res[0],d=res[1]
-            console.log(data,d)
             data.forEach((elem,j) => {
                 const x=d.filter(el=>el.user_id==elem.id && el.isNew==0 && el.isAdmin==isAdmin)
-                console.log(x.length)
                 data[j].news-=x.length
             });
             return result(null,data);
