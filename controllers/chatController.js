@@ -23,7 +23,7 @@ chatController.send_edit = function (req, res) {
         });
     }
     let a = req.body;
-    var data = [a.user_id, a.text]
+    var data = [a.user_id, a.text,1]
 
     chatModel.chat_edit_insert(data, function (err, result) {
         if (err) {

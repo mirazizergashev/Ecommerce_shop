@@ -4,7 +4,7 @@ var pool= require('../database/db');
 var chatModel=function(){}
 
 chatModel.chat_edit_insert=function(data,result){
-    pool.query("call chat_edit_insert(?,?)",data,function(err,res,field){//id,file,text,stars,expire_date,isActive
+    pool.query("call chat_edit_insert(?,?,?)",data,function(err,res,field){//id,file,text,stars,expire_date,isActive
         if(err){
             return result(err,null);
         }else{
