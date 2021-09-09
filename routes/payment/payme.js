@@ -7,7 +7,7 @@ const CheckTransaction =require("./CheckTransaction")
 const PerformTransaction =require("./PerformTransaction")
 const CancelTransaction = require("./CancelTransaction")
 const check = require("../middleware/auth").authCheck
-const merchant ="5fe1defc52312934ea44557e"
+const merchant ="6135b21ec517ef555a8accac"
 
 //tekshrish 
 function checkAuth(auth) {
