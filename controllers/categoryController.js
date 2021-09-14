@@ -133,30 +133,53 @@ categoryController.create_update = function (req, res) {
 
 
 categoryController.getAll = function (req, res) {
-   categoryModel.getAll((err,rows)=>{
-    if (err) {
-            console.log(err);
-            return res.status(200).json({
-                code: 500,
-                error: {
-                    message: {
-                        uz: "Serverda xatolik tufayli rad etildi !",
-                        en: "Rejected due to server error!",
-                        ru: "Отклонено из-за ошибки сервера!"
-                    }
-                }
-            })
-        }
-       
-        res.status(200).json({
-            code: 200,
-            success: rows[0],
-            title:rows[1]
-        })
-    })
-}
+    categoryModel.getAll((err,rows)=>{
+     if (err) {
+             console.log(err);
+             return res.status(200).json({
+                 code: 500,
+                 error: {
+                     message: {
+                         uz: "Serverda xatolik tufayli rad etildi !",
+                         en: "Rejected due to server error!",
+                         ru: "Отклонено из-за ошибки сервера!"
+                     }
+                 }
+             })
+         }
+        
+         res.status(200).json({
+             code: 200,
+             success: rows[0],
+             title:rows[1]
+         })
+     })
+ }
 
 
+ categoryController.getRegions = function (req, res) {
+    categoryModel.getRegions(req.params.id,(err,rows)=>{
+     if (err) {
+             console.log(err);
+             return res.status(200).json({
+                 code: 500,
+                 error: {
+                     message: {
+                         uz: "Serverda xatolik tufayli rad etildi !",
+                         en: "Rejected due to server error!",
+                         ru: "Отклонено из-за ошибки сервера!"
+                     }
+                 }
+             })
+         }
+        
+         res.status(200).json({
+             code: 200,
+             success: rows
+             
+         })
+     })
+ }
 categoryController.getAllProp = function (req, res) {
     categoryModel.getAllProp((err,rows)=>{
      if (err) {

@@ -24,6 +24,17 @@ categoryModel.getAll=function(result){
     });
 }
 
+
+categoryModel.getRegions=function(id,result){
+    pool.query("SELECT * FROM regions where sub=?",[id||0],function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
+
 categoryModel.getAllProp=function(result){
     pool.query("SELECT * FROM category_properties;",function(err,res){
         if(err){
