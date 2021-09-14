@@ -1,10 +1,10 @@
-const pool = require("../database/db")
+const pool=require("../../database/db")
 
 module.exports = CreateTransaction =async(data,javob)=>
 {
    if(!(data.params.account.user))  {
-      return   res.json({error:{
-          code : -32504,
+      return   javob.json({error:{
+          code : -31001,
           message : 'AccessDeniet',
           data : null
       }})

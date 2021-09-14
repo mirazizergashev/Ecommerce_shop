@@ -3,6 +3,7 @@ const app = express();
 const {authCheck}=require('../middleware/auth');
 
 const  category= require("./category/app");
+const  payment= require("./payment/payme");
 const cart = require("./cart/app");
 const  product= require("./product/app");
 const sign = require("./sign/app");
@@ -17,7 +18,7 @@ app.use("/sign", sign);
 app.use("/promokod",authCheck, promokod);
 app.use("/chat",authCheck, chat);
 app.use("/cart",authCheck, cart);
-// app.use("/category",authCheck, category);
+app.use("/payment", payment);
 // app.use("/product",authCheck, product);
 app.use("/category", category);
 app.use("/product", product);

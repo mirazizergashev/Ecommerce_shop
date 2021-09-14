@@ -2,7 +2,7 @@ module.exports = PerformTransaction =async(data,javob)=>
 {
 
     const BilingErrors = require("./BilingErrors")
-    const pool= require("../database/db")
+    const pool=require("../../database/db")
    
     pool.promise().query("SELECT  *FROM transactions WHERE transaction_id=? limit 1",[data.params.id])
     .then(async(rest)=>

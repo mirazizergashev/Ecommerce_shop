@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const { poolPromise } = require("../../db/dbConnect")
-check = require("../../middleware/authUser")
+check = require("../../middleware/auth").authCheck
 
 const md5 = require("md5")
 
@@ -13,13 +13,32 @@ const return_url="http://itleader.uz:3000"
 const SECRET_KEY= 'h0C9CH5wdW' 
 
 //  ejs render 
-app.get("/", async (req, res) => {
-    const pool = await poolPromise
-    const request = await pool.request();
-    request.query("select nomi , id from hizmatlar ").then((rest) => {
-        res.render("click",{msg:"To'lov qilish !.",data:rest.recordset})
+app.get("/money", async (req, res) => {
+    await pool.promise().query("SELECT nomi,id FROM product; ").then((rest) => {
+        return res.status(200).json({
+            code: 200,
+            success: {
+                message: {
+                    uz: rest[0],
+                    en: rest[0],
+                    ru: rest[0]
+                }
+            }
+
+        });
+        // res.render("click",{msg:"To'lov qilish !.",data:rest.recordset})
     }).catch((err) => {
-        res.status(404).json({ "error": "Xatolik "  })
+        return res.status(200).json({
+            code: 404,
+            success: {
+                message: {
+                    uz: "Xatolik",
+                    en: err,
+                    ru: err
+                }
+            }
+
+        });
     })
 })
 
