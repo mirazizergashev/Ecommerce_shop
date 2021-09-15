@@ -8,7 +8,7 @@ module.exports = CheckTransaction =async(data,javob)=>
     pool.promise().query("SELECT * FROM transactions WHERE transaction_id=? limit 1",[data.params.id])
     .then(async(rest)=>
     {
-       console.log(rest[0])
+      //  console.log(rest)
        if(rest[0].length==0)
         return  javob.json({error:BilingErrors.TransactionNotFound})
        else

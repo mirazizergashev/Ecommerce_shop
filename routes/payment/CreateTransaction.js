@@ -19,7 +19,7 @@ module.exports = CreateTransaction =async(data,javob)=>
     {
        if(rest[0][0].length>0)
        {
-         console.log(rest[0])
+        //  console.log(rest[0])
           if(rest[0][0][0].state !== 1 ) return javob.json({error:BilingErrors.UnexpectedTransactionState()});                
           if(rest[0][0][0].transaction_id != data.params.id ) return javob.json({error:BilingErrors.OrderNotFound()});   
           if(data.params.amount)
@@ -38,9 +38,9 @@ module.exports = CreateTransaction =async(data,javob)=>
                return javob.json({error:BilingErrors.OrderNotFound()});  
         if(data.params.amount)
             { if(!(parseInt(rest[0][1][0].amount)===data.params.amount)){
-              console.log((parseInt(rest[0][1][0].amount)))
-              console.log("oraliq")
-              console.log(data.params.amount)
+              // console.log((parseInt(rest[0][1][0].amount)))
+              // console.log("oraliq")
+              // console.log(data.params.amount)
               return javob.json({error:BilingErrors.IncorrectAmount()});  
             }
             }   
