@@ -17,7 +17,7 @@ module.exports = CheckPerformTransaction = async(data,javob)=>
    
     pool.promise().query("SELECT *FROM orders WHERE id=?",[order])
     .then((rest) => {
-        // console.log(rest[0][0])
+        console.log(rest[0][0])
        if(rest.length==0) return  javob.json({error: BilingErrors.OrderNotFound()})
        if(rest[0][0].state !== 0 ) return javob.json({error:BilingErrors.OrderAvailable()})
        if(parseInt(rest[0][0].amount)!== data.params.amount)
