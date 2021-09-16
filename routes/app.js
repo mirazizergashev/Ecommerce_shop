@@ -4,6 +4,7 @@ const {authCheck}=require('../middleware/auth');
 
 const  category= require("./category/app");
 const  payment= require("./payment/payme");
+const  payment2= require("./payment/click");
 const cart = require("./cart/app");
 const  product= require("./product/app");
 const sign = require("./sign/app");
@@ -19,6 +20,7 @@ app.use("/promokod",authCheck, promokod);
 app.use("/chat",authCheck, chat);
 app.use("/cart",authCheck, cart);
 app.use("/payment", payment);
+app.use("/payment", payment2);
 // app.use("/product",authCheck, product);
 app.use("/category", category);
 app.use("/product", product);

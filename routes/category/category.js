@@ -4,6 +4,7 @@ const categoryController=require("../../controllers/categoryController")
 const {authCheck}=require("../../middleware/auth")
 
 router.get('/getAll', categoryController.getAll);
+router.get('/getRegions/:id', categoryController.getRegions);
 router.get('/getAllProp', categoryController.getAllProp);
 router.get('/getType', categoryController.getType);
 router.get('/getSub/:id', categoryController.getSub);

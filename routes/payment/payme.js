@@ -21,23 +21,23 @@ function checkAuth(auth) {
 app.use("/payme/1" , async (req, res) => {
  
     req.body = req.query
-    console.log(req.query)
+        const datee =new Date().getTime() ;
    
     await pool.promise()
     .query("insert into orders (user_id , amount , payme_state , state , phone ,sana,praduct_id) "+ 
-    "values (?,?,0,0,?,NOW(),?) ; SELECT max(id) as id FROM orders "+
-    "WHERE user_id=? ",[4,req.body.amount,req.body.phone,req.body.praduct_id,4])
+    "values (?,?,0,0,?,now(),?) ; SELECT max(id) as id FROM orders "+
+    "WHERE user_id=? ",[9,req.body.amount,req.body.phone,req.body.praduct_id,9])
      .then(async(rest) => {
-        // console.log(rest[1])
-         console.log(`m=${merchant};ac.order=3;a=${req.body.amount*100}`)
-        bu=Buffer.from(`m=${merchant};ac.order=3;a=${req.body.amount*100}`).toString('base64')
-        // console.log(bu)
-        res.redirect(`https://checkout.paycom.uz/${bu}`) ;
+         console.log(rest[0][1])
+        bu=Buffer.from(`m=${merchant};ac.order=${rest[0][1].id};a=${req.body.amount*100}`).toString('base64')
+        console.log(bu)
+        res.redirect(`https://checkout.test.paycom.uz/${bu}`) ;
      }).catch((err) => {
-        //  console.log(err)
+         console.log(err)
          res.json({ error: 2, error_note: "Not" });
      })  
 })
+
 
 // payme etab 2
 app.use("/payme/2", async (req, res) => {
