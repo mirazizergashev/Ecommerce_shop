@@ -13,7 +13,8 @@ module.exports = CreateTransaction =async(data,javob)=>
     let order = data.params.account.order 
     const BilingErrors = require("./BilingErrors")
    
-    pool.promise().query("SELECT  * FROM transactions WHERE order_id=? limit 1; SELECT  * FROM orders WHERE id=? limit 1",
+    pool.promise().query("SELECT  * FROM transactions WHERE order_id=? limit 1; "+
+    "SELECT  * FROM orders WHERE id=? limit 1",
     [order,order])
     .then(async(rest)=>
     {
@@ -24,12 +25,12 @@ module.exports = CreateTransaction =async(data,javob)=>
           if(rest[0][0][0].transaction_id != data.params.id ) return javob.json({error:BilingErrors.OrderNotFound()});   
           if(data.params.amount)
           {  console.log("bu",rest[0][1][0].amount , data.params.amount)
-              if(!(parseInt(rest[0][1][0].amount)=== data.params.amount)) return javob.json({error:BilingErrors.IncorrectAmount()});       
+              if(!(parseInt(rest[0][1][0].amount)*100=== data.params.amount)) return javob.json({error:BilingErrors.IncorrectAmount()});       
           }
           return javob.json({result: {
-                       state : rest[0][0].state,
-                       create_time : parseInt(rest[0][0].create_time),
-                       transaction :rest[0][0].transaction_id.toString()
+                       state : rest[0][0][0].state,
+                       create_time : parseInt(rest[0][0][0].create_time),
+                       transaction :rest[0][0][0].transaction_id
           }});
         }
        else
@@ -37,7 +38,7 @@ module.exports = CreateTransaction =async(data,javob)=>
         if(!(rest[0][1].length>0 ))
                return javob.json({error:BilingErrors.OrderNotFound()});  
         if(data.params.amount)
-            { if(!(parseInt(rest[0][1][0].amount)===data.params.amount)){
+            { if(!(parseInt(rest[0][1][0].amount)*100===data.params.amount)){
               // console.log((parseInt(rest[0][1][0].amount)))
               // console.log("oraliq")
               // console.log(data.params.amount)

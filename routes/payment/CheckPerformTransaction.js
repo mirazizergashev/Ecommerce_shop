@@ -20,7 +20,7 @@ module.exports = CheckPerformTransaction = async(data,javob)=>
         console.log(rest[0][0])
        if(rest.length==0) return  javob.json({error: BilingErrors.OrderNotFound()})
        if(rest[0][0].state !== 0 ) return javob.json({error:BilingErrors.OrderAvailable()})
-       if(parseInt(rest[0][0].amount)!== data.params.amount)
+       if(parseInt(rest[0][0].amount)*100!== data.params.amount)
        {
            
            return javob.json({error:BilingErrors.IncorrectAmount()}) 

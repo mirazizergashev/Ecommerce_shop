@@ -18,7 +18,7 @@ module.exports = CancelTransaction =async(data,javob)=>
             const datee =new Date().getTime() ;
       
             pool.promise().query(`
-               UPDATE transactions SET state= -2 ,cancel_time=? ,
+               UPDATE transactions SET state= -1 ,cancel_time=? ,
                reason=? WHERE transaction_id=?;
                UPDATE orders SET state=0  WHERE  id IN  ( SELECT  
                 order_id FROM transactions WHERE transaction_id=? );
@@ -26,7 +26,7 @@ module.exports = CancelTransaction =async(data,javob)=>
             .then(async(rest)=>
             {
                 return javob.json({result: {
-                    state : -2,
+                    state : -1,
                     cancel_time : datee,
                     transaction : data.params.id
                 }});
