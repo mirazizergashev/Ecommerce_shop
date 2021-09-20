@@ -26,7 +26,7 @@ categoryModel.getAll=function(result){
 
 
 categoryModel.getRegions=function(id,result){
-    pool.query("SELECT * FROM regions where sub=?",[id||0],function(err,res){
+    pool.query("SELECT * FROM regions where sub=? and isActive=1",[id||0],function(err,res){
         if(err){
             return result(err,null);
         }else{
