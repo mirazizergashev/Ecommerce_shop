@@ -1,13 +1,13 @@
 module.exports = CancelTransaction =async(data,javob)=>
 {
     const BilingErrors = require("./BilingErrors")
-    const pool = require("../database/db")
+    const pool = require("../../database/db")
 
     
     pool.promise().query("SELECT *FROM transactions WHERE transaction_id=? limit 1; ",[data.params.id])
     .then(async(rest)=>
     {
-       //console.log(rest)
+      //  console.log(rest[0][0])
        if(rest[0].length==0)
         return  javob.json({error:BilingErrors.TransactionNotFound()})
        else
@@ -18,15 +18,15 @@ module.exports = CancelTransaction =async(data,javob)=>
             const datee =new Date().getTime() ;
       
             pool.promise().query(`
-               UPDATE transactions SET state= -2 ,cancel_time=? ,
+               UPDATE transactions SET state= -1 ,cancel_time=? ,
                reason=? WHERE transaction_id=?;
                UPDATE orders SET state=0  WHERE  id IN  ( SELECT  
-                order_id FROM transactions WHERE transaction_id=? limit 1);
+                order_id FROM transactions WHERE transaction_id=? );
               `,[datee.toString(),data.params.reason,data.params.id,data.params.id])
             .then(async(rest)=>
             {
                 return javob.json({result: {
-                    state : -2,
+                    state : -1,
                     cancel_time : datee,
                     transaction : data.params.id
                 }});
@@ -40,20 +40,21 @@ module.exports = CancelTransaction =async(data,javob)=>
         if(rest[0][0].state==2) 
          {
 
-          
             pool.promise().query(`SELECT *FROM orders WHERE  id IN  ( SELECT  order_id
-                 FROM transactions WHERE transaction_id=? limit 1);`,[data.params.id])
+                 FROM transactions WHERE transaction_id=?);`,[data.params.id])
             .then(async(rest2)=>
             {
+              // console.log(rest2[0][0])
                if(rest2[0][0].state==3) return   javob.json({error: BilingErrors.OrderNotСanceled()})
                if(rest2[0][0].state==2) 
                {
+        const datee1 =new Date().getTime() ;
              
                 pool.promise().query(`
                    UPDATE transactions SET state= -2 ,cancel_time=? ,
                     reason=? WHERE transaction_id=?;
                    UPDATE orders SET state=-2  WHERE  id IN  ( SELECT 
-                     order_id FROM transactions WHERE transaction_id=? limit 1);
+                     order_id FROM transactions WHERE transaction_id=? );
                   `,[datee1.toString(),data.params.reason,data.params.id,data.params.id])
                 .then(async(rest)=>
                 {
@@ -68,7 +69,7 @@ module.exports = CancelTransaction =async(data,javob)=>
                })
                }
             }).catch((err) => {
-                 // console.log(err)
+                 console.log(err)
                  return  javob.json({ error: 2, error_note: "Not" });
            })
         } 
