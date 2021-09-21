@@ -3,7 +3,6 @@ const Joi = require("joi")
 const category = Joi.object().keys({
     id:Joi
     .number()
-    .required()
     .messages({
         "number": "Butun son kirit !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!"
         }),
@@ -40,18 +39,21 @@ const category = Joi.object().keys({
     foiz:Joi
     .number()
     .min(0)
-    .max(100000000)
+    .max(1000)
     .required()
     .messages({
         "number.min": "foiz minimal 0 ga teng bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
-        "number.max": "foiz maksimal 10000000 ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
-        "any.required": `sufoizb maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
+        "number.max": "foiz maksimal 1000 ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+        "any.required": `foiz maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
     }),
-    isFoiz:Joi.boolean()
+    isFoiz:Joi.number()
+    .min(0)
+    .max(100000000)
     .required()
     .messages({
-        "boolean": "isFoiz boolean tipida bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
-       "any.required": `sufoizb maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
+        "number.min": "Ustama narx minimal 0 ga teng bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+        "number.max": "Ustama narx maksimal 100000000 ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+        "any.required": `Ustama narx maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
     }),
     hol:Joi
     .number()

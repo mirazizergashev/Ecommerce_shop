@@ -304,10 +304,7 @@ function changeCosts(c,data) {
         let k = e.category_id, cost = e.cost, ind = c.findIndex(x => x.id == k);
 
         while (ind != -1) {
-            if (c[ind].isFoiz)
-                cost = cost * (100 + c[ind].percent) / 100
-            else
-                cost = cost + c[ind].percent
+                cost = cost * (100 + c[ind].percent) / 100+ c[ind].isFoiz
             ind = c.findIndex(x => x.id == c[ind].sub)
         }
         data[i].cost = cost*(100-data[i].discount);
