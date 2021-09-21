@@ -49,9 +49,10 @@ if(req.body){
     console.log(req.session.userId)
     if(req.session.userId){
 
-    pool.promise().query(`insert into orders (user_id , amount , payme_state ,sana ,praduct_id ,isClick,karta) 
-    values (?,?,0,0 ,now() , ?,1,?) ; 
-    SELECT max(id) as id FROM orders WHERE user_id=?`,[req.session.userId,req.body.amount,req.body.praduct_id,req.body.karta,req.session.userId])
+    pool.promise().query(`insert into orders (user_id , amount , payme_state ,sana ,praduct_id ,isClick,karta,dostavka_id) 
+    values (?,?,0,0 ,now() , ?,1,?,?) ; 
+    SELECT max(id) as id FROM orders WHERE user_id=?`,
+    [req.session.userId,req.body.amount,req.body.praduct_id,req.body.karta,req.body.dostavka_id,req.session.userId])
     .then((rest) => {
         console.log(rest[0])
          res.redirect(`/click-ghvcjhhtrfhhkjdfhkjdfn/service/transaction_param=${rest[0][1][0].id}&`+
@@ -64,9 +65,10 @@ if(req.body){
     })
 }
 else{
-    pool.promise().query(`insert into orders (amount,payme_state,state,sana ,praduct_id ,isClick,karta,fish,phone,viloyat,tuman,mfy) 
-    values (?,0,0 ,now(),?,1,?,?,?,?,?,?) ; 
-    SELECT max(id) as id FROM orders WHERE phone=?`,[req.body.amount,req.body.praduct_id,req.body.karta,req.body.fish,req.body.phone,req.body.viloyat,req.body.tuman,req.body.mfy,req.body.phone])
+    pool.promise().query(`insert into orders (amount,payme_state,state,sana ,praduct_id ,isClick,karta,fish,phone,viloyat,tuman,mfy,dostavka_id) 
+    values (?,0,0 ,now(),?,1,?,?,?,?,?,?,?) ; 
+    SELECT max(id) as id FROM orders WHERE phone=?`,
+    [req.body.amount,req.body.praduct_id,req.body.karta,req.body.fish,req.body.phone,req.body.viloyat,req.body.tuman,req.body.mfy,req.body.dostavka_id,req.body.phone])
     .then((rest) => {
         console.log(rest[0])
          res.redirect(`/click-ghvcjhhtrfhhkjdfhkjdfn/service/transaction_param=${rest[0][1][0].id}&`+
