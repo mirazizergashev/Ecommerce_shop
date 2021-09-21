@@ -54,6 +54,17 @@ chatModel.smsAdmin=function(text,result){
    
 }
 
+chatModel.smsToSalesmen=function(text,result){
+    pool.query("call smsToSalesmen(?)",text,function(err,res,field){//id,file,text,stars,expire_date,isActive
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+   
+}
+
 chatModel.chatStop=function(text,result){
     pool.query("call chatStop(?)",text,function(err,res,field){//id,file,text,stars,expire_date,isActive
         if(err){

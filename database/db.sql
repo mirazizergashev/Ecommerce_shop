@@ -654,7 +654,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `blok_user`(
+CREATE  PROCEDURE `blok_user`(
 in pid int(6),
 in hol int(2)
 )
@@ -692,7 +692,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `cart_edit_insert`(
+CREATE  PROCEDURE `cart_edit_insert`(
 IN pid int(6),
 IN puser_id int(6),
 IN pproduct_id int(6),
@@ -742,7 +742,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `category_edit_insert`(
+CREATE  PROCEDURE `category_edit_insert`(
 IN pid int(6),
 IN nom VARCHAR(255),
 IN psub int(6),
@@ -803,7 +803,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `category_properties_edit_insert`(
+CREATE  PROCEDURE `category_properties_edit_insert`(
 IN pid int(6),
 IN nom VARCHAR(255),
 IN kateg int(6),
@@ -860,7 +860,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `chatStop`(
+CREATE  PROCEDURE `chatStop`(
 
 in puser_id int(11)
 )
@@ -894,7 +894,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `chat_edit_insert`(
+CREATE  PROCEDURE `chat_edit_insert`(
 in puser_id int(11),
 in ptexts mediumtext,
 pisAdmin bool
@@ -929,7 +929,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `check_product`(
+CREATE  PROCEDURE `check_product`(
 in pid int(6),
 in hol int(2),
 in admincha int(6),
@@ -970,7 +970,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `delivered_edit_insert`(
+CREATE  PROCEDURE `delivered_edit_insert`(
 IN pid int(6),
 IN pcart_id int(6),
 IN pcomments text,
@@ -1013,7 +1013,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `getPropertiesByCat`(in pid int)
+CREATE  PROCEDURE `getPropertiesByCat`(in pid int)
 BEGIN
 declare tid numeric;
 declare cid numeric;
@@ -1048,7 +1048,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `img_del`(
+CREATE  PROCEDURE `img_del`(
 in rasm varchar(255)
 )
 BEGIN
@@ -1085,7 +1085,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `login_check`(
+CREATE  PROCEDURE `login_check`(
 IN pphone VARCHAR(20), 
 IN ppassword VARCHAR(64)
 )
@@ -1117,7 +1117,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `password_edit`(
+CREATE  PROCEDURE `password_edit`(
 IN pid int(6),
 IN oldPass VARCHAR(255),
 in newPass VARCHAR(255))
@@ -1148,7 +1148,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `product_edit_insert`(
+CREATE  PROCEDURE `product_edit_insert`(
 IN pid int(6),
 IN nom VARCHAR(255),
 IN izoh text, 
@@ -1206,7 +1206,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `product_image`(
+CREATE  PROCEDURE `product_image`(
 in pid int(6),
 in prod int(6),
 in url varchar(255),
@@ -1247,7 +1247,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `product_properties_edit_insert`(
+CREATE  PROCEDURE `product_properties_edit_insert`(
 IN pid int(6),
 IN prod int(6),
 IN xusus int(6),
@@ -1304,7 +1304,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `promokod_edit`(
+CREATE  PROCEDURE `promokod_edit`(
 pid int,
 pamount DECIMAL(12,2),
 in pisFoiz int(1),
@@ -1343,7 +1343,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `promokod_edit_insert`(
+CREATE  PROCEDURE `promokod_edit_insert`(
 in ptoken varchar(200),
 puser_id int,
 pamount DECIMAL(12,2),
@@ -1395,7 +1395,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `rol_edit_insert`(
+CREATE  PROCEDURE `rol_edit_insert`(
 in pid int(6),
 in pname varchar(200),
 in hol bool
@@ -1433,7 +1433,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `smsAdmin`(in ptexts mediumtext)
+CREATE  PROCEDURE `smsAdmin`(in ptexts mediumtext)
 BEGIN
 declare tid numeric;
 declare uid numeric;
@@ -1464,7 +1464,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `status_edit_insert`(
+CREATE  PROCEDURE `status_edit_insert`(
 in pid int(6),
 in pname varchar(200),
 in hol bool
@@ -1502,7 +1502,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `tag_edit_insert`(
+CREATE  PROCEDURE `tag_edit_insert`(
 in pid int(6),
 in pname varchar(200),
 in hol bool
@@ -1540,7 +1540,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `type_edit_insert`(
+CREATE  PROCEDURE `type_edit_insert`(
 in pid int(6),
 in pname varchar(200),
 in hol bool
@@ -1578,7 +1578,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `user_edit_insert`(
+CREATE  PROCEDURE `user_edit_insert`(
 IN pid int(6),
 IN prol int(6),
 IN ism VARCHAR(100),
@@ -1636,7 +1636,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`admin`@`%` PROCEDURE `user_role_edit`(
+CREATE  PROCEDURE `user_role_edit`(
 IN pid int(6),
 IN prol int(6),
 holat bool)

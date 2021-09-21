@@ -13,6 +13,7 @@ const user = require("./user/app");
 const static = require("./statik/app");
 const promokod = require("./promokod/app");
 const chat = require("./chat/app");
+const changes = require("./changes/app");
 
 // sing in , up 
 app.use("/sign", sign);
@@ -27,6 +28,7 @@ app.use("/product", product);
 app.use("/roles",authCheck, roles);
 app.use("/user",authCheck, user);
 app.use("/static", static);
+app.use("/changes",authCheck, changes);
 
 
 
