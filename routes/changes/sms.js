@@ -1,8 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const {authCheck}=require('../../middleware/auth');
 
-const {smsToSalesmen}=require("../../controllers/changeController")
+const {smsToSalesmen,getDostavka}=require("../../controllers/changeController")
 
-router.post('/smsToSalesmen',smsToSalesmen);
+
+router.get('/getDostavka',getDostavka);
+router.post('/smsToSalesmen',authCheck,smsToSalesmen);
 
 module.exports = router;
