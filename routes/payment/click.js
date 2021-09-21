@@ -88,7 +88,7 @@ else{
 app.use("/click/2", async(req, res) => {
     console.log("/click/2")
     const h =req.body 
-    console.log(h)
+    console.log(h.merchant_trans_id)
     if (h.action == '0' && h.error == '0') {
         pool.promise().query(`INSERT INTO click_order (service_id,click_paydoc_id,order_id,action,
             sign_time,error,error_note,sign_string,click_trans_id) VALUES 
@@ -96,12 +96,16 @@ app.use("/click/2", async(req, res) => {
             WHERE order_id=? `,[h.service_id,h.click_paydoc_id,h.merchant_trans_id,h.action,
                 h.sign_time, h.error,h.error_note,h.sign_string,h.click_trans_id,h.merchant_trans_id])
                 .then((rest) => {
+                    console.log("click trans "+h.click_trans_id)
+                    console.log(rest[0][1][0].id)
             res.json({ 
+                click_trans_id:h.click_trans_id,
                 merchant_trans_id: h.merchant_trans_id, 
-                merchant_prepare_id:rest[0][1].id,
+                merchant_prepare_id:rest[0][1][0].id,
                 error: 0,
                 error_note: "Success" })
         }).catch((err) => {
+            console.error(err)
              res.json({ error: 2, error_note: "Not" });
         })
     } else
