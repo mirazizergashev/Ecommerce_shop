@@ -6,7 +6,8 @@ const CreateTransaction= require("./CreateTransaction")
 const CheckTransaction =require("./CheckTransaction")
 const PerformTransaction =require("./PerformTransaction")
 const CancelTransaction = require("./CancelTransaction")
-const check = require("../../middleware/auth").authCheck
+const check = require("../../middleware/auth").authCheck;
+const session = require("express-session");
 const merchant ="6135b21ec517ef555a8accac"
 
 //tekshrish 
@@ -14,28 +15,50 @@ function checkAuth(auth) {
      return auth &&
             (buff=Buffer.from(auth.split(" ")[1], 'base64'))  &&
             (str=buff.toString('utf-8')) &&
-            str.split(":")[1]=='sjeUC2%%IFfeXigwoBc8MA204VEtDtbYprmy';
+            str.split(":")[1]=='wkGai2gb3P@91QqCBiiMb%fb99UHgw2g%44k';
 }
 
 // payme etab 1
 app.use("/payme/1" , async (req, res) => {
- 
     req.body = req.query
+ if(req.body){
+
+ 
         const datee =new Date().getTime() ;
-   
+   if(req.session.userId){
     await pool.promise()
-    .query("insert into orders (user_id , amount , payme_state , state , phone ,sana,praduct_id) "+ 
-    "values (?,?,0,0,?,now(),?) ; SELECT max(id) as id FROM orders "+
-    "WHERE user_id=? ",[9,req.body.amount,req.body.phone,req.body.praduct_id,9])
+    .query("insert into orders (user_id , amount , payme_state , state  ,sana,praduct_id) "+ 
+    "values (?,?,0,0,now(),?) ; SELECT max(id) as id FROM orders "+
+    "WHERE user_id=? ",[req.session.userId,req.body.amount,req.body.praduct_id,req.session.userId])
      .then(async(rest) => {
          console.log(rest[0][1])
-        bu=Buffer.from(`m=${merchant};ac.order=${rest[0][1].id};a=${req.body.amount*100}`).toString('base64')
-        console.log(bu)
-        res.redirect(`https://checkout.test.paycom.uz/${bu}`) ;
+        bu=Buffer.from(`m=${merchant};ac.order=${rest[0][1][0].id};a=${req.body.amount*100}`).toString('base64')
+        // console.log(bu)
+        
+        res.redirect(`/payme-ghvcjhbcfkrhkjdfhkjdfn/${bu}`) ;
+
      }).catch((err) => {
          console.log(err)
          res.json({ error: 2, error_note: "Not" });
-     })  
+     }) 
+   }
+   else{
+    await pool.promise()
+    .query("insert into orders (amount , payme_state , state , phone ,sana,praduct_id,fish,viloyat,tuman,mfy) "+ 
+    "values (?,0,0,?,now(),?,?,?,?,?) ; SELECT max(id) as id FROM orders WHERE phone=?",
+    [req.body.amount,req.body.phone,req.body.praduct_id,req.body.fish,req.body.viloyat,req.body.tuman,req.body.mfy,req.body.phone])
+     .then(async(rest) => {
+        //  console.log(rest[0][1])
+        bu=Buffer.from(`m=${merchant};ac.order=${rest[0][1][0].id};a=${req.body.amount*100}`).toString('base64')
+        // console.log(bu)
+   
+        res.redirect(`/payme-ghvcjhbcfkrhkjdfhkjdfn/${bu}`) ;
+     }).catch((err) => {
+         console.log(err)
+         res.json({ error: 2, error_note: "Not" });
+     }) 
+    } 
+}
 })
 
 

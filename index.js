@@ -44,7 +44,27 @@ app.use(session({
 }))
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/payme-ghvcjhbcfkrhkjdfhkjdfn/:bu',function forceLiveDomain(req, res, next) {
+  
+    console.log(req.isPayme)
+    console.log(1)
+    console.log( req.params.bu)
+    
+      return res.redirect(301, 'https:/checkout.paycom.uz/' + req.params.bu);
+   
+  });
 
+  app.use('/click-ghvcjhhtrfhhkjdfhkjdfn/service/:bu',function forceLiveDomain(req, res, next) {
+  
+    console.log(req.isPayme)
+    console.log(1)
+    console.log( req.params.bu)
+    
+      return res.redirect(301, 'https:/my.click.uz/services/pay?' + req.params.bu);
+   
+  });
+
+  
 app.use('/', main);
 // app.use('/', routes);
 
