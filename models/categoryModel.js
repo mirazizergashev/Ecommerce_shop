@@ -25,6 +25,16 @@ categoryModel.getAll=function(result){
 }
 
 
+categoryModel.getDostavka=function(id,result){
+    pool.query("SELECT * FROM ecommerce_shop.dostavka_type",function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
+
 categoryModel.getRegions=function(id,result){
     pool.query("SELECT * FROM regions where sub=?",[id||1],function(err,res){
         if(err){

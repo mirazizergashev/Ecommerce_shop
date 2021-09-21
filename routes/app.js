@@ -28,7 +28,7 @@ app.use("/product", product);
 app.use("/roles",authCheck, roles);
 app.use("/user",authCheck, user);
 app.use("/static", static);
-app.use("/changes",authCheck, changes);
+app.use("/changes", changes);
 
 
 
