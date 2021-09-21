@@ -8,7 +8,7 @@ const card_type = "uzcard";
 const merchant_id =13858
 const merchant_user_id=21871
 const service_id = 19323 
-const return_url="http://miraziz.tk:3003"
+const return_url="http://buy-it.uz"
 const SECRET_KEY= 'ctcYM1seJm3'
 
 //  ejs render 
@@ -44,24 +44,47 @@ app.get("/money", async (req, res) => {
 
 // click etab 1
 app.get("/click", async(req, res) => {
-
     req.body = req.query
+if(req.body){
+    console.log(req.session.userId)
+    if(req.session.userId){
 
-    pool.promise().query(`insert into orders (user_id , amount , payme_state , phone,sana ,praduct_id ) 
-    values (?,?,0,0 ,now() , ?) ; 
-    SELECT max(id) as id FROM orders WHERE user_id=?`,[9,req.body.amount,req.body.praduct_id,9])
+    pool.promise().query(`insert into orders (user_id , amount , payme_state ,sana ,praduct_id ,isClick,karta) 
+    values (?,?,0,0 ,now() , ?,1,?) ; 
+    SELECT max(id) as id FROM orders WHERE user_id=?`,[req.session.userId,req.body.amount,req.body.praduct_id,req.body.karta,req.session.userId])
     .then((rest) => {
-         res.redirect(`https://my.click.uz/services/pay?transaction_param=${rest[0][1].id}&
-         amount=${req.query.amount}&card_type=${card_type}&merchant_id=${merchant_id}
-         &merchant_user_id=${merchant_user_id}&
-         service_id=${service_id}&return_url=${return_url}`)
+        console.log(rest[0])
+         res.redirect(`/click-ghvcjhhtrfhhkjdfhkjdfn/service/transaction_param=${rest[0][1][0].id}&`+
+         `amount=${req.body.amount}&card_type=${req.body.karta}&merchant_id=${merchant_id}`+
+         `&merchant_user_id=${merchant_user_id}&`+
+         `service_id=${service_id}&return_url=${return_url}`)
     }).catch((err) => {
+        console.log(err)
          res.json({ error: 2, error_note: "Not" });
     })
+}
+else{
+    pool.promise().query(`insert into orders (amount,payme_state,state,sana ,praduct_id ,isClick,karta,fish,phone,viloyat,tuman,mfy) 
+    values (?,0,0 ,now(),?,1,?,?,?,?,?,?) ; 
+    SELECT max(id) as id FROM orders WHERE phone=?`,[req.body.amount,req.body.praduct_id,req.body.karta,req.body.fish,req.body.phone,req.body.viloyat,req.body.tuman,req.body.mfy,req.body.phone])
+    .then((rest) => {
+        console.log(rest[0])
+         res.redirect(`/click-ghvcjhhtrfhhkjdfhkjdfn/service/transaction_param=${rest[0][1][0].id}&`+
+         `amount=${req.body.amount}&card_type=${req.body.karta}&merchant_id=${merchant_id}`+
+         `&merchant_user_id=${merchant_user_id}&`+
+         `service_id=${service_id}&return_url=${return_url}`)
+    }).catch((err) => {
+        console.log(err)
+         res.json({ error: 2, error_note: "Not" });
+    })
+}
+
+}
 })
 
 // click etab 2
 app.use("/click/2", async(req, res) => {
+    console.log("/click/2")
     const h =req.body 
     console.log(h)
     if (h.action == '0' && h.error == '0') {
@@ -86,7 +109,7 @@ app.use("/click/2", async(req, res) => {
 // click etab 3
 app.use("/click/3", async(req, res) => {
     const h =req.body 
-    console.log(h)
+    console.log('click3')
     if (h.action == '1' && h.error == '0') {
        const md5hash = md5(h.click_trans_id+h.service_id+SECRET_KEY+h.merchant_trans_id+h.merchant_prepare_id+h.amount+h.action+h.sign_time)
         if(md5hash==req.body.sign_string){

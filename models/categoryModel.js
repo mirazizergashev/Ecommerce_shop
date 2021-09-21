@@ -15,7 +15,7 @@ categoryModel.category_edit_insert=function(data,result){
 }
 
 categoryModel.getAll=function(result){
-    pool.query("SELECT * FROM category;select 'Bosh kategoriyalar' title ",function(err,res){
+    pool.query("SELECT * FROM category where isActive=1;select 'Bosh kategoriyalar' title ",function(err,res){
         if(err){
             return result(err,null);
         }else{
@@ -57,7 +57,7 @@ categoryModel.getType=function(result){
 
 
 categoryModel.getSub=function(id,result){
-    pool.query("SELECT * FROM category where sub=?;select name title from category where id=?",
+    pool.query("SELECT * FROM category where sub=? and isActive=1;select name title from category where id=? and isActive=1",
     [id||0,id||0],function(err,res){
         if(err){
             return result(err,null);
