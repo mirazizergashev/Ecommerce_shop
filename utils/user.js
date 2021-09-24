@@ -49,6 +49,42 @@ const signupdate = Joi.object().keys({
     })   
 });
 
+const change_user = Joi.object().keys({
+    id:Joi.number().required()
+    .messages({
+        "number.base": `Id sonli tipda bo'lishi kerak!#The phone should look like 998XXXXXXXXX!#Телефон должен выглядеть как 998XXXXXXXXX!`,
+        "any.required":"Id maydoni kiritilishi majburiy!#Phone field is required!#Поле телефона обязательно!"
+    }),
+    tel: Joi.string().max(15).min(7).required()
+    .messages({
+        "string.base": `Telefon matnli tipda bo'lishi kerak!#The phone should look like 998XXXXXXXXX!#Телефон должен выглядеть как 998XXXXXXXXX!`,
+        "string.max": `Telefon ko'pi bilan 15 ta belgidan iborat bo'lishi kerak!#The phone should look like 998XXXXXXXXX!#Телефон должен выглядеть как 998XXXXXXXXX!`,
+        "string.min": `Telefon kamida 7 ta raqam bo'lishi kerak!#The phone should look like 998XXXXXXXXX!#Телефон должен выглядеть как 998XXXXXXXXX!`,
+        "any.required":"Telefon maydoni kiritilishi majburiy!#Phone field is required!#Поле телефона обязательно!"
+    }),
+    ism: Joi.
+    string().empty().min(2).max(100).required()
+    .messages({
+        "string.empty": `Ism maydoni bo'sh bo'lmasin!#First name area should not be empty!#Зона имени не должна быть пустой!`,
+        "string.min": `Ism kamida 5 ta belgiga ega bo'lishi kerak!#First name must have at least 5 characters!#В имени должно быть не менее 5 символов!`,
+        "string.max": `Ism ko'pi  bilan 100 ta belgidan oshmasin!#First name should not exceed 100 characters at most!#имени не должен превышать 100 символов!`,
+        "any.required": `Ism maydoni kerak!#First name field required!#Поле для полного имени обязательно!`
+    }),
+    fam: Joi.
+    string().empty().min(2).max(100).required()
+    .messages({
+        "string.empty": `Familiya maydoni bo'sh bo'lmasin!#Last name area should not be empty!#Зона имени не должна быть пустой!`,
+        "string.min": `Familiya kamida 5 ta belgiga ega bo'lishi kerak!#Last name must have at least 5 characters!#В имени должно быть не менее 5 символов!`,
+        "string.max": `Familiya ko'pi  bilan 100 ta belgidan oshmasin!#Last name should not exceed 100 characters at most!#имени не должен превышать 100 символов!`,
+        "any.required": `Familiya maydoni kerak!#Last name field required!#Поле для полного имени обязательно!`
+    }),
+    address: Joi.string().empty().max(255).required()
+    .messages({
+        "string.empty": `Address raqam maydoni bo'sh bo'lmasin!#Address raqam area should not be empty!#Зона Address raqam не должна быть пустой!`,
+         "string.max": `Address raqam ko'pi  bilan 255 ta belgidan oshmasin!#Address raqam should not exceed 50 characters at most!#Address raqam не должен превышать 50 символов!`,
+        "any.required": `Address raqam maydoni kerak!#Address raqam field required!#Поле для полного Telefon raqam обязательно!`
+    })   
+});
 const  signin = Joi.object().keys({
     tel: Joi.string().max(15).min(7).required()
     .messages({
@@ -139,5 +175,6 @@ module.exports = {
    blocked,
    signupdate,
    editPassword,
-   roledit
+   roledit,
+   change_user
 }

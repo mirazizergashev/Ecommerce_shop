@@ -55,7 +55,16 @@ userModel.getMe=function(userId,result){
         }
     });
 }
-
+userModel.change_user=function(newUser,result){
+    pool.query("call change_user(?,?,?,?,?)",newUser,function(err,res,field){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+   
+}
 
 userModel.getAllUsers=function(result){
     pool.query(`SELECT u.id,u.last_name,u.first_name,u.phone,u.role_id,u.isActive status,r.name role,
