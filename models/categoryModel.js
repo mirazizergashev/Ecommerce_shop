@@ -15,7 +15,7 @@ categoryModel.category_edit_insert=function(data,result){
 }
 
 categoryModel.getAll=function(result){
-    pool.query("SELECT * FROM category where isActive=1;select 'Bosh kategoriyalar' title ",
+    pool.query("SELECT *,date_format(created_on,'%Y-%m-%d, %h:%i:%s') FROM category where isActive=1;select 'Bosh kategoriyalar' title ",
     function(err,res){
         if(err){
             return result(err,null);
