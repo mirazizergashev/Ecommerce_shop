@@ -3,7 +3,6 @@ const Joi = require("joi")
 const promokod = Joi.object().keys({
     id:Joi
     .number()
-   
     .messages({
         "number.base": "id butun son bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
      }),
