@@ -24,7 +24,7 @@ promokodController.generate = function (req, res) {
     }
     let a = req.body;
     var data = [
-        a.id || "create",
+        a.id || 0,
         req.session.userId,
         a.amount,
         a.isFoiz,
@@ -517,7 +517,6 @@ promokodController.delete = function (req, res) {
 
 
 promokodController.getAll = function (req, res) {
-    console.log(req.query)
     promokodModel.getAll(req.query, (err, rows) => {
         if (err) {
             console.log(err);
