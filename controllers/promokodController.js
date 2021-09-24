@@ -1,3 +1,4 @@
+const pool = require('../database/db');
 var promokodModel = require('../models/promokodModel');
 const schema = require('../utils/promokod')
 
@@ -418,17 +419,7 @@ promokodController.update = function (req, res) {
 }
 
 promokodController.delete = function (req, res) {
-
-
-    var data = [
-        req.params.id,
-        null,
-        null,
-        null,
-        1
-    ]
-
-    promokodModel.promokod_edit(data, function (err, result) {
+pool.query("update promokod set isActive=0 where id=?",[req.params.id||0],function (err, result) {
         if (err) {
             console.log(err)
             return res.status(200).json({
@@ -442,72 +433,17 @@ promokodController.delete = function (req, res) {
                 }
             })
         } else {
-            // req.flash('success', 'Employee added succesfully');
-            switch (result[0][0].natija) {
-
-                case '2':
+  
                     return res.status(200).json({
                         code: 203,
                         success: {
                             message: {
-                                uz: "Promokod muvaffaqiyatli tahrirlandi!",
+                                uz: "Promokod muvaffaqiyatli o'chirildi!",
                                 en: "User information has changed!",
                                 ru: "Информация о пользователе изменилась!"
                             }
                         }
                     })
-
-                case '3':
-                    return res.status(200).json({
-                        code: 400,
-                        error: {
-                            message: {
-                                uz: "Bunday ID ga ega promokod topilmadi!",
-                                en: "No such promokod found!",
-                                ru: "Такой роли не найдено!"
-                            }
-                        }
-                    })
-
-                case '4':
-                    return res.status(200).json({
-                        code: 400,
-                        error: {
-                            message: {
-                                uz: "Bunday  promokod allaqachon boshqa foydalanuvchiga berilgan!",
-                                en: "No such promokod found!",
-                                ru: "Такой роли не найдено!"
-                            }
-                        }
-                    })
-                case '11':
-                    return res.status(200).json({
-                        code: 200,
-                        success: {
-                            message: {
-                                uz: "Promokod o'chirildi!",
-                                en: "No such promokod found!",
-                                ru: "Такой роли не найдено!"
-                            }
-                        }
-                    })
-                default:
-
-                    return res.status(200).json({
-                        code: 418,
-                        success: {
-                            message: {
-                                uz: "Kutilmagan xatolik adminga xabar bering !",
-                                en: "Report an unexpected error to the admin!",
-                                ru: "Сообщите администратору о непредвиденной ошибке!"
-                            }
-                        }
-                    })
-
-
-
-
-            }
 
         }
 
