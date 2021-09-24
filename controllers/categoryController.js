@@ -64,7 +64,7 @@ categoryController.create_update = function (req, res) {
                 case '2':
                     return res.status(200).json({
                         code: 203,
-                        error: {
+                        success: {
                             message: {
                                 uz: "Ma'lumotlar o'zgartirildi !",
                                 en: "User information has changed!",
@@ -312,7 +312,7 @@ categoryController.getSub = function (req, res) {
                 case '2':
                     return res.status(200).json({
                         code: 203,
-                        error: {
+                        success: {
                             message: {
                                 uz: "Ma'lumotlar o'zgartirildi !",
                                 en: "User information has changed!",
