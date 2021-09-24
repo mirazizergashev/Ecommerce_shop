@@ -27,7 +27,7 @@ promokodModel.promokod_edit=function(data,result){
 promokodModel.getAll=function(query,result){
     const step=query.step||0,count=query.count||15
     pool.query("SELECT p.*,concat(u.last_name,\" \",u.first_name) username"
-    +" FROM promokod p left join users u on u.id=p.user_id where isActive=1 limit ?,?",[step*1*count,count*1],function(err,res){
+    +" FROM promokod p left join users u on u.id=p.user_id where p.isActive=1 limit ?,?",[step*1*count,count*1],function(err,res){
         if(err){
             return result(err,null);
         }else{
@@ -39,7 +39,7 @@ promokodModel.getAll=function(query,result){
 
 promokodModel.getFresh=function(query,result){
     const step=query.step||0,count=query.count||15
-    pool.query("SELECT * FROM promokod where user_id is null  where isActive=1 limit ?,?",[step*1*count,count*1],function(err,res){
+    pool.query("SELECT * FROM promokod where user_id is null  where p.isActive=1 limit ?,?",[step*1*count,count*1],function(err,res){
         if(err){
             return result(err,null);
         }else{
@@ -54,7 +54,7 @@ promokodModel.getBusy=function(query,result){
     console.log({step,count})
 
     pool.query("SELECT p.*,concat(u.last_name,\" \",u.first_name) username"
-    +" FROM promokod p inner join users u on u.id=p.user_id  where isActive=1 limit ?,?",[step*1*count,count*1],function(err,res){
+    +" FROM promokod p inner join users u on u.id=p.user_id  where p.isActive=1 limit ?,?",[step*1*count,count*1],function(err,res){
         if(err){
             return result(err,null);
         }else{
