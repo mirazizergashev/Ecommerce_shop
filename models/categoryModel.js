@@ -15,7 +15,7 @@ categoryModel.category_edit_insert=function(data,result){
 }
 
 categoryModel.getAll=function(result){
-    pool.query("SELECT *,date_format(created_on,'%Y-%m-%d, %h:%i:%s') FROM category where isActive=1;select 'Bosh kategoriyalar' title ",
+    pool.query("SELECT *,date_format(created_on,'%Y-%m-%d, %h:%i:%s') created_on FROM category where isActive=1;select 'Bosh kategoriyalar' title ",
     function(err,res){
         if(err){
             return result(err,null);
@@ -68,7 +68,7 @@ categoryModel.getType=function(result){
 
 
 categoryModel.getSub=function(id,result){
-    pool.query("SELECT * FROM category where sub=? and isActive=1;select name title from category where id=? and isActive=1",
+    pool.query("SELECT *,date_format(created_on,'%Y-%m-%d, %h:%i:%s') created_on FROM category where sub=? and isActive=1;select name title from category where id=? and isActive=1",
     [id||0,id||0],function(err,res){
         if(err){
             return result(err,null);
@@ -114,7 +114,7 @@ categoryModel.getPropertiesByCat=function(id,result){
 
 
 categoryModel.getSubs=function(result){
-    pool.query("SELECT * FROM category",function(err,res){
+    pool.query("SELECT *,date_format(created_on,'%Y-%m-%d, %h:%i:%s') created_on FROM category",function(err,res){
         if(err){
             return result(err,null);
         }else{
