@@ -490,7 +490,7 @@ productController.changeTop = function (req, res) {
     })
 }
 productController.All = function (req, res) {
-    productModel.All((err, rows) => {
+    productModel.All(req.query,(err, rows) => {
  
 
         if (err) {
