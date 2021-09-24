@@ -24,11 +24,14 @@ promokodController.generate = function (req, res) {
     }
     let a = req.body;
     var data = [
-        "create",
-        null,
+        a.id || "create",
+        req.session.userId,
         a.amount,
         a.isFoiz,
-        a.deadline
+        a.deadline,
+        a.count,
+        a.description
+
     ]
 
     promokodModel.promokod_edit_insert(data, function (err, result) {
@@ -45,7 +48,6 @@ promokodController.generate = function (req, res) {
                 }
             })
         } else {
-            // req.flash('success', 'Employee added succesfully');
             switch (result[0][0].natija) {
                 case '1':
                     return res.status(200).json({
@@ -63,9 +65,9 @@ promokodController.generate = function (req, res) {
                 case '2':
                     return res.status(200).json({
                         code: 203,
-                        error: {
+                        success: {
                             message: {
-                                uz: "Foydalanuvchi biriktirildi!",
+                                uz: "Ma'lumotlar tahrirlandi!",
                                 en: "User information has changed!",
                                 ru: "Информация о пользователе изменилась!"
                             }
@@ -90,6 +92,39 @@ promokodController.generate = function (req, res) {
                         error: {
                             message: {
                                 uz: "Bunday  promokod allaqachon boshqa foydalanuvchiga berilgan!",
+                                en: "No such promokod found!",
+                                ru: "Такой роли не найдено!"
+                            }
+                        }
+                    })
+                case '10':
+                    return res.status(200).json({
+                        code: 400,
+                        error: {
+                            message: {
+                                uz: "Promokodga o'tib bo'lgan vaqtni deadline sifatida berish mumkin emas!",
+                                en: "No such promokod found!",
+                                ru: "Такой роли не найдено!"
+                            }
+                        }
+                    })
+                case '11':
+                    return res.status(200).json({
+                        code: 400,
+                        error: {
+                            message: {
+                                uz: "Promokodning yaroqlilik muddati tugagan!",
+                                en: "No such promokod found!",
+                                ru: "Такой роли не найдено!"
+                            }
+                        }
+                    })
+                case '5':
+                    return res.status(200).json({
+                        code: 400,
+                        error: {
+                            message: {
+                                uz: "Bunday ID ga ega foydalanuvchi topilmadi!",
                                 en: "No such promokod found!",
                                 ru: "Такой роли не найдено!"
                             }
@@ -210,40 +245,40 @@ promokodController.attacheUser = function (req, res) {
                             }
                         }
                     })
-                    case '5':
-                        return res.status(200).json({
-                            code: 400,
-                            error: {
-                                message: {
-                                    uz: "Bunday ID ga ega foydalanuvchi topilmadi!",
-                                    en: "No such promokod found!",
-                                    ru: "Такой роли не найдено!"
-                                }
+                case '5':
+                    return res.status(200).json({
+                        code: 400,
+                        error: {
+                            message: {
+                                uz: "Bunday ID ga ega foydalanuvchi topilmadi!",
+                                en: "No such promokod found!",
+                                ru: "Такой роли не найдено!"
                             }
-                        })
-                        case '10':
-                            return res.status(200).json({
-                                code: 400,
-                                error: {
-                                    message: {
-                                        uz: "Promokodga o'tib bo'lgan vaqtni deadline sifatida berish mumkin emas!",
-                                        en: "No such promokod found!",
-                                        ru: "Такой роли не найдено!"
-                                    }
-                                }
-                            })
-                            case '11':
-                                return res.status(200).json({
-                                    code: 400,
-                                    error: {
-                                        message: {
-                                            uz: "Promokodning yaroqlilik muddati tugagan!",
-                                            en: "No such promokod found!",
-                                            ru: "Такой роли не найдено!"
-                                        }
-                                    }
-                                })
-                    
+                        }
+                    })
+                case '10':
+                    return res.status(200).json({
+                        code: 400,
+                        error: {
+                            message: {
+                                uz: "Promokodga o'tib bo'lgan vaqtni deadline sifatida berish mumkin emas!",
+                                en: "No such promokod found!",
+                                ru: "Такой роли не найдено!"
+                            }
+                        }
+                    })
+                case '11':
+                    return res.status(200).json({
+                        code: 400,
+                        error: {
+                            message: {
+                                uz: "Promokodning yaroqlilik muddati tugagan!",
+                                en: "No such promokod found!",
+                                ru: "Такой роли не найдено!"
+                            }
+                        }
+                    })
+
                 default:
 
                     return res.status(200).json({
@@ -311,7 +346,7 @@ promokodController.update = function (req, res) {
         } else {
             // req.flash('success', 'Employee added succesfully');
             switch (result[0][0].natija) {
-              
+
                 case '2':
                     return res.status(200).json({
                         code: 203,
@@ -347,7 +382,7 @@ promokodController.update = function (req, res) {
                             }
                         }
                     })
-                    case '11':
+                case '11':
                     return res.status(200).json({
                         code: 200,
                         error: {
@@ -384,7 +419,7 @@ promokodController.update = function (req, res) {
 
 promokodController.delete = function (req, res) {
 
-    
+
     var data = [
         req.params.id,
         null,
@@ -409,7 +444,7 @@ promokodController.delete = function (req, res) {
         } else {
             // req.flash('success', 'Employee added succesfully');
             switch (result[0][0].natija) {
-              
+
                 case '2':
                     return res.status(200).json({
                         code: 203,
@@ -445,7 +480,7 @@ promokodController.delete = function (req, res) {
                             }
                         }
                     })
-                    case '11':
+                case '11':
                     return res.status(200).json({
                         code: 200,
                         success: {
@@ -483,7 +518,7 @@ promokodController.delete = function (req, res) {
 
 promokodController.getAll = function (req, res) {
     console.log(req.query)
-    promokodModel.getAll(req.query,(err, rows) => {
+    promokodModel.getAll(req.query, (err, rows) => {
         if (err) {
             console.log(err);
             return res.status(200).json({
@@ -507,7 +542,7 @@ promokodController.getAll = function (req, res) {
 
 
 promokodController.getBusy = function (req, res) {
-    promokodModel.getBusy(req.query,(err, rows) => {
+    promokodModel.getBusy(req.query, (err, rows) => {
         if (err) {
             console.log(err);
             return res.status(200).json({
@@ -530,7 +565,7 @@ promokodController.getBusy = function (req, res) {
 }
 
 promokodController.getFresh = function (req, res) {
-    promokodModel.getFresh(req.query,(err, rows) => {
+    promokodModel.getFresh(req.query, (err, rows) => {
         if (err) {
             console.log(err);
             return res.status(200).json({
