@@ -3,10 +3,9 @@ const Joi = require("joi")
 const promokod = Joi.object().keys({
     id:Joi
     .number()
-    .required()
+   
     .messages({
         "number.base": "id butun son bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
-        "any.required": "id kiritilishi majburiy!#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
      }),
     token: Joi.string().
     min(1).
