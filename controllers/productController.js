@@ -160,7 +160,7 @@ productController.check_product = function (req, res) {
                 case 0:
                     return res.status(200).json({
                         code: 200,
-                        error: {
+                        success: {
                             message: {
                                 uz: "Maxsulot rad etildi!",
                                 en: "Product Rejected!",
