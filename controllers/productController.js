@@ -490,6 +490,7 @@ productController.changeTop = function (req, res) {
     })
 }
 productController.All = function (req, res) {
+    if( req.session.roleId==4)req.query.allow=1
     productModel.All(req.query,(err, rows) => {
  
 
