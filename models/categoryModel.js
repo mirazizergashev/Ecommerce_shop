@@ -24,6 +24,20 @@ categoryModel.getAll=function(result){
         }
     });
 }
+categoryModel.delete=function(id,result){
+    pool.query("SELECT id,sub FROM category where isActive=1;",
+    function(err,res){
+        if(err)
+            return result(err,null);
+        else
+            pool.query(`update category set isActive=0 where id in (${id+getSubCategory(res,id)})`,
+            function(err,rows){
+                if(err) return result(err,null);
+                return result(null,rows);
+        })
+    });  
+}
+
 
 
 categoryModel.getDostavka=function(id,result){
@@ -132,7 +146,14 @@ function getSubs(a,id) {
     });
     return b
 }
-
+function getSubCategory(a,id) {
+    let b=[],s=""
+    a.filter(e=>e.sub==id)
+    .forEach(e => {
+        s+=","+e.id+getSubCategory(a,e.id)
+    });
+    return s
+}
 
 
 module.exports=categoryModel;
