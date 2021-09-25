@@ -451,6 +451,105 @@ pool.query("update promokod set isActive=0 where id=?",[req.params.id||0],functi
 
 }
 
+promokodController.checkPromokod=function (req, res) {
+    promokodModel.checkPromokod(req.params.token, (err, rows) => {
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+      
+        switch (rows[1][0].natija) {
+            case '1':
+                if(rows[0][0].isActive==0){
+                    return res.status(200).json({
+                        code: 400,
+                        error: {
+                            message: {
+                                uz: "Bunday promokod mavjud emas!",
+                                en: "User information has changed!",
+                                ru: "Информация о пользователе изменилась!"
+                            }
+                        }
+                    })
+    
+                }
+                return res.status(200).json({
+                    code: 200,
+                    success: {
+                        message: {
+                            uz: "Promokod faol holatda!",
+                            en: "A new user has been created!",
+                            ru: "Создан новый пользователь!"
+                        }
+
+                    },
+                    data:rows[0]
+                })
+
+            case '3':
+                return res.status(200).json({
+                    code: 400,
+                    error: {
+                        message: {
+                            uz: "Bunday promokod mavjud emas!",
+                            en: "User information has changed!",
+                            ru: "Информация о пользователе изменилась!"
+                        }
+                    }
+                })
+
+            case '4':
+                return res.status(200).json({
+                    code: 400,
+                    error: {
+                        message: {
+                            uz: "Promokodning yaroqlilik muddati tugagan!",
+                            en: "No such promokod found!",
+                            ru: "Такой роли не найдено!"
+                        }
+                    }
+                })
+
+            case '5':
+                return res.status(200).json({
+                    code: 400,
+                    error: {
+                        message: {
+                            uz: "Promokoddan ortiq foydalanib bo'lmaydi!",
+                            en: "No such promokod found!",
+                            ru: "Такой роли не найдено!"
+                        }
+                    }
+                })
+           
+            default:
+
+                return res.status(200).json({
+                    code: 418,
+                    success: {
+                        message: {
+                            uz: "Kutilmagan xatolik adminga xabar bering !",
+                            en: "Report an unexpected error to the admin!",
+                            ru: "Сообщите администратору о непредвиденной ошибке!"
+                        }
+                    }
+                })
+
+
+
+
+        }
+    })
+}
 
 promokodController.getAll = function (req, res) {
     promokodModel.getAll(req.query, (err, rows) => {

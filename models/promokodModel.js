@@ -13,6 +13,17 @@ promokodModel.promokod_edit_insert=function(data,result){
    
 }
 
+promokodModel.checkPromokod=function(token,result){
+    pool.query("call promokod_checker(?)",[token],function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
+
+
 promokodModel.promokod_edit=function(data,result){
     pool.query("call promokod_edit(?,?,?,?,?,?,?)",data,function(err,res,field){
         if(err){
