@@ -431,7 +431,9 @@ productController.getAll = function (req, res) {
 
 
 productController.getTop = function (req, res) {
-    productModel.getTop(req.query.count, (err, rows) => {
+    if( req.session.roleId==4)req.query.allow=1
+    else req.query.allow=0
+    productModel.getTop(req.query, (err, rows) => {
     
         if (err) {
             console.log(err);
@@ -491,6 +493,8 @@ productController.changeTop = function (req, res) {
 }
 productController.All = function (req, res) {
     if( req.session.roleId==4)req.query.allow=1
+    else req.query.allow=0
+
     productModel.All(req.query,(err, rows) => {
  
 
