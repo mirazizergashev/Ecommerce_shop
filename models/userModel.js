@@ -101,5 +101,13 @@ userModel.roleEdit=function(data,result){
 }
 
 
-
+userModel.getSalesmen=function(result){
+    pool.query(`SELECT id,first_name,last_name  FROM ecommerce_shop.users where role_id=4`,function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
 module.exports=userModel;
