@@ -304,10 +304,10 @@ function changeCosts(c,data) {
         let k = e.category_id, cost = e.cost, ind = c.findIndex(x => x.id == k);
 
         while (ind != -1) {
-                cost = parseInt(cost * (100 + c[ind].percent) / 100)+ c[ind].isFoiz
+                cost = parseInt(cost * (100 + c[ind].percent*1) / 100)+ 1*c[ind].isFoiz
             ind = c.findIndex(x => x.id == c[ind].sub)
         }
-        data[i].cost = cost*(100-data[i].discount);
+        data[i].cost = cost*(100-data[i].discount*1);
     });
     return data
 }
