@@ -150,7 +150,7 @@ categoryController.delete = function (req, res) {
              code: 200,
              success: {
                  message: {
-                uz: "Muvaffaqiyatli o'chirildi !",
+                uz: "Muvaffaqiyatli o'zgartirildi !",
                 en: "Rejected due to server error!",
                 ru: "Отклонено из-за ошибки сервера!"
             }

@@ -25,12 +25,12 @@ categoryModel.getAll=function(result){
     });
 }
 categoryModel.delete=function(id,result){
-    pool.query("SELECT id,sub FROM category where isActive=1;",
+    pool.query("SELECT id,sub,isActive FROM category;SELECT isActive FROM category where id=?;",id,
     function(err,res){
         if(err)
             return result(err,null);
         else
-            pool.query(`update category set isActive=0 where id in (${id+getSubCategory(res,id)})`,
+            pool.query(`update category set isActive=${(parseInt(res[1][0].isActive)+1)%2} where id in (${id+getSubCategory(res[0],id)})`,
             function(err,rows){
                 if(err) return result(err,null);
                 return result(null,rows);
