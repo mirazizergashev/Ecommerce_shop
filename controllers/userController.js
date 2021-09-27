@@ -131,6 +131,112 @@ userController.update = function (req, res) {
     });
 
 }
+userController.change_user = function (req, res) {
+
+    //validatsiyada xatolik
+    const checked = schema.change_user.validate(req.body);
+    if (checked.error) {
+        const msg = checked.error.details[0].message.split("#")
+        return res.status(200).json({
+            code: 400,
+            error: {
+                message: {
+                    uz: msg[0],
+                    en: msg[1],
+                    ru: msg[2]
+                }
+            }
+
+        });
+    }
+    let a = req.body;
+    var newUser = [
+        a.id || -1,
+        a.ism || "",
+        a.fam || "",
+        a.tel,
+        a.address || ""
+    ]
+
+    userModel.change_user(newUser, function (err, result) {
+        if (err) {
+            console.log(err)
+            // req.flash('error', 'There was error in inserting data');
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        } else {
+            // req.flash('success', 'Employee added succesfully');
+            switch (result[0][0].natija) {
+              
+
+                case '2':
+                    return res.status(200).json({
+                        code: 203,
+                        success: {
+                            message: {
+                                uz: "Foydalanuvchi ma'lumotlari o'zgardi !",
+                                en: "User information has changed!",
+                                ru: "Информация о пользователе изменилась!"
+                            }
+                        }
+                    })
+
+                case '3':
+                    return res.status(200).json({
+                        code: 400,
+                        error: {
+                            message: {
+                                uz: "Bunday Foydalanuvchi topilmadi!",
+                                en: "No such role found!",
+                                ru: "Такой роли не найдено!"
+                            }
+                        }
+                    })
+                case '4':
+                    return res.status(200).json({
+                        code: 400,
+                        error: {
+                            message: {
+                                uz: "Bunday telefon mavjud!",
+                                en: "Such a phone is available!",
+                                ru: "Такой телефон есть!"
+                            }
+                        }
+                    })
+              
+
+
+                default:
+
+                    return res.status(200).json({
+                        code: 418,
+                        success: {
+                            message: {
+                                uz: "Kutilmagan xatolik adminga xabar bering !",
+                                en: "Report an unexpected error to the admin!",
+                                ru: "Сообщите администратору о непредвиденной ошибке!"
+                            }
+                        }
+                    })
+
+
+
+
+            }
+
+        }
+
+    });
+
+}
 
 userController.blok = function (req, res) {
 

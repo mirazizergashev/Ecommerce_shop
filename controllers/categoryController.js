@@ -64,7 +64,7 @@ categoryController.create_update = function (req, res) {
                 case '2':
                     return res.status(200).json({
                         code: 203,
-                        error: {
+                        success: {
                             message: {
                                 uz: "Ma'lumotlar o'zgartirildi !",
                                 en: "User information has changed!",
@@ -130,7 +130,34 @@ categoryController.create_update = function (req, res) {
     });
 
 }
-
+categoryController.delete = function (req, res) {
+    categoryModel.delete(req.params.id,(err,rows)=>{
+     if (err) {
+             console.log(err);
+             return res.status(200).json({
+                 code: 500,
+                 error: {
+                     message: {
+                         uz: "Serverda xatolik tufayli rad etildi !",
+                         en: "Rejected due to server error!",
+                         ru: "Отклонено из-за ошибки сервера!"
+                     }
+                 }
+             })
+         }
+        
+         res.status(200).json({
+             code: 200,
+             success: {
+                 message: {
+                uz: "Muvaffaqiyatli o'zgartirildi !",
+                en: "Rejected due to server error!",
+                ru: "Отклонено из-за ошибки сервера!"
+            }
+        }
+         })
+     })
+ }
 
 categoryController.getAll = function (req, res) {
     categoryModel.getAll((err,rows)=>{
@@ -312,7 +339,7 @@ categoryController.getSub = function (req, res) {
                 case '2':
                     return res.status(200).json({
                         code: 203,
-                        error: {
+                        success: {
                             message: {
                                 uz: "Ma'lumotlar o'zgartirildi !",
                                 en: "User information has changed!",

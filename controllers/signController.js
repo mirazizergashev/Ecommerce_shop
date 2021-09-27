@@ -194,6 +194,7 @@ break
                
                 default:
                 req.session.userId=result[0][0].natija
+                req.session.roleId=result[0][0].role_id
                     return res.status(200).json({
                         code: 200,
                         success: {

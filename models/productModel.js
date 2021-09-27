@@ -69,13 +69,13 @@ productModel.getAll = function (id, ses, result) {
         }
     });
 }
-productModel.getTop = function (count,result) {
+productModel.getTop = function (query,result) {
 
 
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
     left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1 and p.isTop=1 ${"limit "+(count||1000)};
+    where p.isActive=1  and p.checked!=${query.allow?-1:0} and p.isTop=1 ${"limit "+(query.count||1000)};
     select * from category where isActive=1;`, function (err, res) {
         if (err) {
             return result(err, null);
@@ -99,14 +99,14 @@ productModel.changeTop = function (id,isTop,result) {
     });
 }
 
-productModel.All = function (result) {
+productModel.All = function (query,result) {
 
-
+const page=parseInt(query.page||0),count=parseInt(query.count||15),user_id=parseInt(query.user_id||0)
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
     left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1;
-    select * from category where isActive=1;`, function (err, res) {
+    where p.isActive=1 and p.checked!=${query.allow?-1:0} ${(user_id)?`and p.user_id=${user_id} `:""} limit ?,?;
+    select * from category where isActive=1;`,[page*count,count], function (err, res) {
         if (err) {
             return result(err, null);
         } else {
@@ -136,7 +136,7 @@ productModel.searchAll = function (text,result) {
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
     left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1 and p.name LIKE '%${text}%';
+    where p.isActive=1 and p.name LIKE "%${text}%";
     select * from category where isActive=1;`, function (err, res) {
         if (err) {
             return result(err, null);}
@@ -304,13 +304,10 @@ function changeCosts(c,data) {
         let k = e.category_id, cost = e.cost, ind = c.findIndex(x => x.id == k);
 
         while (ind != -1) {
-            if (c[ind].isFoiz)
-                cost = cost * (100 + c[ind].percent) / 100
-            else
-                cost = cost + c[ind].percent
+                cost = parseInt(cost * (100 + c[ind].percent*1) / 100)+ 1*c[ind].isFoiz
             ind = c.findIndex(x => x.id == c[ind].sub)
         }
-        data[i].cost = cost*(100-data[i].discount);
+        data[i].cost = cost*(100-data[i].discount*1)/100;
     });
     return data
 }

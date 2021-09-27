@@ -160,7 +160,7 @@ productController.check_product = function (req, res) {
                 case 0:
                     return res.status(200).json({
                         code: 200,
-                        error: {
+                        success: {
                             message: {
                                 uz: "Maxsulot rad etildi!",
                                 en: "Product Rejected!",
@@ -431,7 +431,9 @@ productController.getAll = function (req, res) {
 
 
 productController.getTop = function (req, res) {
-    productModel.getTop(req.query.count, (err, rows) => {
+    if( req.session.roleId==4)req.query.allow=1
+    else req.query.allow=0
+    productModel.getTop(req.query, (err, rows) => {
     
         if (err) {
             console.log(err);
@@ -490,7 +492,10 @@ productController.changeTop = function (req, res) {
     })
 }
 productController.All = function (req, res) {
-    productModel.All((err, rows) => {
+    if( req.session.roleId==4)req.query.allow=1
+    else req.query.allow=0
+
+    productModel.All(req.query,(err, rows) => {
  
 
         if (err) {
