@@ -1,5 +1,7 @@
 var {smsToSalesmen} = require('../models/chatModel');
 var {getDostavka} = require('../models/categoryModel');
+var {mainRating} = require('../models/orderModel');
+var {getSalesmen} = require('../models/userModel');
 const schema = require('../utils/chat')
 
 var changeController = {}
@@ -82,4 +84,50 @@ changeController.getDostavka = function (req, res) {
     })
 }
 
+changeController.mainRating=function (req, res) {
+    mainRating((err, rows) => {
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+
+        res.status(200).json({
+            code: 200,
+            success: rows
+        })
+    })
+}
+
+
+changeController.getSalesmen=function (req, res) {
+    getSalesmen((err, rows) => {
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+
+        res.status(200).json({
+            code: 200,
+            success: rows
+        })
+    })
+}
 module.exports = changeController;

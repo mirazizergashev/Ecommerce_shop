@@ -55,10 +55,19 @@ userModel.getMe=function(userId,result){
         }
     });
 }
-
+userModel.change_user=function(newUser,result){
+    pool.query("call change_user(?,?,?,?,?)",newUser,function(err,res,field){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+   
+}
 
 userModel.getAllUsers=function(result){
-    pool.query(`SELECT u.id,concat(u.last_name,\" \",u.first_name) fio,u.phone,u.role_id,u.isActive status,r.name role,
+    pool.query(`SELECT u.id,u.last_name,u.first_name,u.address,u.phone,u.role_id,u.isActive status,r.name role,
     date_format(u.created_on,'%Y-%m-%d, %h:%i:%s') created_on
     FROM users u inner join roles r on r.id=u.role_id where r.id!=1`,function(err,res){
         if(err){
@@ -70,7 +79,7 @@ userModel.getAllUsers=function(result){
 }
 
 userModel.getEmployee=function(result){
-    pool.query(`SELECT u.id,concat(u.last_name,\" \",u.first_name) fio,u.phone,u.role_id,u.isActive status,r.name role,
+    pool.query(`SELECT u.id,u.last_name,u.first_name,u.address,u.phone,u.role_id,u.isActive status,r.name role,
     date_format(u.created_on,'%Y-%m-%d, %h:%i:%s') created_on
     FROM users u inner join roles r on r.id=u.role_id where r.id!=1 and r.id!=3`,function(err,res){
         if(err){
@@ -92,5 +101,13 @@ userModel.roleEdit=function(data,result){
 }
 
 
-
+userModel.getSalesmen=function(result){
+    pool.query(`SELECT id,first_name,last_name  FROM ecommerce_shop.users where role_id=4`,function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
 module.exports=userModel;

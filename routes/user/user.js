@@ -6,6 +6,7 @@ const userController=require("../../controllers/userController")
 
 
 router.post('/update',userController.update);
+router.post('/change_user',userController.change_user);
 router.post('/changePassword',userController.editPassword);
 router.post('/roledit',userController.rolEdit);
 

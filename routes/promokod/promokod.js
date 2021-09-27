@@ -9,8 +9,9 @@ const promokodController=require("../../controllers/promokodController")
 //promokodlar
 
 router.post('/generate',promokodController.generate)
-router.post('/attachUser',promokodController.attacheUser)
-router.post('/update',promokodController.update)
+router.get('/checkPromokod/:token',promokodController.checkPromokod)
+// router.post('/attachUser',promokodController.attacheUser)
+// router.post('/update',promokodController.update)
 
 router.get('/delete/:id',promokodController.delete)
 

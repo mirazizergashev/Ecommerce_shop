@@ -15,7 +15,9 @@ categoryModel.category_edit_insert=function(data,result){
 }
 
 categoryModel.getAll=function(role_id,result){
-    pool.query(`SELECT * FROM category where ${(role_id==1)?"":"isActive=1"};select 'Bosh kategoriyalar' title `,
+    pool.query(`SELECT *,date_format(created_on,'%Y-%m-%d, %h:%i:%s') created_on
+    FROM category ${(role_id==1)?"":" where isActive=1"};
+    select 'Bosh kategoriyalar' title`,
     function(err,res){
         if(err){
             return result(err,null);
@@ -24,6 +26,20 @@ categoryModel.getAll=function(role_id,result){
         }
     });
 }
+categoryModel.delete=function(id,result){
+    pool.query("SELECT id,sub,isActive FROM category;SELECT isActive FROM category where id=?;",id,
+    function(err,res){
+        if(err)
+            return result(err,null);
+        else
+            pool.query(`update category set isActive=${(parseInt(res[1][0].isActive)+1)%2} where id in (${id+getSubCategory(res[0],id)})`,
+            function(err,rows){
+                if(err) return result(err,null);
+                return result(null,rows);
+        })
+    });  
+}
+
 
 
 categoryModel.getDostavka=function(id,result){
@@ -68,7 +84,7 @@ categoryModel.getType=function(result){
 
 
 categoryModel.getSub=function(id,result){
-    pool.query("SELECT * FROM category where sub=? and isActive=1;select name title from category where id=? and isActive=1",
+    pool.query("SELECT *,date_format(created_on,'%Y-%m-%d, %h:%i:%s') created_on FROM category where sub=? and isActive=1;select name title from category where id=? and isActive=1",
     [id||0,id||0],function(err,res){
         if(err){
             return result(err,null);
@@ -114,7 +130,7 @@ categoryModel.getPropertiesByCat=function(id,result){
 
 
 categoryModel.getSubs=function(result){
-    pool.query("SELECT * FROM category",function(err,res){
+    pool.query("SELECT *,date_format(created_on,'%Y-%m-%d, %h:%i:%s') created_on FROM category",function(err,res){
         if(err){
             return result(err,null);
         }else{
@@ -132,7 +148,14 @@ function getSubs(a,id) {
     });
     return b
 }
-
+function getSubCategory(a,id) {
+    let b=[],s=""
+    a.filter(e=>e.sub==id)
+    .forEach(e => {
+        s+=","+e.id+getSubCategory(a,e.id)
+    });
+    return s
+}
 
 
 module.exports=categoryModel;

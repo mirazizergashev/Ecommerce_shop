@@ -54,7 +54,6 @@ if(req.body){
     SELECT max(id) as id FROM orders WHERE user_id=?`,
     [req.session.userId,req.body.amount,req.body.praduct_id,req.body.karta,req.body.dostavka_id,req.session.userId])
     .then((rest) => {
-        console.log(rest[0])
          res.redirect(`/click-ghvcjhhtrfhhkjdfhkjdfn/service/transaction_param=${rest[0][1][0].id}&`+
          `amount=${req.body.amount}&card_type=${req.body.karta}&merchant_id=${merchant_id}`+
          `&merchant_user_id=${merchant_user_id}&`+
@@ -65,12 +64,16 @@ if(req.body){
     })
 }
 else{
+    let fish=req.body.fish||"fish";
+    let mfy=req.body.mfy||"mfy";
+    let tel=req.body.phone||"phone";
+    let viloyat=req.body.viloyat||"viloyat";
+    let tuman=req.body.tuman||"tuman";
     pool.promise().query(`insert into orders (amount,payme_state,state,sana ,praduct_id ,isClick,karta,fish,phone,viloyat,tuman,mfy,dostavka_id) 
     values (?,0,0 ,now(),?,1,?,?,?,?,?,?,?) ; 
     SELECT max(id) as id FROM orders WHERE phone=?`,
-    [req.body.amount,req.body.praduct_id,req.body.karta,req.body.fish,req.body.phone,req.body.viloyat,req.body.tuman,req.body.mfy,req.body.dostavka_id,req.body.phone])
+    [req.body.amount,req.body.praduct_id,req.body.karta,fish,tel,viloyat,tuman,mfy,req.body.dostavka_id,tel])
     .then((rest) => {
-        console.log(rest[0])
          res.redirect(`/click-ghvcjhhtrfhhkjdfhkjdfn/service/transaction_param=${rest[0][1][0].id}&`+
          `amount=${req.body.amount}&card_type=${req.body.karta}&merchant_id=${merchant_id}`+
          `&merchant_user_id=${merchant_user_id}&`+
@@ -86,9 +89,7 @@ else{
 
 // click etab 2
 app.use("/click/2", async(req, res) => {
-    console.log("/click/2")
     const h =req.body 
-    console.log(h.merchant_trans_id)
     if (h.action == '0' && h.error == '0') {
         pool.promise().query(`INSERT INTO click_order (service_id,click_paydoc_id,order_id,action,
             sign_time,error,error_note,sign_string,click_trans_id) VALUES 
@@ -96,8 +97,7 @@ app.use("/click/2", async(req, res) => {
             WHERE order_id=? `,[h.service_id,h.click_paydoc_id,h.merchant_trans_id,h.action,
                 h.sign_time, h.error,h.error_note,h.sign_string,h.click_trans_id,h.merchant_trans_id])
                 .then((rest) => {
-                    console.log("click trans "+h.click_trans_id)
-                    console.log(rest[0][1][0].id)
+                    
             res.json({ 
                 click_trans_id:h.click_trans_id,
                 merchant_trans_id: h.merchant_trans_id, 
@@ -115,15 +115,22 @@ app.use("/click/2", async(req, res) => {
 // click etab 3
 app.use("/click/3", async(req, res) => {
     const h =req.body 
-    console.log('click3')
+    // console.log('click3')
     if (h.action == '1' && h.error == '0') {
        const md5hash = md5(h.click_trans_id+h.service_id+SECRET_KEY+h.merchant_trans_id+h.merchant_prepare_id+h.amount+h.action+h.sign_time)
         if(md5hash==req.body.sign_string){
+            // console.log(md5hash==req.body.sign_string)
             pool.promise().query(`UPDATE click_order SET action=1 WHERE id=? ;
-             UPDATE orders SET click_state=1 ,state=2 WHERE id=?; `,
+             UPDATE orders SET payme_state=1 ,state=2 WHERE id=?; `,
              [req.body.merchant_prepare_id,req.body.merchant_trans_id])
             .then((rest) => {
-                 res.json({ error: 0, error_note: "Success" });
+                 res.json({ 
+                    click_trans_id:h.click_trans_id,
+                    merchant_trans_id: h.merchant_trans_id, 
+                    merchant_prepare_id:h.merchant_prepare_id,
+                    error: 0,
+                    error_note: "Success" 
+                    });
              }).catch((err) => {
                 res.json({ error: 1, error_note: "Not" });
              })
