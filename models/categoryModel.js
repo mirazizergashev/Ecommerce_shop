@@ -14,8 +14,10 @@ categoryModel.category_edit_insert=function(data,result){
    
 }
 
-categoryModel.getAll=function(result){
-    pool.query("SELECT *,date_format(created_on,'%Y-%m-%d, %h:%i:%s') created_on FROM category;select 'Bosh kategoriyalar' title ",
+categoryModel.getAll=function(role_id,result){
+    pool.query(`SELECT *,date_format(created_on,'%Y-%m-%d, %h:%i:%s') created_on
+    FROM category ${(role_id==1)?"":" where isActive=1"};
+    select 'Bosh kategoriyalar' title`,
     function(err,res){
         if(err){
             return result(err,null);

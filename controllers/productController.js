@@ -545,6 +545,35 @@ productController.All = function (req, res) {
     })
 }
 
+productController.v1_All = function (req, res) {
+    if( req.session.roleId==4)req.query.allow=1
+    else req.query.allow=0
+
+    productModel.v1_All(req.query,(err, rows) => {
+ 
+
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+
+
+        res.status(200).json({
+            code: 200,
+            success: rows
+        })
+    })
+}
+
 
 productController.getOne = function (req, res) {
     productModel.getOne(req.params.id,(err, rows) => {

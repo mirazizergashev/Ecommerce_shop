@@ -138,6 +138,31 @@ const page=parseInt(query.page||0),count=parseInt(query.count||15),user_id=parse
     });
 }
 
+
+productModel.v1_All = function (query,result) {
+
+    const FList=["rating", "price", "discount", "Name"]
+    const page_number=parseInt(query.page_number||0),page_size=parseInt(query.page_size||15),user_id=parseInt(query.user_id||0),
+    filter=query.filter,category_id=parseInt(query.category_id||15)
+    if(FList.indexOf(filter)==-1)
+        filter=false;
+    
+        pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
+        left join product_image pi on pi.product_id=p.id and 
+        pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
+        where p.isActive=1 and p.checked!=${query.allow?-1:0} ${(user_id)?`and p.user_id=${user_id} `:""} 
+        ${(category_id)?`and p.category_id=${category_id} `:""} 
+        ${(filter)?`and order By ${filter} `:""} limit ?,?;
+        select * from category where isActive=1;`,[page_number*page_size,page_size], function (err, res) {
+            if (err) {
+                return result(err, null);
+            } else {
+                let data = changeCosts(res[1], res[0])
+                return result(null, data);
+            }
+        });
+    }
+    
 productModel.getOne = function (id=0,result) {
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
     left join product_image pi on pi.product_id=p.id and 
