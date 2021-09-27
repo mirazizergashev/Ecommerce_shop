@@ -4,6 +4,28 @@ const { product } = require('../utils/product');
 
 var productModel = function () { }
 
+
+
+//:id/detail
+productModel.idDetail = function (id,result) {
+
+
+    pool.query(`SELECT id,name,cost as price,discount FROM  product where isActive=1 and id=?;
+    SELECT praduct_id as massiv FROM orders;
+    SELECT length(id) as reviews FROM product_comment where product_id=?;
+    SELECT img_url as img FROM  product_image where isActive=1 and product_id=?;
+    SELECT cp.field_name,pp.values FROM product_properties pp inner join category_properties cp on cp.id=pp.cat_prop_id where pp.product_id=?`,
+    [id,id,id,id,id], function (err, res) {
+        if (err) {
+            return result(err, null);
+        } else {
+            console.log(result)
+            let data = changeCosts(res[1], res[0])
+            return result(null, data);
+        }
+    });
+}
+
 //maxsulot qoshish
 productModel.product_edit_insert = function (data, result) {
     pool.query("call product_edit_insert(?,?,?,?,?,?,?,?,?)", data, function (err, res, field) {

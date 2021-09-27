@@ -26,6 +26,7 @@ app.use("/payment", payment2);
 app.use("/pay",authCheck, pay);
 app.use("/category", category);
 app.use("/product", product);
+app.use("/v1/product", product);
 app.use("/roles",authCheck, roles);
 app.use("/user",authCheck, user);
 app.use("/static", static);
