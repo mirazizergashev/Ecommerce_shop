@@ -1,69 +1,71 @@
+const { json } = require('express');
 const e = require('express');
 var pool = require('../database/db');
 const { product } = require('../utils/product');
 
 var paymentModel = function () { }
 
+//barcha pul tushirilgan tolovlar
+paymentModel.getAllSuccessPayment = function (result) {
 
-paymentModel.getTop = function (count,result) {
 
-
-    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
-    left join product_image pi on pi.product_id=p.id and 
-    pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1 and p.isTop=1 ${"limit "+(count||1000)};
-    select * from category where isActive=1;`, function (err, res) {
+    pool.query(`SELECT t.id,t.state,t.order_id as 'order',o.praduct_id as product,o.amount as narx FROM transactions 
+    t inner join orders o on t.order_id=o.id where t.state=2`, function (err, data) {
         if (err) {
             return result(err, null);
         } else {
-            let data = changeCosts(res[1], res[0])
+            // console.log(data[0].product)
+            console.log(eval(data[0].product))
+            return result(null, data);
+        }
+    });
+}
+
+//barcha pul tolab bekor qilingan tolovlar
+paymentModel.getAllCancelPayment = function (count,result) {
+
+
+    pool.query(`SELECT t.id,t.state,t.order_id as 'order',o.praduct_id as product,o.amount as narx FROM transactions 
+    t inner join orders o on t.order_id=o.id where t.state=-2`, function (err, data) {
+        if (err) {
+            return result(err, null);
+        } else {
+            
             return result(null, data);
         }
     });
 }
 
 
-paymentModel.changeTop = function (id,isTop,result) {
-
-
-    pool.query(`update product set isTop=? where id=?`,[isTop,id], function (err, res) {
+paymentModel.getCuryerProd = function (id,result) {
+    pool.query(`SELECT t.id,t.state,t.order_id as 'order',o.praduct_id as product,o.amount as narx FROM transactions 
+    t inner join orders o on t.order_id=o.id where t.state=2`, function (err, data) {
         if (err) {
             return result(err, null);
         } else {
-            return result(null, res);
-        }
-    });
-}
-
-paymentModel.All = function (result) {
-
-
-    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
-    left join product_image pi on pi.product_id=p.id and 
-    pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1;
-    select * from category where isActive=1;`, function (err, res) {
-        if (err) {
-            return result(err, null);
-        } else {
-            let data = changeCosts(res[1], res[0])
+            // console.log(data[0].product)
+            console.log(eval(data))
             return result(null, data);
         }
     });
 }
 
-paymentModel.getOne = function (id=0,result) {
-    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
-    left join product_image pi on pi.product_id=p.id and 
-    pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1 and p.id=?;
-    select * from category where isActive=1;`,id, function (err, res) {
+
+paymentModel.getCuryerAll = function (result) {
+    pool.query(`SELECT t.id,t.state,t.order_id as 'order',o.praduct_id as product,o.amount as narx FROM transactions 
+    t inner join orders o on t.order_id=o.id where t.state=2`, function (err, data) {
         if (err) {
-            return result(err, null);}
-            else{
-            let data = changeCosts(res[1], res[0])
-            return result(null, data);}
-        
+            return result(err, null);
+        } else {
+            // console.log(data[0].product)
+           let arr=[];
+           data.forEach((e)=>{
+                arr.push(eval(e.product))
+           })
+           arr=arr.flat(2)
+            console.log(arr)
+            return result(null, data);
+        }
     });
 }
 
