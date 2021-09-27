@@ -14,8 +14,8 @@ categoryModel.category_edit_insert=function(data,result){
    
 }
 
-categoryModel.getAll=function(result){
-    pool.query("SELECT * FROM category where isActive=1;select 'Bosh kategoriyalar' title ",
+categoryModel.getAll=function(role_id,result){
+    pool.query(`SELECT * FROM category where ${(role_id==1)?"":"isActive=1"};select 'Bosh kategoriyalar' title `,
     function(err,res){
         if(err){
             return result(err,null);

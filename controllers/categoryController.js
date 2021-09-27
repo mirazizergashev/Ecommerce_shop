@@ -133,7 +133,7 @@ categoryController.create_update = function (req, res) {
 
 
 categoryController.getAll = function (req, res) {
-    categoryModel.getAll((err,rows)=>{
+    categoryModel.getAll(req.session.roleId,(err,rows)=>{
      if (err) {
              console.log(err);
              return res.status(200).json({
