@@ -87,9 +87,9 @@ select * from category where isActive=1;`,
 }
 
 //:id/detail
-productModel.statisticShop = function (result) {
+productModel.statisticShop = function (start,end,result) {
 
-    pool.query(`SELECT praduct_id as massiv FROM orders where state=2;`, function (err, res) {
+    pool.query(`SELECT * FROM orders where state=2 and date(sana) between date(?) and date(?);`,[start,end], function (err, res) {
             // console.log(45454)
             if (err) {
                 console.log("err", res[0].length)

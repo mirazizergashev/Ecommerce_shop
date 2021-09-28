@@ -26,7 +26,7 @@ productController.idDetail = function (req, res) {
 }
 
 productController.statisticShop = function (req, res) {
-    productModel.statisticShop((err, rows) => {
+    productModel.statisticShop(req.query.start,req.query.end,(err, rows) => {
         if (err) {
             console.log(err);
             return res.status(200).json({
