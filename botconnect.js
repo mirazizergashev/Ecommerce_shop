@@ -110,7 +110,6 @@ function sendClickTrans(order_id) {
       boterror: err
     }))
 }
-sendClickTrans(1)
 module.exports = {
   sendClickTrans,
   bot,

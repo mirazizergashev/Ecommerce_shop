@@ -4,25 +4,134 @@ const { product } = require('../utils/product');
 
 var productModel = function () { }
 
+//:id/detail
+productModel.idDetail = function (id, result) {
 
+    pool.query(`SELECT * FROM  product where isActive=1 and id=?;
+    SELECT praduct_id as massiv FROM orders;
+    SELECT * FROM product_comment where product_id=?;
+    SELECT img_url as img FROM  product_image where isActive=1 and product_id=?;
+    SELECT cp.field_name, GROUP_CONCAT(pp.values SEPARATOR '#') as content FROM product_properties pp inner join category_properties cp on cp.id=pp.cat_prop_id where pp.product_id in 
+(SELECT id FROM product where name in (SELECT name FROM product where id=?)) GROUP BY cp.field_name;
+select * from category where isActive=1;`,
+        [id, id, id, id, id], function (err, res) {
+            // console.log(45454)
+            if (err) {
+                console.log("err", res[0].length)
+                return result(err, null);
+            }
+
+            let k = eval(res[1]), s = 0, arr2;
+            let arr3, s2 = 0;
+            let img = [];
+            let arr4 = [], s4 = 0, cont = [], cont2 = [];
+
+            //necha marta sotilgani
+            k.forEach((e) => {
+                if (Array.isArray(eval(e.massiv))) {
+                    arr2 = eval(e.massiv);
+                    arr2.forEach((ee) => {
+                        if (ee.product_id == id) {
+                            s++;
+                        }
+                    })
+                }
+            })
+
+
+            //nechta yulduzcha va bahosi
+            res[2].forEach((e) => {
+                s2 = s2 + e.mark;
+            })
+
+            //rasmlar
+            res[3].forEach((e) => {
+                img.push(e.img)
+            })
+
+            // brendlar
+            res[4].forEach((e, i) => {
+                cont = e.content.split('#')
+                for (let j = 0; j < cont.length; j++) {
+                    cont2.push({ 'id': j + 1, 'content': cont[j] })
+                }
+                arr4.push({ 'title': e.field_name, 'data': cont2 })
+                cont2 = []
+            })
+
+            // console.log(parseFloat(s2 / res[2].length).toFixed(1))
+            let data = changeCosts(res[5], res[0])
+            let data2;
+            if (res[0].length == 0) {
+                data2 = "Bunday maxsulot topilmadi!"
+            }
+            else {
+
+
+                data2 = {
+                    'id': id,
+                    'name': data[0].name,
+                    'vendorCode': s,
+                    'reviews': res[2].length,
+                    'rating': isNaN(parseFloat(s2 / res[2].length).toFixed(1)) ? 0 : parseFloat(s2 / res[2].length).toFixed(1),
+                    'price': data[0].cost,
+                    'discount': data[0].discount,
+                    'imgs': img,
+                    'properties': arr4
+                }
+            }
+            // console.log(data)
+            return result(null, data2);
+
+        });
+}
 
 //:id/detail
-productModel.idDetail = function (id,result) {
+productModel.statisticShop = function (start, end, result) {
+    if (!start) start = '2012-01-01';
+    if (!end) end = '2032-01-01';
 
-
-    pool.query(`SELECT id,name,cost as price,discount FROM  product where isActive=1 and id=?;
-    SELECT praduct_id as massiv FROM orders;
-    SELECT length(id) as reviews FROM product_comment where product_id=?;
-    SELECT img_url as img FROM  product_image where isActive=1 and product_id=?;
-    SELECT cp.field_name,pp.values FROM product_properties pp inner join category_properties cp on cp.id=pp.cat_prop_id where pp.product_id=?`,
-    [id,id,id,id,id], function (err, res) {
+    console.log(start)
+    pool.query(`SELECT praduct_id as massiv FROM orders where state=2 and date(sana) between date('${start}') and date('${end}');`, function (err, res) {
         if (err) {
+
             return result(err, null);
-        } else {
-            console.log(result)
-            let data = changeCosts(res[1], res[0])
-            return result(null, data);
         }
+
+        // console.log(res)
+
+        let k = eval(res), s = 0, arr2;
+        let arr3, s2 = 0;
+        let img = [];
+        let arr4 = [], s4 = 0, cont = [], cont2 = [];
+
+        //necha marta sotilgani
+        k.forEach((e, asos) => {
+
+            if (Array.isArray(eval(e.massiv))) {
+                arr2 = eval(e.massiv);
+
+                // console.log(k.length)
+                arr2.forEach((ee) => {
+                    s2++;
+                    pool.query(`SELECT concat(u.first_name," ",u.last_name) as fio FROM product p inner join users u on p.user_id=u.id where p.isActive=1 and p.id=?;`, [ee.product_id], function (err1, res1) {
+                        s++;
+                        if (res1.length > 0) {
+                            arr4.push({ id: s, fio: res1[0].fio, count: ee.count, daromad: ee.amount, foyda: ee.amount * 0.15 })
+                            if (s2 == s) {
+                                return result(null, arr4);
+                            }
+                        }
+
+                    })
+
+                    // console.log(arr4)
+                })
+            }
+        })
+        // console.log(arr4)
+
+
     });
 }
 
@@ -61,7 +170,6 @@ productModel.img_del = function (data, result) {
 
 }
 
-
 //rasm yuklash
 productModel.product_image = function (data, result) {
     pool.query("call product_image(?,?,?,?)", data, function (err, res, field) {
@@ -91,13 +199,14 @@ productModel.getAll = function (id, ses, result) {
         }
     });
 }
-productModel.getTop = function (query,result) {
+
+productModel.getTop = function (query, result) {
 
 
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
     left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1  and p.checked!=${query.allow?-1:0} and p.isTop=1 ${"limit "+(query.count||1000)};
+    where p.isActive=1  and p.checked!=${query.allow ? -1 : 0} and p.isTop=1 ${"limit " + (query.count || 1000)};
     select * from category where isActive=1;`, function (err, res) {
         if (err) {
             return result(err, null);
@@ -108,11 +217,10 @@ productModel.getTop = function (query,result) {
     });
 }
 
+productModel.changeTop = function (id, isTop, result) {
 
-productModel.changeTop = function (id,isTop,result) {
 
-
-    pool.query(`update product set isTop=? where id=?`,[isTop,id], function (err, res) {
+    pool.query(`update product set isTop=? where id=?`, [isTop, id], function (err, res) {
         if (err) {
             return result(err, null);
         } else {
@@ -121,14 +229,14 @@ productModel.changeTop = function (id,isTop,result) {
     });
 }
 
-productModel.All = function (query,result) {
+productModel.All = function (query, result) {
 
-const page=parseInt(query.page||0),count=parseInt(query.count||15),user_id=parseInt(query.user_id||0)
+    const page = parseInt(query.page || 0), count = parseInt(query.count || 15), user_id = parseInt(query.user_id || 0)
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
     left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1 and p.checked!=${query.allow?-1:0} ${(user_id)?`and p.user_id=${user_id} `:""} limit ?,?;
-    select * from category where isActive=1;`,[page*count,count], function (err, res) {
+    where p.isActive=1 and p.checked!=${query.allow ? -1 : 0} ${(user_id) ? `and p.user_id=${user_id} ` : ""} limit ?,?;
+    select * from category where isActive=1;`, [page * count, count], function (err, res) {
         if (err) {
             return result(err, null);
         } else {
@@ -138,47 +246,48 @@ const page=parseInt(query.page||0),count=parseInt(query.count||15),user_id=parse
     });
 }
 
+productModel.v1_All = function (query, result) {
 
-productModel.v1_All = function (query,result) {
+    const FList = ["rating", "price", "discount", "Name"]
+    const page_number = parseInt(query.page_number || 0), page_size = parseInt(query.page_size || 15), user_id = parseInt(query.user_id || 0),
+        filter = query.filter, category_id = parseInt(query.category_id || 15)
+    if (FList.indexOf(filter) == -1)
+        filter = false;
 
-    const FList=["rating", "price", "discount", "Name"]
-    const page_number=parseInt(query.page_number||0),page_size=parseInt(query.page_size||15),user_id=parseInt(query.user_id||0),
-    filter=query.filter,category_id=parseInt(query.category_id||15)
-    if(FList.indexOf(filter)==-1)
-        filter=false;
-    
-        pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
+    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
         left join product_image pi on pi.product_id=p.id and 
         pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-        where p.isActive=1 and p.checked!=${query.allow?-1:0} ${(user_id)?`and p.user_id=${user_id} `:""} 
-        ${(category_id)?`and p.category_id=${category_id} `:""} 
-        ${(filter)?`and order By ${filter} `:""} limit ?,?;
-        select * from category where isActive=1;`,[page_number*page_size,page_size], function (err, res) {
-            if (err) {
-                return result(err, null);
-            } else {
-                let data = changeCosts(res[1], res[0])
-                return result(null, data);
-            }
-        });
-    }
-    
-productModel.getOne = function (id=0,result) {
+        where p.isActive=1 and p.checked!=${query.allow ? -1 : 0} ${(user_id) ? `and p.user_id=${user_id} ` : ""} 
+        ${(category_id) ? `and p.category_id=${category_id} ` : ""} 
+        ${(filter) ? `and order By ${filter} ` : ""} limit ?,?;
+        select * from category where isActive=1;`, [page_number * page_size, page_size], function (err, res) {
+        if (err) {
+            return result(err, null);
+        } else {
+            let data = changeCosts(res[1], res[0])
+            return result(null, data);
+        }
+    });
+}
+
+productModel.getOne = function (id = 0, result) {
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
     left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
     where p.isActive=1 and p.id=?;
-    select * from category where isActive=1;`,id, function (err, res) {
+    select * from category where isActive=1;`, id, function (err, res) {
         if (err) {
-            return result(err, null);}
-            else{
+            return result(err, null);
+        }
+        else {
             let data = changeCosts(res[1], res[0])
-            return result(null, data);}
-        
+            return result(null, data);
+        }
+
     });
 }
 
-productModel.searchAll = function (text,result) {
+productModel.searchAll = function (text, result) {
 
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
     left join product_image pi on pi.product_id=p.id and 
@@ -186,8 +295,9 @@ productModel.searchAll = function (text,result) {
     where p.isActive=1 and p.name LIKE "%${text}%";
     select * from category where isActive=1;`, function (err, res) {
         if (err) {
-            return result(err, null);}
-            else{
+            return result(err, null);
+        }
+        else {
             let data = changeCosts(res[1], res[0])
             return result(null, data);
         }
@@ -197,7 +307,7 @@ productModel.searchAll = function (text,result) {
 productModel.Retcomment = function (id, result) {
 
 
-    pool.query(`SELECT * FROM ecommerce_shop.product_check where product_id=? order by created_on desc limit 1`, id||0, function (err, res) {
+    pool.query(`SELECT * FROM ecommerce_shop.product_check where product_id=? order by created_on desc limit 1`, id || 0, function (err, res) {
         if (err) {
             return result(err, null);
         } else {
@@ -221,7 +331,6 @@ productModel.BigGet = function (result) {
     });
 }
 
-
 productModel.BigGet = function (result) {
 
 
@@ -236,8 +345,6 @@ productModel.BigGet = function (result) {
         }
     });
 }
-
-
 
 productModel.product_properties_edit_insert = function (data, result) {
     pool.query("call product_properties_edit_insert(?,?,?,?,?)", data, function (err, res, field) {
@@ -317,44 +424,44 @@ productModel.prodPropsByValue = function (id = 0, result) {
 }
 
 
-productModel.productFilter=function(query,result){
-    let a=[],ss=""
-    Object.keys(query).forEach((id,i)=>{
-        if(id=="fcost"||id=="lcost")return;
-        let s=""
+productModel.productFilter = function (query, result) {
+    let a = [], ss = ""
+    Object.keys(query).forEach((id, i) => {
+        if (id == "fcost" || id == "lcost") return;
+        let s = ""
         a.push(id)
-    //    for (let i = 0; i < query[id].length; i++) 
-    //    if(query[id][i]=='"'){
-    //     query[id][i]="'"
-    //    } 
-        query[id].split(" ").forEach(e=>{s+='"'+e+'",'})
-        ss+=`inner join product_properties pp${i} 
-        on p.id=pp${i}.product_id and pp${i}.cat_prop_id=? and pp${i}.values in (${s.slice(0,-1)})
+        //    for (let i = 0; i < query[id].length; i++) 
+        //    if(query[id][i]=='"'){
+        //     query[id][i]="'"
+        //    } 
+        query[id].split(" ").forEach(e => { s += '"' + e + '",' })
+        ss += `inner join product_properties pp${i} 
+        on p.id=pp${i}.product_id and pp${i}.cat_prop_id=? and pp${i}.values in (${s.slice(0, -1)})
         `
-        
+
     })
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
     ${ss}
-    ;select * from category;`,a,function(err,res){
-        if(err){
-            return result(err,null);
-        }else{
-            let data=changeCosts(res[1],res[0]).filter(e=>(e.cost>=(query.fcost||0)*1 && e.cost<=(query.lcost||1000000000000)*1))
-            return result(null,data);
+    ;select * from category;`, a, function (err, res) {
+        if (err) {
+            return result(err, null);
+        } else {
+            let data = changeCosts(res[1], res[0]).filter(e => (e.cost >= (query.fcost || 0) * 1 && e.cost <= (query.lcost || 1000000000000) * 1))
+            return result(null, data);
         }
     });
 }
 
-function changeCosts(c,data) {
+function changeCosts(c, data) {
     data.forEach((e, i) => {
         let k = e.category_id, cost = e.cost, ind = c.findIndex(x => x.id == k);
 
         while (ind != -1) {
-                cost = parseInt(cost * (100 + c[ind].percent*1) / 100)+ 1*c[ind].isFoiz
+            cost = parseInt(cost * (100 + c[ind].percent * 1) / 100) + 1 * c[ind].isFoiz
             ind = c.findIndex(x => x.id == c[ind].sub)
         }
-        data[i].cost = cost*(100-data[i].discount*1)/100;
+        data[i].cost = cost * (100 - data[i].discount * 1) / 100;
     });
     return data
 }
@@ -371,19 +478,5 @@ function filterProd(id, data) {
     return s;
 }
 
-// console.log("data:",filterProd(5,[
-//     {id:1,sub:0},
-//     {id:2,sub:1},
-//     {id:3,sub:2},
-//     {id:4,sub:0},
-//     {id:5,sub:4},
-//     {id:6,sub:3}]),"|||")
-
-// productModel.productByCategory(0,(err,result)=>{
-//     if(err){
-//         return console.log("last:",err)
-//     }
-//     console.log(result)
-// })
 
 module.exports = productModel;

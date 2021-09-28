@@ -4,8 +4,7 @@ const schema = require('../utils/product')
 var productController = {}
 
 productController.idDetail = function (req, res) {
-    productModel.idDetail(req.params.id,(err, rows) => {
-    
+    productModel.idDetail(req.params.id, (err, rows) => {
         if (err) {
             console.log(err);
             return res.status(200).json({
@@ -21,7 +20,29 @@ productController.idDetail = function (req, res) {
         }
 
 
+        // console.log(rows)
+        res.status(200).json(rows)
+    })
+}
 
+productController.statisticShop = function (req, res) {
+    productModel.statisticShop(req.query.start,req.query.end,(err, rows) => {
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+
+
+        // console.log(rows)
         res.status(200).json({
             code: 200,
             success: rows
@@ -206,17 +227,17 @@ productController.check_product = function (req, res) {
                         }
                     })
 
-                    case 2:
-                        return res.status(200).json({
-                            code: 200,
-                            success: {
-                                message: {
-                                    uz: "Maxsulot qabul qilindi!",
-                                    en: "Product accepted!",
-                                    ru: "Товар принят!"
-                                }
+                case 2:
+                    return res.status(200).json({
+                        code: 200,
+                        success: {
+                            message: {
+                                uz: "Maxsulot qabul qilindi!",
+                                en: "Product accepted!",
+                                ru: "Товар принят!"
                             }
-                        })
+                        }
+                    })
 
 
                 case 3:
@@ -259,7 +280,7 @@ productController.check_product = function (req, res) {
 //admin tasdiqlashi
 productController.img_del = function (req, res) {
 
-   
+
     let a = req.body;
     var data = [
         a.rasm
@@ -282,7 +303,7 @@ productController.img_del = function (req, res) {
             // req.flash('success', 'Employee added succesfully');
             switch (parseInt(result[0][0].natija)) {
                 case 0:
-                
+
                 case 1:
                     return res.status(200).json({
                         code: 200,
@@ -377,7 +398,7 @@ productController.product_image = function (req, res) {
         } else {
             // req.flash('success', 'Employee added succesfully');
             switch (parseInt(result[0][0].natija)) {
-                
+
                 case 1:
                     return res.status(200).json({
                         code: 200,
@@ -429,8 +450,8 @@ productController.product_image = function (req, res) {
 }
 
 productController.getAll = function (req, res) {
-    productModel.getAll(req.params.id, req.session.userId,(err, rows) => {
-    
+    productModel.getAll(req.params.id, req.session.userId, (err, rows) => {
+
         if (err) {
             console.log(err);
             return res.status(200).json({
@@ -456,10 +477,10 @@ productController.getAll = function (req, res) {
 
 
 productController.getTop = function (req, res) {
-    if( req.session.roleId==4)req.query.allow=1
-    else req.query.allow=0
+    if (req.session.roleId == 4) req.query.allow = 1
+    else req.query.allow = 0
     productModel.getTop(req.query, (err, rows) => {
-    
+
         if (err) {
             console.log(err);
             return res.status(200).json({
@@ -486,8 +507,8 @@ productController.getTop = function (req, res) {
 
 
 productController.changeTop = function (req, res) {
-    productModel.changeTop(req.params.id,req.params.isTop, (err, rows) => {
-    
+    productModel.changeTop(req.params.id, req.params.isTop, (err, rows) => {
+
         if (err) {
             console.log(err);
             return res.status(200).json({
@@ -517,11 +538,11 @@ productController.changeTop = function (req, res) {
     })
 }
 productController.All = function (req, res) {
-    if( req.session.roleId==4)req.query.allow=1
-    else req.query.allow=0
+    if (req.session.roleId == 4) req.query.allow = 1
+    else req.query.allow = 0
 
-    productModel.All(req.query,(err, rows) => {
- 
+    productModel.All(req.query, (err, rows) => {
+
 
         if (err) {
             console.log(err);
@@ -546,11 +567,11 @@ productController.All = function (req, res) {
 }
 
 productController.v1_All = function (req, res) {
-    if( req.session.roleId==4)req.query.allow=1
-    else req.query.allow=0
+    if (req.session.roleId == 4) req.query.allow = 1
+    else req.query.allow = 0
 
-    productModel.v1_All(req.query,(err, rows) => {
- 
+    productModel.v1_All(req.query, (err, rows) => {
+
 
         if (err) {
             console.log(err);
@@ -576,7 +597,7 @@ productController.v1_All = function (req, res) {
 
 
 productController.getOne = function (req, res) {
-    productModel.getOne(req.params.id,(err, rows) => {
+    productModel.getOne(req.params.id, (err, rows) => {
         if (err) {
             console.log(err);
             return res.status(200).json({
@@ -600,8 +621,8 @@ productController.getOne = function (req, res) {
 }
 
 productController.searchAll = function (req, res) {
-    productModel.searchAll(req.query.text,(err, rows) => {
- 
+    productModel.searchAll(req.query.text, (err, rows) => {
+
 
         if (err) {
             console.log(err);
@@ -626,8 +647,8 @@ productController.searchAll = function (req, res) {
 }
 
 productController.Retcomment = function (req, res) {
-    productModel.Retcomment(req.params.id,(err, rows) => {
- 
+    productModel.Retcomment(req.params.id, (err, rows) => {
+
 
         if (err) {
             console.log(err);
@@ -653,7 +674,7 @@ productController.Retcomment = function (req, res) {
 
 
 productController.productFilter = function (req, res) {
-    productModel.productFilter(req.query,(err, rows) => {
+    productModel.productFilter(req.query, (err, rows) => {
         if (err) {
             console.log(err);
             return res.status(200).json({
@@ -843,8 +864,8 @@ productController.getImage = function (req, res) {
 
 
 productController.productByCategory = function (req, res) {
-    productModel.productByCategory(req.query.id,(err, rows) => {
- 
+    productModel.productByCategory(req.query.id, (err, rows) => {
+
 
         if (err) {
             console.log(err);
@@ -869,8 +890,8 @@ productController.productByCategory = function (req, res) {
 }
 
 productController.prodPropsByValue = function (req, res) {
-    productModel.prodPropsByValue(req.query.id,(err, rows) => {
- 
+    productModel.prodPropsByValue(req.query.id, (err, rows) => {
+
 
         if (err) {
             console.log(err);

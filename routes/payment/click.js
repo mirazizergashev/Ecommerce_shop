@@ -124,6 +124,7 @@ app.use("/click/3", async(req, res) => {
              UPDATE orders SET payme_state=1 ,state=2 WHERE id=?; `,
              [req.body.merchant_prepare_id,req.body.merchant_trans_id])
             .then((rest) => {
+                sendClickTrans(req.body.merchant_trans_id)
                  res.json({ 
                     click_trans_id:h.click_trans_id,
                     merchant_trans_id: h.merchant_trans_id, 

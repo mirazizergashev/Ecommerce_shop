@@ -20,8 +20,11 @@
     "md5": "^2.3.0",
     "moment": "^2.29.1",
     "mysql2": "^2.2.5",
+<<<<<<< HEAD
     "node-telegram-bot-api": "^0.54.0",
     "nodemon": "^2.0.7",
+=======
+>>>>>>> e792cbadb79e1d58ffdbf411faa5ede792d92a8e
     "pm2": "^4.5.5",
     "session-file-store": "^1.5.0",
     "sha256": "^0.2.0"
@@ -40,5 +43,8 @@
   "bugs": {
     "url": "https://github.com/mirazizergashev/Ecommerce_shop/issues"
   },
-  "homepage": "https://github.com/mirazizergashev/Ecommerce_shop#readme"
+  "homepage": "https://github.com/mirazizergashev/Ecommerce_shop#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.13"
+  }
 }
