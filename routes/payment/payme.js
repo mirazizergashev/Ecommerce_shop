@@ -25,6 +25,9 @@ app.use("/payme/1" , async (req, res) => {
 
  
         const datee =new Date().getTime() ;
+        if(req.body.promokod){
+            
+        }
    if(req.session.userId){
     await pool.promise()
     .query("insert into orders (user_id , amount , payme_state , state  ,sana,praduct_id,dostavka_id) "+ 

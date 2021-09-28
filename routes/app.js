@@ -17,7 +17,7 @@ const changes = require("./changes/app");
 
 // sing in , up 
 app.use("/sign", sign);
-app.use("/promokod",authCheck, promokod);
+app.use("/promokod", promokod);
 app.use("/chat",authCheck, chat);
 app.use("/cart",authCheck, cart);
 app.use("/payment", payment);
