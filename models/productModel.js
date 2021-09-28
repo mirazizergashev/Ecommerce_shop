@@ -37,7 +37,7 @@ select * from category where isActive=1;`,
                     })
                 }
             })
-            
+
 
             //nechta yulduzcha va bahosi
             res[2].forEach((e) => {
@@ -48,7 +48,7 @@ select * from category where isActive=1;`,
             res[3].forEach((e) => {
                 img.push(e.img)
             })
-            
+
             // brendlar
             res[4].forEach((e, i) => {
                 cont = e.content.split('#')
@@ -58,28 +58,28 @@ select * from category where isActive=1;`,
                 arr4.push({ 'title': e.field_name, 'data': cont2 })
                 cont2 = []
             })
-           
+
             // console.log(parseFloat(s2 / res[2].length).toFixed(1))
             let data = changeCosts(res[5], res[0])
             let data2;
-            if(res[0].length==0){
-                data2="Bunday maxsulot topilmadi!"
+            if (res[0].length == 0) {
+                data2 = "Bunday maxsulot topilmadi!"
             }
-            else{
+            else {
 
-            
-             data2={
-                'id':id,
-                'name':data[0].name,
-                'vendorCode':s,
-                'reviews':res[2].length,
-                'rating':isNaN(parseFloat(s2 / res[2].length).toFixed(1))?0:parseFloat(s2 / res[2].length).toFixed(1),
-                'price':data[0].cost,
-                'discount':data[0].discount,
-                'imgs':img,
-                'properties':arr4
+
+                data2 = {
+                    'id': id,
+                    'name': data[0].name,
+                    'vendorCode': s,
+                    'reviews': res[2].length,
+                    'rating': isNaN(parseFloat(s2 / res[2].length).toFixed(1)) ? 0 : parseFloat(s2 / res[2].length).toFixed(1),
+                    'price': data[0].cost,
+                    'discount': data[0].discount,
+                    'imgs': img,
+                    'properties': arr4
+                }
             }
-        }
             // console.log(data)
             return result(null, data2);
 
@@ -87,48 +87,52 @@ select * from category where isActive=1;`,
 }
 
 //:id/detail
-productModel.statisticShop = function (start,end,result) {
+productModel.statisticShop = function (start, end, result) {
+    if (!start) start = '2012-01-01';
+    if (!end) end = '2032-01-01';
 
-    pool.query(`SELECT * FROM orders where state=2 and date(sana) between date(?) and date(?);`,[start,end], function (err, res) {
-            // console.log(45454)
-            if (err) {
-                console.log("err", res[0].length)
-                return result(err, null);
-            }
+    console.log(start)
+    pool.query(`SELECT praduct_id as massiv FROM orders where state=2 and date(sana) between date('${start}') and date('${end}');`, function (err, res) {
+        if (err) {
 
-            let k = eval(res), s = 0, arr2;
-            let arr3, s2 = 0;
-            let img = [];
-            let arr4 = [], s4 = 0, cont = [], cont2 = [];
+            return result(err, null);
+        }
 
-            //necha marta sotilgani
-            k.forEach((e,asos) => {
+        // console.log(res)
 
-                if (Array.isArray(eval(e.massiv))) {
-                    arr2 = eval(e.massiv);
-                   
-                    // console.log(k.length)
-                    arr2.forEach((ee) => {
-                        s2++;
-                        pool.query(`SELECT concat(u.first_name," ",u.last_name) as fio FROM product p inner join users u on p.user_id=u.id where p.isActive=1 and p.id=?;`,[ee.product_id],function (err1, res1) {
-                            s++;
-                            if(res1.length>0){
-                            arr4.push({id:s,fio:res1[0].fio,count:ee.count,daromad:ee.amount,foyda:ee.amount*0.15})
-                           if(s2==s){
-                            return result(null, arr4);
-                           }
+        let k = eval(res), s = 0, arr2;
+        let arr3, s2 = 0;
+        let img = [];
+        let arr4 = [], s4 = 0, cont = [], cont2 = [];
+
+        //necha marta sotilgani
+        k.forEach((e, asos) => {
+
+            if (Array.isArray(eval(e.massiv))) {
+                arr2 = eval(e.massiv);
+
+                // console.log(k.length)
+                arr2.forEach((ee) => {
+                    s2++;
+                    pool.query(`SELECT concat(u.first_name," ",u.last_name) as fio FROM product p inner join users u on p.user_id=u.id where p.isActive=1 and p.id=?;`, [ee.product_id], function (err1, res1) {
+                        s++;
+                        if (res1.length > 0) {
+                            arr4.push({ id: s, fio: res1[0].fio, count: ee.count, daromad: ee.amount, foyda: ee.amount * 0.15 })
+                            if (s2 == s) {
+                                return result(null, arr4);
                             }
-                            
-                        })
+                        }
 
-                        // console.log(arr4)
                     })
-                }
-            })
-            // console.log(arr4)
-            
 
-        });
+                    // console.log(arr4)
+                })
+            }
+        })
+        // console.log(arr4)
+
+
+    });
 }
 
 //maxsulot qoshish
