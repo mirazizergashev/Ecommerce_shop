@@ -1,3 +1,4 @@
+const {sendTransOrder}=require("../../botconnect")
 module.exports = PerformTransaction =async(data,javob)=>
 {
 
@@ -32,6 +33,7 @@ module.exports = PerformTransaction =async(data,javob)=>
               `,[datee.toString(),data.params.id,data.params.id])
             .then(async(rest)=>
             {  
+              sendTransOrder(data.params.id)
                 return javob.json({result: {
                     state : 2,
                     perform_time : datee,
