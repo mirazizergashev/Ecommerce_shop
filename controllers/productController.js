@@ -5,7 +5,6 @@ var productController = {}
 
 productController.idDetail = function (req, res) {
     productModel.idDetail(req.params.id,(err, rows) => {
-    
         if (err) {
             console.log(err);
             return res.status(200).json({
@@ -21,11 +20,8 @@ productController.idDetail = function (req, res) {
         }
 
 
-
-        res.status(200).json({
-            code: 200,
-            success: rows
-        })
+        // console.log(rows)
+        res.status(200).json(rows)
     })
 }
 

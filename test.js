@@ -1,6 +1,1 @@
-//bu oyna faqat testlash uchun   Bu gitignorega tiqilgan
-
-
-let k='5';
-
-console.log(parseInt(k))
+console.log(parseFloat(7/3).toFixed(1))
