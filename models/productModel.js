@@ -4,8 +4,6 @@ const { product } = require('../utils/product');
 
 var productModel = function () { }
 
-
-
 //:id/detail
 productModel.idDetail = function (id, result) {
 
@@ -14,7 +12,7 @@ productModel.idDetail = function (id, result) {
     SELECT * FROM product_comment where product_id=?;
     SELECT img_url as img FROM  product_image where isActive=1 and product_id=?;
     SELECT cp.field_name, GROUP_CONCAT(pp.values SEPARATOR '#') as content FROM product_properties pp inner join category_properties cp on cp.id=pp.cat_prop_id where pp.product_id in 
-(SELECT id FROM product where name in (SELECT name FROM product where id=10)) GROUP BY cp.field_name;
+(SELECT id FROM product where name in (SELECT name FROM product where id=?)) GROUP BY cp.field_name;
 select * from category where isActive=1;`,
         [id, id, id, id, id], function (err, res) {
             // console.log(45454)
@@ -63,25 +61,76 @@ select * from category where isActive=1;`,
            
             // console.log(parseFloat(s2 / res[2].length).toFixed(1))
             let data = changeCosts(res[5], res[0])
+            let data2;
+            if(res[0].length==0){
+                data2="Bunday maxsulot topilmadi!"
+            }
+            else{
+
             
-            let data2={
+             data2={
                 'id':id,
                 'name':data[0].name,
                 'vendorCode':s,
                 'reviews':res[2].length,
-                'rating':parseFloat(s2 / res[2].length).toFixed(1),
+                'rating':isNaN(parseFloat(s2 / res[2].length).toFixed(1))?0:parseFloat(s2 / res[2].length).toFixed(1),
                 'price':data[0].cost,
                 'discount':data[0].discount,
                 'imgs':img,
                 'properties':arr4
             }
+        }
             // console.log(data)
             return result(null, data2);
 
         });
 }
 
-// productModel.idDetail(10,(err,data)=>console.log(1,{f:7,err,data}))
+//:id/detail
+productModel.statisticShop = function (result) {
+
+    pool.query(`SELECT praduct_id as massiv FROM orders where state=2;`, function (err, res) {
+            // console.log(45454)
+            if (err) {
+                console.log("err", res[0].length)
+                return result(err, null);
+            }
+
+            let k = eval(res), s = 0, arr2;
+            let arr3, s2 = 0;
+            let img = [];
+            let arr4 = [], s4 = 0, cont = [], cont2 = [];
+
+            //necha marta sotilgani
+            k.forEach((e,asos) => {
+
+                if (Array.isArray(eval(e.massiv))) {
+                    arr2 = eval(e.massiv);
+                   
+                    // console.log(k.length)
+                    arr2.forEach((ee) => {
+                        s2++;
+                        pool.query(`SELECT concat(u.first_name," ",u.last_name) as fio FROM product p inner join users u on p.user_id=u.id where p.isActive=1 and p.id=?;`,[ee.product_id],function (err1, res1) {
+                            s++;
+                            if(res1.length>0){
+                            arr4.push({id:s,fio:res1[0].fio,count:ee.count,daromad:ee.amount,foyda:ee.amount*0.15})
+                           if(s2==s){
+                            return result(null, arr4);
+                           }
+                            }
+                            
+                        })
+
+                        // console.log(arr4)
+                    })
+                }
+            })
+            // console.log(arr4)
+            
+
+        });
+}
+
 //maxsulot qoshish
 productModel.product_edit_insert = function (data, result) {
     pool.query("call product_edit_insert(?,?,?,?,?,?,?,?,?)", data, function (err, res, field) {
@@ -117,7 +166,6 @@ productModel.img_del = function (data, result) {
 
 }
 
-
 //rasm yuklash
 productModel.product_image = function (data, result) {
     pool.query("call product_image(?,?,?,?)", data, function (err, res, field) {
@@ -147,6 +195,7 @@ productModel.getAll = function (id, ses, result) {
         }
     });
 }
+
 productModel.getTop = function (query, result) {
 
 
@@ -163,7 +212,6 @@ productModel.getTop = function (query, result) {
         }
     });
 }
-
 
 productModel.changeTop = function (id, isTop, result) {
 
@@ -193,7 +241,6 @@ productModel.All = function (query, result) {
         }
     });
 }
-
 
 productModel.v1_All = function (query, result) {
 
@@ -280,7 +327,6 @@ productModel.BigGet = function (result) {
     });
 }
 
-
 productModel.BigGet = function (result) {
 
 
@@ -295,8 +341,6 @@ productModel.BigGet = function (result) {
         }
     });
 }
-
-
 
 productModel.product_properties_edit_insert = function (data, result) {
     pool.query("call product_properties_edit_insert(?,?,?,?,?)", data, function (err, res, field) {
@@ -430,19 +474,5 @@ function filterProd(id, data) {
     return s;
 }
 
-// console.log("data:",filterProd(5,[
-//     {id:1,sub:0},
-//     {id:2,sub:1},
-//     {id:3,sub:2},
-//     {id:4,sub:0},
-//     {id:5,sub:4},
-//     {id:6,sub:3}]),"|||")
-
-// productModel.productByCategory(0,(err,result)=>{
-//     if(err){
-//         return console.log("last:",err)
-//     }
-//     console.log(result)
-// })
 
 module.exports = productModel;
