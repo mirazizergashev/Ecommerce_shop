@@ -98,8 +98,8 @@ app.use("/payme/1", async (req, res) => {
                         tuman, mfy, req.body.dostavka_id, tel])
                 .then(async (rest) => {
                     //  console.log(rest[0][1])
-                    bu = Buffer.from(`m=${merchant};ac.order=${rest[0][1][0].id};a=${req.body.amount * 100}`).toString('base64')
-                    // console.log(bu)
+                    bu = Buffer.from(`m=${merchant};ac.order=${rest[0][1][0].id};a=${req.body.amount *100}`).toString('base64')
+                    console.log(rest[0][1][0].id)
 pool.promise().query("call ecommerce_shop.promokod_use(?, -1);",rest[0][1][0].id)
 .then(e=>{
 
@@ -118,7 +118,7 @@ pool.promise().query("call ecommerce_shop.promokod_use(?, -1);",rest[0][1][0].id
 // payme etab 2
 app.use("/payme/2", async (req, res) => {
     data = req.body
-    console.log(data)
+    // console.log(data)
 
     if (!(data && data.id)) {
         return res.json({
