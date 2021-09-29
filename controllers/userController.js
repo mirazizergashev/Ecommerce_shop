@@ -734,6 +734,58 @@ userController.rolEdit = function (req, res) {
 
 
 
+userController.filter = function (req, res) {
+    userModel.filter(req.query,(err, rows) => {
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+        res.status(200).json({
+            code: 200,
+            success: rows
+        })
+    })
+}
+
+
+
+userController.resetPassword = function (req, res) {
+    userModel.resetPassword(req.body,(err, rows) => {
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+console.log(rows)
+        res.status(200).json({
+            code: 200,
+            success:  {
+                    message: {
+                        uz: "Parol muvaffaqiyatli o'zgartirildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+        })
+    })
+}
 
 
 module.exports = userController;

@@ -121,7 +121,7 @@ userModel.filter=function(query,result){
     where upper(first_name) like upper("%${ism||""}%")
     and upper(last_name) like upper("%${fam||""}%")
     and upper(phone) like upper("%${phone||""}%")
-    order by last_name desc`,[ism||"",fam||"",phone||""],function(err,res){
+    order by last_name desc`,function(err,res){
         if(err){
             return result(err,null);
         }else{
@@ -129,5 +129,19 @@ userModel.filter=function(query,result){
         }
     });
 }
-userModel.filter({ism:"a"},(err,res)=>console.log(res))
+
+
+userModel.resetPassword=function(body,result){
+    const {id,password}=body
+    // if(ism+fam+phone=="")
+    // return result(null,[])
+    pool.query(`update users set password=?
+    where id=? and role_id!=1`,[id||0,password],function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
 module.exports=userModel;
