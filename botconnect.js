@@ -36,10 +36,13 @@ inner join orders o  on o.id=t.order_id  where t.transaction_id=?;SELECT * FROM 
         }
         console.log(res)
         const dostvk=dostv.find(d=>d.id=k.dostavka_id)
-        sendSms(`💠 Yangi buyurtma:\n🔷 Fio:${k.fish}\n`+
+        sendSms(`💠 Yangi buyurtma:\n`+
+        `🔷 Vendor ID:${k.id}\n`+
+        `🔷 Fio:${k.fish}\n`+
         `🔷 Telefon:${k.phone}\n`+
         `🔷 Manzil: ${k.viloyat+", "+k.tuman+", "+k.mfy}\n`+
         `🔷 To'lov summasi:${k.amount}\n`+
+        `🔷 Chegirma summasi:${k.dicount}\n`+
         `🔷 Dastavka turi:${dostvk?dostvk.name:"Tanlanmagan"}\n`+
         `🔷 To'lov turi: ${k.isNaqd?"Naqd pul":("Plastik karta("+k.karta+")")}\n`+
         `🔷 Vaqt:${k.sana}`).then(e=>{
@@ -85,10 +88,13 @@ function sendClickTrans(order_id) {
         }
         console.log(res)
         const dostvk=dostv.find(d=>d.id=k.dostavka_id)
-        sendSms(`💠 Yangi buyurtma:\n🔷 Fio:${k.fish}\n`+
+        sendSms(`💠 Yangi buyurtma:\n`+
+        `🔷 Vendor ID:${k.id}\n`+
+        `🔷 Fio:${k.fish}\n`+
         `🔷 Telefon:${k.phone}\n`+
         `🔷 Manzil: ${k.viloyat+", "+k.tuman+", "+k.mfy}\n`+
         `🔷 To'lov summasi:${k.amount}\n`+
+        `🔷 Chegirma summasi:${k.dicount}\n`+
         `🔷 Dastavka turi:${dostvk?dostvk.name:"Tanlanmagan"}\n`+
         `🔷 To'lov turi: ${k.isNaqd?"Naqd pul":("Plastik karta("+k.karta+")")}\n`+
         `🔷 Vaqt:${k.sana}`).then(e=>{
