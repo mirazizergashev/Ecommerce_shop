@@ -1,34 +1,26 @@
 const express = require("express");
 const app = express();
 
-const md5 = require("md5");
 const pool = require("../../database/db");
+const {sendClickTrans}=require("../../botconnect")
 
-const card_type = "uzcard";
-const merchant_id = 13858
-const merchant_user_id = 21871
-const service_id = 19323
-const return_url = "http://buy-it.uz"
-const SECRET_KEY = 'ctcYM1seJm3'
+app.post("/order", async (req, res) => {
+    if (req.session.userId) {
 
 
-// click etab 1
-app.post("/naqd", async (req, res) => {
-    if (req.body) {
-
-
-        pool.promise().query(`insert into orders (user_id , amount , payme_state,state ,sana ,praduct_id ,isNaqd,karta,curyer) 
-    values (?,?,0,0 ,now() , ?,1,?,?) ; 
-    SELECT max(id) as id FROM orders WHERE isNaqd=1 and curyer=?`, [req.body.userId, req.body.amount, req.body.praduct_id, req.body.karta, req.session.userId, req.session.userId])
+        pool.promise().query(`insert into orders (user_id , amount ,state ,praduct_id ,isNaqd,curyer) 
+    values (?,?,0,?,1,?) ; 
+    SELECT max(id) as id FROM orders WHERE isNaqd=1 and user_id=?;`, [req.session.userId, req.body.amount,req.body.praduct_id,-1,req.session.userId])
             .then((rest) => {
-                console.log(rest[0])
+                // console.log(rest[0][1][0].id)
+                sendClickTrans(rest[0][1][0].id,1)
                 return res.status(200).json({
                     code: 200,
                     success: {
                         message: {
-                            uz: rest[0],
-                            en: rest[0],
-                            ru: rest[0]
+                            uz: "Muvvafaqiyatli tolov qilindi!",
+                            en: "Muvvafaqiyatli tolov qilindi!",
+                            ru: "Muvvafaqiyatli tolov qilindi!"
                         }
                     }
 
@@ -39,9 +31,86 @@ app.post("/naqd", async (req, res) => {
                     code: 400,
                     error: {
                         message: {
-                            uz: err,
-                            en: err,
-                            ru: err
+                            uz: "Tolov qilishda xatolik!",
+                            en: "Tolov qilishda xatolik!",
+                            ru: "Tolov qilishda xatolik!"
+                        }
+                    }
+
+                });
+            })
+    }
+    else{
+        let fish=req.body.fish||"fish";
+        let mfy=req.body.mfy||"mfy";
+        let tel=req.body.phone||"phone";
+        let viloyat=req.body.viloyat||"viloyat";
+        let tuman=req.body.tuman||"tuman";
+        pool.promise().query(`insert into orders (amount,state,praduct_id ,isNaqd,fish,phone,viloyat,tuman,mfy,dostavka_id) 
+        values (?,0,?,1,?,?,?,?,?,?) ;`
+        [req.body.amount,req.body.praduct_id,fish,tel,viloyat,tuman,mfy,req.body.dostavka_id])
+        .then((rest) => {
+            return res.status(200).json({
+                code: 200,
+                success: {
+                    message: {
+                        uz: "Muvvafaqiyatli buyurtma qilindi!",
+                        en: "Muvvafaqiyatli buyurtma qilindi!",
+                        ru: "Muvvafaqiyatli buyurtma qilindi!"
+                    }
+                }
+
+            });
+        }).catch((err) => {
+            return res.status(200).json({
+                code: 400,
+                error: {
+                    message: {
+                        uz: "Xatolik!",
+                        en: "Xatolik!",
+                        ru: "Xatolik!"
+                    }
+                }
+
+            });
+        })
+    }
+
+
+
+})
+
+
+app.post("/naqd", async (req, res) => {
+    if (req.body) {
+
+
+        pool.promise().query(`insert into orders (user_id , amount ,state ,praduct_id ,isNaqd,curyer) 
+    values (?,?,2,?,1,?) ; 
+    SELECT max(id) as id FROM orders WHERE isNaqd=1 and curyer=?`, [req.body.userId, req.body.amount,req.body.praduct_id,req.session.userId, req.session.userId])
+            .then((rest) => {
+                // console.log(rest[0][1][0].id)
+                // sendClickTrans(rest[0][1][0].id,1)
+                return res.status(200).json({
+                    code: 200,
+                    success: {
+                        message: {
+                            uz: "Muvvafaqiyatli tolov qilindi!",
+                            en: "Muvvafaqiyatli tolov qilindi!",
+                            ru: "Muvvafaqiyatli tolov qilindi!"
+                        }
+                    }
+
+                });
+            }).catch((err) => {
+                console.log(err)
+                return res.status(200).json({
+                    code: 400,
+                    error: {
+                        message: {
+                            uz: "Tolov qilishda xatolik!",
+                            en: "Tolov qilishda xatolik!",
+                            ru: "Tolov qilishda xatolik!"
                         }
                     }
 
@@ -52,6 +121,7 @@ app.post("/naqd", async (req, res) => {
 
 
 })
+
 
 // click etab 2
 app.use("/click/2", async (req, res) => {
