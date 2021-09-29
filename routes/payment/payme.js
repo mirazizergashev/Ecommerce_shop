@@ -85,33 +85,16 @@ app.use("/payme/1", async (req, res) => {
                 sv=`,${result.id},${disc}`
 
         }
-        if (req.session.userId) {
-            await pool.promise()
-                .query("insert into orders (user_id , amount , payme_state , state  ,sana,praduct_id,dostavka_id"+sn+")" +
-                    "values (?,?,0,0,now(),?,?"+sv+") ; SELECT max(id) as id FROM orders " +
-                    "WHERE user_id=? ", [req.session.userId, req.body.amount, req.body.praduct_id, req.body.dostavka_id, req.session.userId])
-                .then(async (rest) => {
-                    console.log(rest[0][1])
-                    bu = Buffer.from(`m=${merchant};ac.order=${rest[0][1][0].id};a=${req.body.amount * 100}`).toString('base64')
-                    // console.log(bu)
-
-                    res.redirect(`/payme-ghvcjhbcfkrhkjdfhkjdfn/${bu}`);
-
-                }).catch((err) => {
-                    console.log(err)
-                    res.json({ error: 2, error_note: "Not" });
-                })
-        }
-        else {
+       
             let fish = req.body.fish || "fish";
             let mfy = req.body.mfy || "mfy";
             let tel = req.body.phone || "phone";
             let viloyat = req.body.viloyat || "viloyat";
             let tuman = req.body.tuman || "tuman";
             await pool.promise()
-                .query("insert into orders (amount , payme_state , state , phone ,sana,praduct_id,fish,viloyat,tuman,mfy,dostavka_id"+sn+") " +
-                    "values (?,0,0,?,now(),?,?,?,?,?,?"+sv+") ; SELECT max(id) as id FROM orders WHERE phone=?",
-                    [req.body.amount, tel, req.body.praduct_id, fish, viloyat,
+                .query("insert into orders (user_id,amount , payme_state , state , phone ,sana,praduct_id,fish,viloyat,tuman,mfy,dostavka_id"+sn+") " +
+                    "values (?,?,0,0,?,now(),?,?,?,?,?,?"+sv+") ; SELECT max(id) as id FROM orders WHERE phone=?",
+                    [req.session.userId||null,req.body.amount, tel, req.body.praduct_id, fish, viloyat,
                         tuman, mfy, req.body.dostavka_id, tel])
                 .then(async (rest) => {
                     //  console.log(rest[0][1])
@@ -127,7 +110,7 @@ pool.promise().query("call ecommerce_shop.promokod_use(?, -1);",rest[0][1][0].id
                     console.log(err)
                     res.json({ error: 2, error_note: "Not" });
                 })
-        }
+        
     }
 })
 
