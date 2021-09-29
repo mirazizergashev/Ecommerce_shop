@@ -46,7 +46,68 @@ app.get("/money", async (req, res) => {
 app.get("/click", async(req, res) => {
     req.body = req.query
 if(req.body){
-    console.log(req.session.userId)
+    console.log(req.session.userId) 
+    let sn="",sv="",disc
+    if (req.body.promokod) {
+        //promokod
+       
+       const result=await pool.promise()
+            .query("call promokod_checker(?)", [req.body.promokod])
+            .then((rest) => {
+                
+                if (rest[1][0].natija != 1) {
+                    return {
+                        error: {
+                            message: {
+                                uz: "Promokod noto'g'ri kiritilgan!",
+                                en: "A new user has been created!",
+                                ru: "Создан новый пользователь!"
+                            }
+                        }
+                    }
+
+                }
+                if (rest[0][0].isActive == 0 || rest[0][0].count*1 <= 0) {
+                    return {
+                        error: {
+                            message: {
+                                uz: "Eskirgan promokod!",
+                                en: "A new user has been created!",
+                                ru: "Создан новый пользователь!"
+                            }
+                        }
+                    }
+
+                }
+                return {
+                    data: rows[0][0]
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+                return {
+                    error: {
+                        message: {
+                            uz: "Promokodni tekshirishda xatolik!",
+                            en: "A new user has been created!",
+                            ru: "Создан новый пользователь!"
+                        }
+                    }
+                };
+            })
+            if(result.error){
+               return res.json({ error: 2, error_note:result.error.message  });
+            }
+             sn=`,promokod_id,discount`
+            if(result.isFoiz){
+                disc=req.body.amount*1*(100-1*result.amount)
+            }else{
+                disc=req.body.amount*-1*result.amount
+            }
+            req.body.amount=req.body.amount*1-disc
+            sv=`,${result.id},${disc}`
+
+    }
     if(req.session.userId){
 
     pool.promise().query(`insert into orders (user_id , amount , payme_state ,sana ,praduct_id ,isClick,karta,dostavka_id) 
@@ -54,7 +115,10 @@ if(req.body){
     SELECT max(id) as id FROM orders WHERE user_id=?`,
     [req.session.userId,req.body.amount,req.body.praduct_id,req.body.karta,req.body.dostavka_id,req.session.userId])
     .then((rest) => {
-         res.redirect(`/click-ghvcjhhtrfhhkjdfhkjdfn/service/transaction_param=${rest[0][1][0].id}&`+
+        pool.promise().query("call ecommerce_shop.promokod_use(?, -1);",rest[0][1][0].id)
+    .then(e=>{})
+    .catch(err=>console.log({error:"promokod change",err}))
+res.redirect(`/click-ghvcjhhtrfhhkjdfhkjdfn/service/transaction_param=${rest[0][1][0].id}&`+
          `amount=${req.body.amount}&card_type=${req.body.karta}&merchant_id=${merchant_id}`+
          `&merchant_user_id=${merchant_user_id}&`+
          `service_id=${service_id}&return_url=${return_url}`)
