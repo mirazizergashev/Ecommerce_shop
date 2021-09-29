@@ -1,3 +1,4 @@
+const f = require('session-file-store');
 var pool= require('../database/db');
 
 var userModel=function(){}
@@ -110,4 +111,23 @@ userModel.getSalesmen=function(result){
         }
     });
 }
+
+
+userModel.filter=function(query,result){
+    const {ism,fam,phone}=query
+    // if(ism+fam+phone=="")
+    // return result(null,[])
+    pool.query(`SELECT id,last_name ism,first_name fam,phone FROM users 
+    where upper(first_name) like upper("%${ism||""}%")
+    and upper(last_name) like upper("%${fam||""}%")
+    and upper(phone) like upper("%${phone||""}%")
+    order by last_name desc`,[ism||"",fam||"",phone||""],function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
+userModel.filter({ism:"a"},(err,res)=>console.log(res))
 module.exports=userModel;
