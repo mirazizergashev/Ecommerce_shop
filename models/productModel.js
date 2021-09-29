@@ -107,8 +107,8 @@ productModel.statisticShop = function (start, end, result) {
         //necha marta sotilgani
         k.forEach((e, asos) => {
 
-            if (Array.isArray(eval(e.massiv))) {
-                arr2 = eval(e.massiv);
+            if (Array.isArray(JSON.parse(e.massiv))) {
+                arr2 = JSON.parse(e.massiv);
 
                 // console.log(k.length)
                 arr2.forEach((ee) => {

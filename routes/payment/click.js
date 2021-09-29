@@ -116,6 +116,7 @@ if(req.body){
     let tel=req.body.phone|| null;
     let viloyat=req.body.viloyat|| null;
     let tuman=req.body.tuman|| null;
+    console.log(req.body)
     pool.promise().query(`insert into orders (user_id,amount,payme_state,state,sana ,praduct_id ,isClick,karta,fish,phone,viloyat,tuman,mfy,dostavka_id${sn}) 
     values (?,?,0,0 ,now(),?,1,?,?,?,?,?,?,?${sv}) ; 
     SELECT max(id) as id FROM orders WHERE phone=?`,
