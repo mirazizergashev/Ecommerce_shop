@@ -17,14 +17,14 @@ function sendTransOrder(trans_id) {
   pool.promise().query(`SELECT o.*,date_format(o.sana,'%Y-%m-%d, %h:%i:%s') sana FROM transactions t
 inner join orders o  on o.id=t.order_id  where t.transaction_id=?;SELECT * FROM dostavka_type;`, [trans_id])
     .then(rows => {
-      const k=rows[0][0][0],dostv=rows[0][1]
-      console.warn({dostv})
-      if(!k)return console.info("noto'g'ri trans id bot uchun...")
-      let prod=eval(k.praduct_id)
+      const k = rows[0][0][0], dostv = rows[0][1]
+      console.warn({ dostv })
+      if (!k) return console.info("noto'g'ri trans id bot uchun...")
+      let prod = eval(k.praduct_id)
       console.log(prod)
-      let ss=""
+      let ss = ""
       prod.forEach(e => {
-        ss+=e.product_id+","
+        ss += e.product_id + ","
       });
       ss=ss.slice(0,-1)
       pool.query(`SELECT p.id,concat(u.first_name," ",u.last_name) fish,p.name,
@@ -62,7 +62,7 @@ inner join orders o  on o.id=t.order_id  where t.transaction_id=?;SELECT * FROM 
       
     
       })
-    
+
     })
     .catch(err => console.error({
       boterror: err
@@ -115,14 +115,13 @@ function sendClickTrans(order_id) {
         sendSms(s)
         })
         })
-      
-    
+  
       })
-    
-    })
-    .catch(err => console.error({
-      boterror: err
-    }))
+      .catch(err => console.error({
+        boterror: err
+      }))
+  })
+  
 }
 
 
