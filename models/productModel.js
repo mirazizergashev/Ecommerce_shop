@@ -94,7 +94,6 @@ productModel.statisticShop = function (start, end, result) {
     console.log(start)
     pool.query(`SELECT praduct_id as massiv FROM orders where state=2 and date(sana) between date('${start}') and date('${end}');`, function (err, res) {
         if (err) {
-
             return result(err, null);
         }
 
@@ -108,8 +107,8 @@ productModel.statisticShop = function (start, end, result) {
         //necha marta sotilgani
         k.forEach((e, asos) => {
 
-            if (Array.isArray(eval(e.massiv))) {
-                arr2 = eval(e.massiv);
+            if (Array.isArray(JSON.parse(e.massiv))) {
+                arr2 = JSON.parse(e.massiv);
 
                 // console.log(k.length)
                 arr2.forEach((ee) => {
@@ -395,7 +394,7 @@ productModel.productByCategory = function (id = 0, result) {
 
             pool.query(`SELECT p.*,pi.id as idcha,pi.img_url,pp.cat_prop_id,pp.values FROM product p left join product_image pi on pi.product_id=p.id and 
             pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1) left join 
-            product_properties pp on pp.product_id=p.id where p.category_id in (${ids || null});`, function (err2, res) {
+            product_properties pp on pp.product_id=p.id where p.isActive=1 and p.category_id in (${ids || null});`, function (err2, res) {
                 if (err2) {
                     console.log("err2")
                     return result(err2, null);

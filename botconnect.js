@@ -20,8 +20,8 @@ inner join orders o  on o.id=t.order_id  where t.transaction_id=?;SELECT * FROM 
       const k = rows[0][0][0], dostv = rows[0][1]
       console.warn({ dostv })
       if (!k) return console.info("noto'g'ri trans id bot uchun...")
-      let prod = eval(k.praduct_id)
-      console.log(prod)
+      let prod=JSON.parse(k.praduct_id).data
+
       let ss = ""
       prod.forEach(e => {
         ss += e.product_id + ","
@@ -59,8 +59,7 @@ inner join orders o  on o.id=t.order_id  where t.transaction_id=?;SELECT * FROM 
         sendSms(s)
         })
         })
-      
-    
+  
       })
 
     })
@@ -68,15 +67,17 @@ inner join orders o  on o.id=t.order_id  where t.transaction_id=?;SELECT * FROM 
       boterror: err
     }))
 }
-
+// sendClickTrans(45)
 function sendClickTrans(order_id) {
+  console.log(order_id)
+  console.log("order_id")
   pool.promise().query(`SELECT *,date_format(sana,'%Y-%m-%d, %h:%i:%s') sana FROM orders
   where id=?;SELECT * FROM dostavka_type;`, [order_id])
     .then(rows => {
       const k=rows[0][0][0],dostv=rows[0][1]
-      console.warn({dostv})
+      // console.warn({dostv})
       if(!k)return console.info("noto'g'ri trans id bot uchun...")
-      let prod=eval(k.praduct_id)
+      let prod=JSON.parse(k.praduct_id).data
       console.log(prod)
       let ss=""
       prod.forEach(e => {
@@ -117,10 +118,10 @@ function sendClickTrans(order_id) {
         })
   
       })
-      .catch(err => console.error({
-        boterror: err
-      }))
+      
   })
+  .catch(err =>{ console.error(err)})
+
   
 }
 
