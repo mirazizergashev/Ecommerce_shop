@@ -2,54 +2,21 @@ const express = require("express");
 const app = express();
 
 const pool = require("../../database/db");
-const {sendClickTrans}=require("../../botconnect")
+const { sendClickTrans } = require("../../botconnect")
 
 app.post("/order", async (req, res) => {
-    if (req.session.userId) {
 
-
-        pool.promise().query(`insert into orders (user_id , amount ,state ,praduct_id ,isNaqd,curyer) 
-    values (?,?,0,?,1,?) ; 
-    SELECT max(id) as id FROM orders WHERE isNaqd=1 and user_id=?;`, [req.session.userId, req.body.amount,req.body.praduct_id,-1,req.session.userId])
-            .then((rest) => {
-                // console.log(rest[0][1][0].id)
-                sendClickTrans(rest[0][1][0].id,1)
-                return res.status(200).json({
-                    code: 200,
-                    success: {
-                        message: {
-                            uz: "Muvvafaqiyatli tolov qilindi!",
-                            en: "Muvvafaqiyatli tolov qilindi!",
-                            ru: "Muvvafaqiyatli tolov qilindi!"
-                        }
-                    }
-
-                });
-            }).catch((err) => {
-                console.log(err)
-                return res.status(200).json({
-                    code: 400,
-                    error: {
-                        message: {
-                            uz: "Tolov qilishda xatolik!",
-                            en: "Tolov qilishda xatolik!",
-                            ru: "Tolov qilishda xatolik!"
-                        }
-                    }
-
-                });
-            })
-    }
-    else{
-        let fish=req.body.fish||"fish";
-        let mfy=req.body.mfy||"mfy";
-        let tel=req.body.phone||"phone";
-        let viloyat=req.body.viloyat||"viloyat";
-        let tuman=req.body.tuman||"tuman";
-        pool.promise().query(`insert into orders (amount,state,praduct_id ,isNaqd,fish,phone,viloyat,tuman,mfy,dostavka_id) 
-        values (?,0,?,1,?,?,?,?,?,?) ;`
-        [req.body.amount,req.body.praduct_id,fish,tel,viloyat,tuman,mfy,req.body.dostavka_id])
+    let fish = req.body.fish || null;
+    let mfy = req.body.mfy || null;
+    let tel = req.body.phone || null;
+    let viloyat = req.body.viloyat || null;
+    let tuman = req.body.tuman || null;
+    console.log('llll')
+    pool.promise().query(`insert into orders (user_id,amount,state,praduct_id ,isNaqd,fish,phone,viloyat,tuman,mfy,dostavka_id,curyer) 
+        values (?,?,0,?,1,?,?,?,?,?,?,-1) ;
+        SELECT max(id) as id FROM orders WHERE isNaqd=1 and amount=?`, [req.session.userId || null, req.body.amount, req.body.praduct_id, fish, tel, viloyat, tuman, mfy, req.body.dostavka_id,req.body.amount])
         .then((rest) => {
+            sendClickTrans(rest[0][1][0].id,1)
             return res.status(200).json({
                 code: 200,
                 success: {
@@ -62,6 +29,7 @@ app.post("/order", async (req, res) => {
 
             });
         }).catch((err) => {
+            console.error("err", err)
             return res.status(200).json({
                 code: 400,
                 error: {
@@ -74,9 +42,6 @@ app.post("/order", async (req, res) => {
 
             });
         })
-    }
-
-
 
 })
 
@@ -87,7 +52,7 @@ app.post("/naqd", async (req, res) => {
 
         pool.promise().query(`insert into orders (user_id , amount ,state ,praduct_id ,isNaqd,curyer) 
     values (?,?,2,?,1,?) ; 
-    SELECT max(id) as id FROM orders WHERE isNaqd=1 and curyer=?`, [req.body.userId, req.body.amount,req.body.praduct_id,req.session.userId, req.session.userId])
+    SELECT max(id) as id FROM orders WHERE isNaqd=1 and curyer=?`, [req.body.userId, req.body.amount, req.body.praduct_id, req.session.userId, req.session.userId])
             .then((rest) => {
                 // console.log(rest[0][1][0].id)
                 // sendClickTrans(rest[0][1][0].id,1)

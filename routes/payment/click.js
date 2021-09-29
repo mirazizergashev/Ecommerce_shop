@@ -108,36 +108,18 @@ if(req.body){
             sv=`,${result.id},${disc}`
 
     }
-    if(req.session.userId){
-
-    pool.promise().query(`insert into orders (user_id , amount , payme_state ,sana ,praduct_id ,isClick,karta,dostavka_id) 
-    values (?,?,0,0 ,now() , ?,1,?,?) ; 
-    SELECT max(id) as id FROM orders WHERE user_id=?`,
-    [req.session.userId,req.body.amount,req.body.praduct_id,req.body.karta,req.body.dostavka_id,req.session.userId])
-    .then((rest) => {
-        pool.promise().query("call ecommerce_shop.promokod_use(?, -1);",rest[0][1][0].id)
-    .then(e=>{})
-    .catch(err=>console.log({error:"promokod change",err}))
-res.redirect(`/click-ghvcjhhtrfhhkjdfhkjdfn/service/transaction_param=${rest[0][1][0].id}&`+
-         `amount=${req.body.amount}&card_type=${req.body.karta}&merchant_id=${merchant_id}`+
-         `&merchant_user_id=${merchant_user_id}&`+
-         `service_id=${service_id}&return_url=${return_url}`)
-    }).catch((err) => {
-        console.log(err)
-         res.json({ error: 2, error_note: "Not" });
-    })
-}
-else{
-    let fish=req.body.fish||"fish";
-    let mfy=req.body.mfy||"mfy";
-    let tel=req.body.phone||"phone";
-    let viloyat=req.body.viloyat||"viloyat";
-    let tuman=req.body.tuman||"tuman";
-    pool.promise().query(`insert into orders (amount,payme_state,state,sana ,praduct_id ,isClick,karta,fish,phone,viloyat,tuman,mfy,dostavka_id) 
+  
+    let fish=req.body.fish|| null;
+    let mfy=req.body.mfy|| null;
+    let tel=req.body.phone|| null;
+    let viloyat=req.body.viloyat|| null;
+    let tuman=req.body.tuman|| null;
+    pool.promise().query(`insert into orders (user_id,amount,payme_state,state,sana ,praduct_id ,isClick,karta,fish,phone,viloyat,tuman,mfy,dostavka_id) 
     values (?,0,0 ,now(),?,1,?,?,?,?,?,?,?) ; 
     SELECT max(id) as id FROM orders WHERE phone=?`,
-    [req.body.amount,req.body.praduct_id,req.body.karta,fish,tel,viloyat,tuman,mfy,req.body.dostavka_id,tel])
+    [req.session.userId,req.body.amount,req.body.praduct_id,req.body.karta,fish,tel,viloyat,tuman,mfy,req.body.dostavka_id,tel])
     .then((rest) => {
+        console.log(rest[0][1])
          res.redirect(`/click-ghvcjhhtrfhhkjdfhkjdfn/service/transaction_param=${rest[0][1][0].id}&`+
          `amount=${req.body.amount}&card_type=${req.body.karta}&merchant_id=${merchant_id}`+
          `&merchant_user_id=${merchant_user_id}&`+
@@ -146,7 +128,7 @@ else{
         console.log(err)
          res.json({ error: 2, error_note: "Not" });
     })
-}
+
 
 }
 })
