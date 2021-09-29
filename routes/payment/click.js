@@ -114,7 +114,11 @@ if(req.body){
     let tel=req.body.phone|| null;
     let viloyat=req.body.viloyat|| null;
     let tuman=req.body.tuman|| null;
-    pool.promise().query(`insert into orders (user_id,amount,payme_state,state,sana ,praduct_id ,isClick,karta,fish,phone,viloyat,tuman,mfy,dostavka_id) 
+    pool.query("select * from dostavka_type where id=?",req.body.dostavka_id,(err,rslt)=>{
+      if(err){console.error(err);
+        return res.json({ error: 2, error_note: "Not" });}
+        req.body.amount=req.body.amount*1+rslt[0].cost*1
+      pool.promise().query(`insert into orders (user_id,amount,payme_state,state,sana ,praduct_id ,isClick,karta,fish,phone,viloyat,tuman,mfy,dostavka_id) 
     values (?,0,0 ,now(),?,1,?,?,?,?,?,?,?) ; 
     SELECT max(id) as id FROM orders WHERE phone=?`,
     [req.session.userId,req.body.amount,req.body.praduct_id,req.body.karta,fish,tel,viloyat,tuman,mfy,req.body.dostavka_id,tel])
@@ -128,7 +132,9 @@ if(req.body){
         console.log(err)
          res.json({ error: 2, error_note: "Not" });
     })
-
+   
+    })
+   
 
 }
 })
