@@ -79,10 +79,12 @@ function sendClickTrans(order_id) {
         ss+=e.product_id+","
       });
       ss=ss.slice(0,-1)
-      pool.query(`SELECT p.id,p.name,group_concat(pp.values separator ", ") properties 
-      FROM product p left join product_properties pp 
-      on pp.product_id=p.id and pp.isActive=1 where p.id in (${ss})
-      group by p.id;`,(err,res)=>{
+      pool.query(`SELECT p.id,concat(u.first_name," ",u.last_name) fish,p.name,
+      group_concat(pp.values separator ", ") properties 
+            FROM product p left join product_properties pp 
+            on pp.product_id=p.id and pp.isActive=1 
+            left join users u on u.id=p.user_id where p.id in (${ss})
+            group by p.id;`,(err,res)=>{
         if(err){
           return console.error({err,path:"botConnect"})
         }
@@ -103,6 +105,7 @@ function sendClickTrans(order_id) {
         `🔸 Rangi:${res.find(pr=>pr.id=e.product_id).properties}\n`+
         `🔸 Soni:${e.count}\n`+
         `🔸 Maxsulot narxi: ${e.amount}`
+        `🔸 Dostavkachi: ${res.find(pr=>pr.id=e.product_id).fish}`
         // console.log(rows[0][0])
         sendSms(s)
         })
