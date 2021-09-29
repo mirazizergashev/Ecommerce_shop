@@ -3,6 +3,8 @@ const app = express();
 
 const md5 = require("md5");
 const pool = require("../../database/db");
+const { sendClickTrans } = require("../../botconnect")
+
 
 const card_type = "uzcard";
 const merchant_id =13858
@@ -114,12 +116,14 @@ if(req.body){
     let tel=req.body.phone|| null;
     let viloyat=req.body.viloyat|| null;
     let tuman=req.body.tuman|| null;
-    pool.promise().query(`insert into orders (user_id,amount,payme_state,state,sana ,praduct_id ,isClick,karta,fish,phone,viloyat,tuman,mfy,dostavka_id) 
-    values (?,0,0 ,now(),?,1,?,?,?,?,?,?,?) ; 
+    pool.promise().query(`insert into orders (user_id,amount,payme_state,state,sana ,praduct_id ,isClick,karta,fish,phone,viloyat,tuman,mfy,dostavka_id${sn}) 
+    values (?,?,0,0 ,now(),?,1,?,?,?,?,?,?,?${sv}) ; 
     SELECT max(id) as id FROM orders WHERE phone=?`,
     [req.session.userId,req.body.amount,req.body.praduct_id,req.body.karta,fish,tel,viloyat,tuman,mfy,req.body.dostavka_id,tel])
     .then((rest) => {
-        console.log(rest[0][1])
+// const { sendClickTrans } = require("../../botconnect")
+console.log(rest[0][1][0].id)
+        sendClickTrans(rest[0][1][0].id)
          res.redirect(`/click-ghvcjhhtrfhhkjdfhkjdfn/service/transaction_param=${rest[0][1][0].id}&`+
          `amount=${req.body.amount}&card_type=${req.body.karta}&merchant_id=${merchant_id}`+
          `&merchant_user_id=${merchant_user_id}&`+
@@ -161,7 +165,7 @@ app.use("/click/2", async(req, res) => {
 // click etab 3
 app.use("/click/3", async(req, res) => {
     const h =req.body 
-    // console.log('click3')
+    console.log('click3')
     if (h.action == '1' && h.error == '0') {
        const md5hash = md5(h.click_trans_id+h.service_id+SECRET_KEY+h.merchant_trans_id+h.merchant_prepare_id+h.amount+h.action+h.sign_time)
         if(md5hash==req.body.sign_string){
@@ -170,7 +174,7 @@ app.use("/click/3", async(req, res) => {
              UPDATE orders SET payme_state=1 ,state=2 WHERE id=?; `,
              [req.body.merchant_prepare_id,req.body.merchant_trans_id])
             .then((rest) => {
-                sendClickTrans(req.body.merchant_trans_id)
+                // sendClickTrans(req.body.merchant_trans_id)
                  res.json({ 
                     click_trans_id:h.click_trans_id,
                     merchant_trans_id: h.merchant_trans_id, 
@@ -179,6 +183,7 @@ app.use("/click/3", async(req, res) => {
                     error_note: "Success" 
                     });
              }).catch((err) => {
+                 console.log(err)
                 res.json({ error: 1, error_note: "Not" });
              })
         } 

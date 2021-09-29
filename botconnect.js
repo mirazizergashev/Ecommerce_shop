@@ -64,7 +64,7 @@ inner join orders o  on o.id=t.order_id  where t.transaction_id=?;SELECT * FROM 
       boterror: err
     }))
 }
-
+sendClickTrans(45)
 function sendClickTrans(order_id) {
   pool.promise().query(`SELECT *,date_format(sana,'%Y-%m-%d, %h:%i:%s') sana FROM orders
   where id=?;SELECT * FROM dostavka_type;`, [order_id])
@@ -72,7 +72,7 @@ function sendClickTrans(order_id) {
       const k=rows[0][0][0],dostv=rows[0][1]
       console.warn({dostv})
       if(!k)return console.info("noto'g'ri trans id bot uchun...")
-      let prod=eval(k.praduct_id)
+      let prod=JSON.parse(k.praduct_id).data
       console.log(prod)
       let ss=""
       prod.forEach(e => {
