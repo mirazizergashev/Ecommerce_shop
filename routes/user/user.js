@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const upload = require("../../middleware/upload")
+const {isAdmin} = require("../../middleware/auth")
 const userController=require("../../controllers/userController")
 
 
@@ -16,5 +17,7 @@ router.get("/img/:url",userController.getOneImg)
 router.get("/images", userController.getAllImges)
 router.post("/img", upload, userController.uploadImg );
 router.post("/block", userController.block);//blok qilish
+router.get("/filter",[isAdmin],userController.filter)
+router.post("/resetPassword",[isAdmin],userController.resetPassword)
 
 module.exports = router;
