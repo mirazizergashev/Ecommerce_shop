@@ -91,7 +91,11 @@ app.use("/payme/1", async (req, res) => {
             let tel = req.body.phone || "phone";
             let viloyat = req.body.viloyat || "viloyat";
             let tuman = req.body.tuman || "tuman";
-            await pool.promise()
+            pool.query("select * from dostavka_type where id=?",req.body.dostavka_id,(err,rslt)=>{
+                if(err){console.error(err);
+                  return res.json({ error: 2, error_note: "Not" });}
+                  req.body.amount=req.body.amount*1+rslt[0].cost*1
+             pool.promise()
                 .query("insert into orders (user_id,amount , payme_state , state , phone ,sana,praduct_id,fish,viloyat,tuman,mfy,dostavka_id"+sn+") " +
                     "values (?,?,0,0,?,now(),?,?,?,?,?,?"+sv+") ; SELECT max(id) as id FROM orders WHERE phone=?",
                     [req.session.userId||null,req.body.amount, tel, req.body.praduct_id, fish, viloyat,
@@ -110,6 +114,8 @@ pool.promise().query("call ecommerce_shop.promokod_use(?, -1);",rest[0][1][0].id
                     console.log(err)
                     res.json({ error: 2, error_note: "Not" });
                 })
+
+            })
         
     }
 })
