@@ -136,7 +136,7 @@ userModel.resetPassword=function(body,result){
     // if(ism+fam+phone=="")
     // return result(null,[])
     pool.query(`update users set password=?
-    where id=? and role_id!=1`,[id||0,password],function(err,res){
+    where id=? and role_id!=1`,[password,id||0],function(err,res){
         if(err){
             return result(err,null);
         }else{

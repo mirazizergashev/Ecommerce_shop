@@ -14,11 +14,11 @@ const authCheck = (req, res, next) => {
 }
 const isAdmin = (req, res, next) => {
     //  session mavjud bo'lmasa ...
-    if (!req.session.userId || req.session.userId!=1 )
+    if (!req.session.userId || req.session.roleId!=1 )
         return res.status(200).json({
-            code:404,
+            code:403,
             error: {
-                message: "Iltimos shaxsiy kabinetingizga kiring !"
+                message: "Sizga ushbu api dan foydalanishga ruxsat berilmagan !"
             }
         })
 
