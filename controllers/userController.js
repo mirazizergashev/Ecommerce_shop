@@ -774,7 +774,8 @@ userController.resetPassword = function (req, res) {
             })
         }
 console.log(rows)
-        res.status(200).json({
+if(rows.changedRows)
+       return res.status(200).json({
             code: 200,
             success:  {
                     message: {
@@ -783,6 +784,17 @@ console.log(rows)
                         ru: "Отклонено из-за ошибки сервера!"
                     }
                 }
+        })
+
+        res.status(200).json({
+            code: 404,
+            error: {
+                message: {
+                    uz: "Foydalanuvchi topilmadi !",
+                    en: "Rejected due to server error!",
+                    ru: "Отклонено из-за ошибки сервера!"
+                }
+            }
         })
     })
 }
