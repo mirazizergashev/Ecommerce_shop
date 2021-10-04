@@ -3,8 +3,12 @@ const app = express();
 
 const md5 = require("md5");
 const pool = require("../../database/db");
-const { sendClickTrans } = require("../../botconnect");
-const { query } = require("../../database/db");
+const {
+    sendClickTrans
+} = require("../../botconnect");
+const {
+    query
+} = require("../../database/db");
 
 
 const card_type = "uzcard";
@@ -50,7 +54,9 @@ app.get("/click", async (req, res) => {
     req.body = req.query
     req.body.amount = parseFloat(req.body.amount)
     if (req.body) {
-        req.promokod = { Run: cost=>0 }
+        req.promokod = {
+            Run: cost => 0
+        }
         if (req.body.promokod) {
             //promokod
             console.log("promokod")
@@ -100,9 +106,14 @@ app.get("/click", async (req, res) => {
                 })
             if (result.error) {
                 console.log(result.error)
-                return res.json({ error: 2, error_note: result.error.message });
+                return res.json({
+                    error: 2,
+                    error_note: result.error.message
+                });
             }
-            req.promokod = { id: result.id }
+            req.promokod = {
+                id: result.id
+            }
             //  console.log("result.amount)",result.amount,"||",result.isFoiz*1)
             req.promokod.Run = (cost = 0) => {
                 if (result.isFoiz * 1)
@@ -115,11 +126,15 @@ app.get("/click", async (req, res) => {
         pool.query("select * from dostavka_type where id=?", req.body.dostavka_id, async (err, rslt) => {
             if (err) {
                 console.error(err);
-                return res.json({ error: 2, error_note: "Not" });
+                return res.json({
+                    error: 2,
+                    error_note: "Not"
+                });
             }
-            req.body.amount = req.body.amount * 1 + rslt[0].cost * 1
-            req.body.amount = Math.ceil(req.body.amount * 100) / 100
-            
+            // req.body.amount = req.body.amount * 1 + rslt[0].cost * 1
+            // req.body.amount = Math.ceil(req.body.amount * 100) / 100
+            req.Dostavka=(amount)=>Math.ceil((amount * 1 + rslt[0].cost * 1)*100)/100;
+
             let fish = req.body.fish || null;
             let mfy = req.body.mfy || null;
             let tel = req.body.phone || null;
@@ -129,9 +144,11 @@ app.get("/click", async (req, res) => {
 
             pool.promise().query(`insert into orders (user_id,payme_state,state,sana  ,isClick,karta,fish,phone,viloyat,tuman,mfy,dostavka_id) 
     values (?,0,0 ,now(),1,?,?,?,?,?,?,?) ;`,
-                [req.session.userId, req.body.karta, fish, tel, viloyat, tuman, mfy, req.body.dostavka_id])
+                    [req.session.userId, req.body.karta, fish, tel, viloyat, tuman, mfy, req.body.dostavka_id])
                 .then((rest) => {
-                    let { data } = JSON.parse(req.body.praduct_id), s = "", a = [], notFounds = [], lessProd = []
+                    let {
+                        data
+                    } = JSON.parse(req.body.praduct_id), s = "", a = [], notFounds = [], lessProd = []
                     data.forEach((e, i) => {
                         s += "SELECT *,cost cost2 FROM product WHERE id=? and isActive=1;";
                         a.push(e.product_id)
@@ -139,17 +156,30 @@ app.get("/click", async (req, res) => {
                     s += "SELECT id,sub,percent,isFoiz FROM category WHERE isActive=1;";
                     pool.query(s, a, (err, rows) => {
                         if (err) {
-                            console.error({ err })
-                            return res.json({ error: 2, error_note: "Not" });
+                            console.error({
+                                err
+                            })
+                            return res.json({
+                                error: 2,
+                                error_note: "Not"
+                            });
                         }
                         data.forEach((e, i) => {
                             if (rows[i].length == 0) {
-                                notFounds.push({ id: e.product_id, name: e.name })
+                                notFounds.push({
+                                    id: e.product_id,
+                                    name: e.name
+                                })
                             } else {
                                 if (rows[i][0].count * 1 < e.count) {
-                                    lessProd.push({ id: e.product_id, name: e.name, count: e.count })
+                                    lessProd.push({
+                                        id: e.product_id,
+                                        name: e.name,
+                                        count: e.count
+                                    })
                                 } else {
                                     rows[i][0].cost = rows[i][0].cost * 1 * (100 - 1 * rows[i][0].discount) / 100
+                                    rows[i][0].cost2 = rows[i][0].cost2 * 1 * (100 - 1 * rows[i][0].discount) / 100
                                     if (rows[i][0].cost < 0) rows[i][0].cost = 0
                                     changeCosts(rows[rows.length - 1], rows[i])
 
@@ -160,27 +190,54 @@ app.get("/click", async (req, res) => {
                         if (notFounds.length > 0) check.notFounds = notFounds
                         if (lessProd.length > 0) check.lessProd = lessProd
                         if (check) {
-                            return res.json({ error: 2, error_note: "Not", notes: check });
+                            return res.json({
+                                error: 2,
+                                error_note: "Not",
+                                notes: check
+                            });
                         }
 
-                        let so = "", aso = []
+                        let so = "INSERT INTO suborder(order_id,product_id,count,cost,discount,name,system_cost) VALUES",
+                            aso = [],summa=0
                         data.forEach((e, i) => {
-                            so += `INSERT INTO suborder(order_id,product_id,count,cost,discount,name,system_cost)
-                            VALUES(?,?,?,?,?,?,?);`
+                            so += `(?,?,?,?,?,?,?),`
                             aso.push(rest[0].insertId, e.product_id, e.count, rows[i][0].cost,
-                                req.promokod.Run(rows[i][0].cost),rows[i][0].name,)
+                                req.promokod.Run(rows[i][0].cost), rows[i][0].name,
+                                rows[i][0].cost * 1 - req.promokod.Run(rows[i][0].cost * 1) - rows[i][0].cost2 * 1)
+                                summa+=rows[i][0].cost;
+                        })
+                        aso.push(req.Dostavka(summa-req.promokod.Run(summa)),
+                        req.promokod.id||null,req.promokod.Run(summa),
+                        
+                        rest[0].insertId)
+                        pool.query(so.slice(0, -1)+
+                        "; UPDATE orders SET amount=?,promokod_id=?,discount=? WHERE id=?",aso,(err,row2)=>{
+                            if (err) {
+                                console.error({
+                                    err
+                                })
+                                return res.json({
+                                    error: 2,
+                                    error_note: "Not"
+                                });
+                            }
+                            //Order Yaratildi.....
+                              sendClickTrans(rest[0].insertId)
+                    res.redirect(`/click-ghvcjhhtrfhhkjdfhkjdfn/service/transaction_param=${rest[0].insertId}&` +
+                        `amount=${req.Dostavka(summa-req.promokod.Run(summa))}&card_type=${req.body.karta}&merchant_id=${merchant_id}` +
+                        `&merchant_user_id=${merchant_user_id}&` +
+                        `service_id=${service_id}&return_url=${return_url}`)
                         })
 
                     })
 
-                    sendClickTrans(rest[0].insertId)
-                    res.redirect(`/click-ghvcjhhtrfhhkjdfhkjdfn/service/transaction_param=${rest[0][1][0].id}&` +
-                        `amount=${req.body.amount}&card_type=${req.body.karta}&merchant_id=${merchant_id}` +
-                        `&merchant_user_id=${merchant_user_id}&` +
-                        `service_id=${service_id}&return_url=${return_url}`)
+                  
                 }).catch((err) => {
                     console.log(err)
-                    res.json({ error: 2, error_note: "Not" });
+                    res.json({
+                        error: 2,
+                        error_note: "Not"
+                    });
                 })
 
         })
@@ -197,7 +254,8 @@ app.use("/click/2", async (req, res) => {
             sign_time,error,error_note,sign_string,click_trans_id) VALUES 
             (?,?,?,?,?,?,?,?,?); SELECT max(id) as id FROM click_order 
             WHERE order_id=? `, [h.service_id, h.click_paydoc_id, h.merchant_trans_id, h.action,
-        h.sign_time, h.error, h.error_note, h.sign_string, h.click_trans_id, h.merchant_trans_id])
+                h.sign_time, h.error, h.error_note, h.sign_string, h.click_trans_id, h.merchant_trans_id
+            ])
             .then((rest) => {
 
                 res.json({
@@ -209,10 +267,16 @@ app.use("/click/2", async (req, res) => {
                 })
             }).catch((err) => {
                 console.error(err)
-                res.json({ error: 2, error_note: "Not" });
+                res.json({
+                    error: 2,
+                    error_note: "Not"
+                });
             })
     } else
-        res.json({ error: 2, error_note: "Not" });
+        res.json({
+            error: 2,
+            error_note: "Not"
+        });
 })
 
 // click etab 3
@@ -225,7 +289,7 @@ app.use("/click/3", async (req, res) => {
             // console.log(md5hash==req.body.sign_string)
             pool.promise().query(`UPDATE click_order SET action=1 WHERE id=? ;
              UPDATE orders SET payme_state=1 ,state=2 WHERE id=?; `,
-                [req.body.merchant_prepare_id, req.body.merchant_trans_id])
+                    [req.body.merchant_prepare_id, req.body.merchant_trans_id])
                 .then((rest) => {
                     // sendClickTrans(req.body.merchant_trans_id)
                     res.json({
@@ -237,20 +301,29 @@ app.use("/click/3", async (req, res) => {
                     });
                 }).catch((err) => {
                     console.log(err)
-                    res.json({ error: 1, error_note: "Not" });
+                    res.json({
+                        error: 1,
+                        error_note: "Not"
+                    });
                 })
-        }
-        else
-            res.json({ error: 1, error_note: "Not" });
-    }
-    else
-        res.json({ error: 1, error_note: "Not" });
+        } else
+            res.json({
+                error: 1,
+                error_note: "Not"
+            });
+    } else
+        res.json({
+            error: 1,
+            error_note: "Not"
+        });
 })
 
 
 function changeCosts(c, data) {
     data.forEach((e, i) => {
-        let k = e.category_id, cost = e.cost, ind = c.findIndex(x => x.id == k);
+        let k = e.category_id,
+            cost = e.cost,
+            ind = c.findIndex(x => x.id == k);
 
         while (ind != -1) {
             cost = parseInt(cost * (100 + c[ind].percent * 1) / 100) + 1 * c[ind].isFoiz
