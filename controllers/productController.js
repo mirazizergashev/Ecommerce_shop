@@ -42,7 +42,7 @@ productController.statisticShop = function (req, res) {
         }
 
 
-        // console.log(rows)
+        
         res.status(200).json({
             code: 200,
             success: rows

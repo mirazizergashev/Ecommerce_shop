@@ -87,7 +87,7 @@ paymentModel.getOrdersIn = function (id,result) {
                 pool.query(`SELECT cp.field_name, GROUP_CONCAT(pp.values SEPARATOR '#') as content FROM product_properties pp inner join category_properties cp 
                 on cp.id=pp.cat_prop_id where pp.product_id in 
                 (SELECT id FROM product where name in (SELECT name FROM product where id=?)) GROUP BY cp.field_name;`,[k.id,k.id], function (err1, data1) {
-                    
+                    // console.log(data)
                     data1.forEach((e, i) => {
                         cont = e.content.split('#')
                         for (let j = 0; j < cont.length; j++) {
