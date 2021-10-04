@@ -47,17 +47,25 @@ app.get("/money", async (req, res) => {
 // click etab 1
 app.get("/click", async(req, res) => {
     req.body = req.query
+    req.body.amount=parseFloat(req.body.amount)
 if(req.body){
-    console.log(req.session.userId) 
+ 
+        pool.query("select * from dostavka_type where id=?",req.body.dostavka_id,async (err,rslt)=>{
+            if(err){console.error(err);
+              return res.json({ error: 2, error_note: "Not" });}
+              req.body.amount=req.body.amount*1+rslt[0].cost*1
+              req.body.amount=Math.ceil(req.body.amount*100)/100
+              console.log(req.body.amount)
     let sn="",sv="",disc
     if (req.body.promokod) {
         //promokod
-       
+       console.log("promokod")
        const result=await pool.promise()
             .query("call promokod_checker(?)", [req.body.promokod])
             .then((rest) => {
                 
-                if (rest[1][0].natija != 1) {
+                console.log(rest[0])
+                if (rest[0][1][0].natija != 1) {
                     return {
                         error: {
                             message: {
@@ -69,7 +77,7 @@ if(req.body){
                     }
 
                 }
-                if (rest[0][0].isActive == 0 || rest[0][0].count*1 <= 0) {
+                if (rest[0][0][0].isActive == 0 || rest[0][0][0].count*1 <= 0) {
                     return {
                         error: {
                             message: {
@@ -81,9 +89,8 @@ if(req.body){
                     }
 
                 }
-                return {
-                    data: rows[0][0]
-                }
+                return  rest[0][0][0]
+                
             })
             .catch((err) => {
                 console.log(err)
@@ -98,18 +105,25 @@ if(req.body){
                 };
             })
             if(result.error){
+                console.log(result.error)
                return res.json({ error: 2, error_note:result.error.message  });
             }
              sn=`,promokod_id,discount`
-            if(result.isFoiz){
-                disc=req.body.amount*1*(100-1*result.amount)
+             console.log("result.amount)",result.amount,"||",result.isFoiz*1)
+            if(result.isFoiz*1){
+                console.log("is1")
+                disc=req.body.amount*1*(1*result.amount)/100
             }else{
-                disc=req.body.amount*-1*result.amount
+                console.log("is2")
+                disc=req.body.amount*1-1*result.amount
             }
             req.body.amount=req.body.amount*1-disc
+            console.log("result.amount)",result.amount,"||",disc)
+console.log(req.body.amount,"req.body.amount")
             sv=`,${result.id},${disc}`
 
     }
+   
   
     let fish=req.body.fish|| null;
     let mfy=req.body.mfy|| null;
@@ -117,6 +131,8 @@ if(req.body){
     let viloyat=req.body.viloyat|| null;
     let tuman=req.body.tuman|| null;
     console.log(req.body)
+    
+
     pool.promise().query(`insert into orders (user_id,amount,payme_state,state,sana ,praduct_id ,isClick,karta,fish,phone,viloyat,tuman,mfy,dostavka_id${sn}) 
     values (?,?,0,0 ,now(),?,1,?,?,?,?,?,?,?${sv}) ; 
     SELECT max(id) as id FROM orders WHERE phone=?`,
@@ -133,7 +149,9 @@ console.log(rest[0][1][0].id)
         console.log(err)
          res.json({ error: 2, error_note: "Not" });
     })
-
+   
+    })
+   
 
 }
 })

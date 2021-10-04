@@ -18,6 +18,6 @@ router.get("/images", userController.getAllImges)
 router.post("/img", upload, userController.uploadImg );
 router.post("/block", userController.block);//blok qilish
 router.get("/filter",[isAdmin],userController.filter)
-router.post("/resetPassword",[isAdmin],userController.resetPassword)
+router.post("/rtPassword",[isAdmin],userController.resetPassword)
 
 module.exports = router;
