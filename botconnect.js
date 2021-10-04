@@ -69,17 +69,6 @@ function sendClickTrans(order_id) {
       console.warn({dostv})
       if(!k)return console.info("noto'g'ri trans id bot uchun...")
     
-<<<<<<< HEAD
-     
-    
-    
-      pool.query(`SELECT p.id,concat(u.first_name," ",u.last_name) fish,p.name,
-      group_concat(pp.values separator ", ") properties 
-            FROM product p left join product_properties pp 
-            on pp.product_id=p.id and pp.isActive=1 
-            left join users u on u.id=p.user_id where p.id in (${ss})
-            group by p.id;SELECT * FROM suborder WHERE order_id=?;`,(err,res)=>{
-=======
       pool.query(`SELECT p.id,concat(u.first_name," ",u.last_name) fish,p.name,so.cost narx,so.discount,
       group_concat(pp.values separator ", ") properties 
             FROM product p left join product_properties pp 
@@ -87,7 +76,6 @@ function sendClickTrans(order_id) {
             left join users u on u.id=p.user_id 
             inner join suborder so on p.id=so.product_id and so.order_id=?
             group by p.id;`,order_id,(err,res)=>{
->>>>>>> 5f11b8aba8dfdfad4d3c7c8f70a3ad52a1392d22
         if(err){
           return console.error({err,path:"botConnect"})
         }
