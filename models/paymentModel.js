@@ -22,7 +22,7 @@ paymentModel.getAllSuccessPayment = function (result) {
 }
 
 //barcha pul tolab bekor qilingan tolovlar
-paymentModel.getAllCancelPayment = function (count,result) {
+paymentModel.getAllCancelPayment = function (count, result) {
 
 
     pool.query(`SELECT t.id,t.state,t.order_id as 'order',o.praduct_id as product,o.amount as narx FROM transactions 
@@ -30,14 +30,14 @@ paymentModel.getAllCancelPayment = function (count,result) {
         if (err) {
             return result(err, null);
         } else {
-            
+
             return result(null, data);
         }
     });
 }
 
 
-paymentModel.getCuryerProd = function (id,result) {
+paymentModel.getCuryerProd = function (id, result) {
     pool.query(`SELECT t.id,t.state,t.order_id as 'order',o.praduct_id as product,o.amount as narx FROM transactions 
     t inner join orders o on t.order_id=o.id where t.state=2`, function (err, data) {
         if (err) {
@@ -51,19 +51,69 @@ paymentModel.getCuryerProd = function (id,result) {
 }
 
 
-paymentModel.getCuryerAll = function (result) {
-    pool.query(`SELECT t.id,t.state,t.order_id as 'order',o.praduct_id as product,o.amount as narx FROM transactions 
-    t inner join orders o on t.order_id=o.id where t.state=2`, function (err, data) {
+paymentModel.getOrdersAll = function (result) {
+    pool.query(`SELECT o.id,o.fish,concat(o.viloyat," ",o.tuman," ",o.mfy) as address,o.amount as price,(
+        case o.state when 0 then "Ko'rilmoqda"
+        when 1 then "Yaqinda yetkaziladi"
+        when 2 then "Yetqazildi"
+        when -1 then "Bekor qilinmoqda"
+        else "Bekor qilindi" end
+        ) as status,
+        (case  when (o.isClick=0 and o.isNaqd=0) then "Payme"
+        when (o.isClick=1) then "Click"
+        else "Joyida to'lov" end
+        ) as paymentType,
+        d.name as deliveryType,
+        o.sana as created
+         FROM orders o inner join dostavka_type d on o.dostavka_id=d.id;`, function (err, data) {
         if (err) {
             return result(err, null);
         } else {
-            // console.log(data[0].product)
-           let arr=[];
-           data.forEach((e)=>{
-                arr.push(eval(e.product))
-           })
-           arr=arr.flat(2)
-            console.log(arr)
+
+            return result(null, data);
+        }
+    });
+}
+
+
+paymentModel.getOrdersAll = function (result) {
+    pool.query(`SELECT o.id,o.fish,concat(o.viloyat," ",o.tuman," ",o.mfy) as address,o.amount as price,(
+        case o.state when 0 then "Ko'rilmoqda"
+        when 1 then "Yaqinda yetkaziladi"
+        when 2 then "Yetqazildi"
+        when -1 then "Bekor qilinmoqda"
+        else "Bekor qilindi" end
+        ) as status,
+        (case  when (o.isClick=0 and o.isNaqd=0) then "Payme"
+        when (o.isClick=1) then "Click"
+        else "Joyida to'lov" end
+        ) as paymentType,
+        d.name as deliveryType,
+        o.sana as created
+         FROM orders o inner join dostavka_type d on o.dostavka_id=d.id;`, function (err, data) {
+        if (err) {
+            return result(err, null);
+        } else {
+
+            return result(null, data);
+        }
+    });
+}
+
+paymentModel.getOrdersAllCustomer = function (result) {
+    pool.query(`SELECT o.id,(
+        case o.state when 0 then "Ko'rilmoqda"
+        when 1 then "Yaqinda yetkaziladi"
+        when 2 then "Yetqazildi"
+        when -1 then "Bekor qilinmoqda"
+        else "Bekor qilindi" end
+        ) as status,
+        o.sana as created
+         FROM orders o ;`, function (err, data) {
+        if (err) {
+            return result(err, null);
+        } else {
+
             return result(null, data);
         }
     });
