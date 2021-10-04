@@ -31,7 +31,6 @@ app.use("/payme/1", async (req, res) => {
            const result=await pool.promise()
                 .query("call promokod_checker(?)", [req.body.promokod])
                 .then((rest) => {
-                    
                     if (rest[1][0].natija != 1) {
                         return {
                             error: {
