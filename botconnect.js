@@ -75,19 +75,16 @@ function sendClickTrans(order_id) {
       const k=rows[0][0][0],dostv=rows[0][1]
       console.warn({dostv})
       if(!k)return console.info("noto'g'ri trans id bot uchun...")
-      let prod=eval(k.praduct_id)
-      console.log(prod)
-      let ss=""
-      prod.forEach(e => {
-        ss+=e.product_id+","
-      });
-      ss=ss.slice(0,-1)
+    
+     
+    
+    
       pool.query(`SELECT p.id,concat(u.first_name," ",u.last_name) fish,p.name,
       group_concat(pp.values separator ", ") properties 
             FROM product p left join product_properties pp 
             on pp.product_id=p.id and pp.isActive=1 
             left join users u on u.id=p.user_id where p.id in (${ss})
-            group by p.id;`,(err,res)=>{
+            group by p.id;SELECT * FROM suborder WHERE order_id=?;`,(err,res)=>{
         if(err){
           return console.error({err,path:"botConnect"})
         }
