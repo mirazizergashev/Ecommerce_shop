@@ -5,7 +5,8 @@ const paymentController=require("../../controllers/paymentController")
 
 router.get('/all', paymentController.getAllSuccessPayment);
 router.get('/getCuryer/:id', paymentController.getCuryerProd);
-router.get('/getCuryerAll/', paymentController.getCuryerAll);
+router.get('/getOrdersAll/', paymentController.getOrdersAll);
+router.get('/getOrdersAllCustomer/', paymentController.getOrdersAllCustomer);
 
 
 module.exports = router;
