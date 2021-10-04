@@ -224,7 +224,7 @@ app.get("/click", async (req, res) => {
                             //Order Yaratildi.....
                               sendClickTrans(rest[0].insertId)
                     res.redirect(`/click-ghvcjhhtrfhhkjdfhkjdfn/service/transaction_param=${rest[0].insertId}&` +
-                        `amount=${req.body.amount}&card_type=${req.body.karta}&merchant_id=${merchant_id}` +
+                        `amount=${req.Dostavka(summa-req.promokod.Run(summa))}&card_type=${req.body.karta}&merchant_id=${merchant_id}` +
                         `&merchant_user_id=${merchant_user_id}&` +
                         `service_id=${service_id}&return_url=${return_url}`)
                         })
