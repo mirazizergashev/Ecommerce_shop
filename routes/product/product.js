@@ -7,6 +7,7 @@ const productController=require("../../controllers/productController")
 
 router.get('/:id/detail', productController.idDetail);
 router.get('/statisticShop', productController.statisticShop);
+router.get('/statisticShopId/:id', productController.statisticShopId);
 router.get('/', productController.v1_All);
 router.get('/all', productController.All);
 router.get('/changeTop/:id/:isTop', productController.changeTop);

@@ -17,21 +17,15 @@ function sendTransOrder(trans_id) {
 inner join orders o  on o.id=t.order_id  where t.transaction_id=?;SELECT * FROM dostavka_type;`, [trans_id])
     .then(rows => {
       const k = rows[0][0][0], dostv = rows[0][1]
-      console.warn({ dostv })
       if (!k) return console.info("noto'g'ri trans id bot uchun...")
-      let prod = eval(k.praduct_id)
-      console.log(prod)
-      let ss = ""
-      prod.forEach(e => {
-        ss += e.product_id + ","
-      });
-      ss=ss.slice(0,-1)
-      pool.query(`SELECT p.id,concat(u.first_name," ",u.last_name) fish,p.name,
+
+      pool.query(`SELECT p.id,concat(u.first_name," ",u.last_name) fish,p.name,so.cost narx,so.discount,
       group_concat(pp.values separator ", ") properties 
             FROM product p left join product_properties pp 
             on pp.product_id=p.id and pp.isActive=1 
-            left join users u on u.id=p.user_id where p.id in (${ss})
-            group by p.id;`,(err,res)=>{
+            left join users u on u.id=p.user_id 
+            inner join suborder so on p.id=so.product_id and so.order_id=?
+            group by p.id;`,k.order_id,(err,res)=>{
         if(err){
           return console.error({err,path:"botConnect"})
         }
@@ -46,22 +40,21 @@ inner join orders o  on o.id=t.order_id  where t.transaction_id=?;SELECT * FROM 
         `🔷 Dastavka turi:${dostvk?dostvk.name:"Tanlanmagan"}\n`+
         `🔷 To'lov turi: ${k.isNaqd?"Naqd pul":("Plastik karta("+k.karta+")")}\n`+
         `🔷 Vaqt:${k.sana}`).then(e=>{
-            prod.forEach((e,i)=>{
+            res.forEach((e,i)=>{
               s=`💡 ${i+1}.\n`+
-              `🔸 Vendor kod:${e.product_id}\n`+
-              `🔸 Nomi:${res.find(pr=>pr.id=e.product_id).name}\n`+
-        `🔸 Rangi:${res.find(pr=>pr.id=e.product_id).properties}\n`+
+              `🔸 Vendor kod:${e.id}\n`+
+              `🔸 Nomi:${e.name}\n`+
+        `🔸 Rangi:${e.properties}\n`+
         `🔸 Soni:${e.count}\n`+
-        `🔸 Maxsulot narxi: ${e.amount}\n`+
-        `🔸 Dostavkachi: ${res.find(pr=>pr.id=e.product_id).fish}`
-        // console.log(rows[0][0])
+        `🔸 Maxsulot narxi: ${e.narx}\n`+
+        `🔸 Maxsulot uchun chegirma: ${e.discount}\n`+
+        `🔸 Dostavkachi: ${e.fish}`
         sendSms(s)
         })
         })
-      
-    
+  
       })
-
+     
     })
     .catch(err => console.error({
       boterror: err
@@ -76,6 +69,7 @@ function sendClickTrans(order_id) {
       console.warn({dostv})
       if(!k)return console.info("noto'g'ri trans id bot uchun...")
     
+<<<<<<< HEAD
      
     
     
@@ -85,6 +79,15 @@ function sendClickTrans(order_id) {
             on pp.product_id=p.id and pp.isActive=1 
             left join users u on u.id=p.user_id where p.id in (${ss})
             group by p.id;SELECT * FROM suborder WHERE order_id=?;`,(err,res)=>{
+=======
+      pool.query(`SELECT p.id,concat(u.first_name," ",u.last_name) fish,p.name,so.cost narx,so.discount,
+      group_concat(pp.values separator ", ") properties 
+            FROM product p left join product_properties pp 
+            on pp.product_id=p.id and pp.isActive=1 
+            left join users u on u.id=p.user_id 
+            inner join suborder so on p.id=so.product_id and so.order_id=?
+            group by p.id;`,order_id,(err,res)=>{
+>>>>>>> 5f11b8aba8dfdfad4d3c7c8f70a3ad52a1392d22
         if(err){
           return console.error({err,path:"botConnect"})
         }
@@ -99,14 +102,15 @@ function sendClickTrans(order_id) {
         `🔷 Dastavka turi:${dostvk?dostvk.name:"Tanlanmagan"}\n`+
         `🔷 To'lov turi: ${k.isNaqd?"Naqd pul":("Plastik karta("+k.karta+")")}\n`+
         `🔷 Vaqt:${k.sana}`).then(e=>{
-            prod.forEach((e,i)=>{
+            res.forEach((e,i)=>{
               s=`💡 ${i+1}.\n`+
-              `🔸 Vendor kod:${e.product_id}\n`+
-              `🔸 Nomi:${res.find(pr=>pr.id=e.product_id).name}\n`+
-        `🔸 Rangi:${res.find(pr=>pr.id=e.product_id).properties}\n`+
+              `🔸 Vendor kod:${e.id}\n`+
+              `🔸 Nomi:${e.name}\n`+
+        `🔸 Rangi:${e.properties}\n`+
         `🔸 Soni:${e.count}\n`+
-        `🔸 Maxsulot narxi: ${e.amount}\n`+
-        `🔸 Dostavkachi: ${res.find(pr=>pr.id=e.product_id).fish}`
+        `🔸 Maxsulot narxi: ${e.narx}\n`+
+        `🔸 Maxsulot uchun chegirma: ${e.discount}\n`+
+        `🔸 Dostavkachi: ${e.fish}`
         // console.log(rows[0][0])
         sendSms(s)
         })
@@ -120,7 +124,8 @@ function sendClickTrans(order_id) {
   
 }
 
-
+sendTransOrder("61546715568512a0eddff948")
+// sendClickTrans(93)
 module.exports = {
   sendClickTrans,
   bot,

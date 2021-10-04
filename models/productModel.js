@@ -99,7 +99,7 @@ productModel.statisticShop = function (start, end, result) {
     if(!(isDate(start)&&isDate(end))){
         return result(null,"Vaqt formati xato kiritildi");
     }
-
+    
     // console.log(end)
     pool.query(`SELECT p.user_id as id FROM suborder s inner join product p on s.product_id=p.id inner join orders o on 
     s.order_id=o.id where o.state=2 and 
@@ -107,7 +107,9 @@ productModel.statisticShop = function (start, end, result) {
         if (err) {
             return result(err, null);
         }
-
+        if(res.length==0){
+            return result(null,"Bu vaqt orasida sotuv bo`lmagan");
+        }
 
         let s = 0;
         let user = [], count = 0, daromad = 0, foyda = 0;
@@ -124,6 +126,61 @@ productModel.statisticShop = function (start, end, result) {
                         foyda += kk.foyda*1
                     })
                     user.push({ id: e.id, fio: res1[0].fio, count: count, daromad: daromad, foyda: foyda })
+                    count = 0; daromad = 0; foyda = 0;
+                    
+                    if (i+1 == res.length ) {
+                      
+                        return result(null, user);
+                    }
+              
+
+            })
+        })
+        // console.log(arr4)
+
+
+    });
+}
+
+productModel.statisticShopId = function (start, end,id, result) {
+    if (!start) start = '2012-01-01';
+    if (!end) end = '2032-01-01';
+    function isDate(sDate) {  
+        if(sDate.toString() == parseInt(sDate).toString()) return false; 
+        var tryDate = new Date(sDate);
+        return (tryDate && tryDate.toString() != "NaN" && tryDate != "Invalid Date");  
+      }
+
+    if(!(isDate(start)&&isDate(end))){
+        return result(null,"Vaqt formati xato kiritildi");
+    }
+
+    // console.log(end)
+    pool.query(`SELECT p.id as id,p.name,p.count as son FROM suborder s inner join product p on s.product_id=p.id inner join orders o on 
+    s.order_id=o.id where o.state=2 and p.user_id=? and
+    date(o.sana) between date('${start}') and date('${end}') group by(p.id);`,[id], function (err, res) {
+        if (err) {
+            return result(err, null);
+        }
+
+        if(res.length==0){
+            return result(null,"Bu vaqt orasida sotuv bo`lmagan");
+        }
+        let s = 0;
+        let user = [], count = 0, daromad = 0, foyda = 0;
+
+        //necha marta sotilgani
+        res.forEach((e, i) => {
+            pool.query(`SELECT u.id,concat(u.first_name," ",u.last_name) as fio,s.count,(s.cost-s.discount) as daromad,s.system_cost as foyda FROM suborder s inner join orders o on s.order_id=o.id inner join product p on s.product_id=p.id 
+        inner join users u on p.user_id=u.id where p.id=? and o.state=2`, [e.id], function (err1, res1) {
+              
+               
+                    res1.forEach((kk) => {
+                        count = count + kk.count*1;
+                        daromad += kk.daromad*1;
+                        foyda += kk.foyda*1
+                    })
+                    user.push({ id: e.id, name: e.name, sotildi: count, daromad: daromad,qoldi: e.son})
                     count = 0; daromad = 0; foyda = 0;
                     
                     if (i+1 == res.length ) {

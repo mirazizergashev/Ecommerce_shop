@@ -21,112 +21,191 @@ function checkAuth(auth) {
 // payme etab 1
 app.use("/payme/1", async (req, res) => {
     req.body = req.query
-  
-    if (req.body) {
-        pool.query("select * from dostavka_type where id=?",req.body.dostavka_id,async (err,rslt)=>{
-            if(err){console.error(err);
-              return res.json({ error: 2, error_note: "Not" });}
-              req.body.amount=req.body.amount*1+rslt[0].cost*1
-              req.body.amount=Math.ceil(req.body.amount*100)/100
-              console.log(req.body.amount)
-  let sn="",sv="",disc
-        const datee = new Date().getTime();
-        if (req.body.promokod) {
-            //promokod
-           console.log("promokod")
-           const result=await pool.promise()
-                .query("call promokod_checker(?)", [req.body.promokod])
-                .then((rest) => {
-                    
-                    console.log(rest[0])
-                    if (rest[0][1][0].natija != 1) {
-                        return {
-                            error: {
-                                message: {
-                                    uz: "Promokod noto'g'ri kiritilgan!",
-                                    en: "A new user has been created!",
-                                    ru: "Создан новый пользователь!"
-                                }
-                            }
-                        }
-    
-                    }
-                    if (rest[0][0][0].isActive == 0 || rest[0][0][0].count*1 <= 0) {
-                        return {
-                            error: {
-                                message: {
-                                    uz: "Eskirgan promokod!",
-                                    en: "A new user has been created!",
-                                    ru: "Создан новый пользователь!"
-                                }
-                            }
-                        }
-    
-                    }
-                    return  rest[0][0][0]
-                    
-                })
-                .catch((err) => {
-                    console.log(err)
+    req.promokod = {
+        Run: cost => 0
+    }
+    if (req.body.promokod) {
+        //promokod
+        console.log("promokod")
+        const result = await pool.promise()
+            .query("call promokod_checker(?)", [req.body.promokod])
+            .then((rest) => {
+
+                console.log(rest[0])
+                if (rest[0][1][0].natija != 1) {
                     return {
                         error: {
                             message: {
-                                uz: "Promokodni tekshirishda xatolik!",
+                                uz: "Promokod noto'g'ri kiritilgan!",
                                 en: "A new user has been created!",
                                 ru: "Создан новый пользователь!"
                             }
                         }
-                    };
-                })
-                if(result.error){
-                    console.log(result.error)
-                   return res.json({ error: 2, error_note:result.error.message  });
+                    }
+
                 }
-                 sn=`,promokod_id,discount`
-                 console.log("result.amount)",result.amount,"||",result.isFoiz*1)
-                if(result.isFoiz*1){
-                    console.log("is1")
-                    disc=req.body.amount*1*(1*result.amount)/100
-                }else{
-                    console.log("is2")
-                    disc=req.body.amount*1-1*result.amount
+                if (rest[0][0][0].isActive == 0 || rest[0][0][0].count * 1 <= 0) {
+                    return {
+                        error: {
+                            message: {
+                                uz: "Eskirgan promokod!",
+                                en: "A new user has been created!",
+                                ru: "Создан новый пользователь!"
+                            }
+                        }
+                    }
+
                 }
-                req.body.amount=req.body.amount*1-disc
-                console.log("result.amount)",result.amount,"||",disc)
-console.log(req.body.amount,"req.body.amount")
-                sv=`,${result.id},${disc}`
-    
+                return rest[0][0][0]
+
+            })
+            .catch((err) => {
+                console.log(err)
+                return {
+                    error: {
+                        message: {
+                            uz: "Promokodni tekshirishda xatolik!",
+                            en: "A new user has been created!",
+                            ru: "Создан новый пользователь!"
+                        }
+                    }
+                };
+            })
+        if (result.error) {
+            console.log(result.error)
+            return res.json({
+                error: 2,
+                error_note: result.error.message
+            });
         }
-       
+        req.promokod = {
+            id: result.id
+        }
+        //  console.log("result.amount)",result.amount,"||",result.isFoiz*1)
+        req.promokod.Run = (cost = 0) => {
+            if (result.isFoiz * 1)
+                return cost * 1 * (1 * result.amount) / 100;
+            else
+                return 1 * result.amount;
+        }
+
+    }
+    if (req.body) {
+        pool.query("select * from dostavka_type where id=?", req.body.dostavka_id, async (err, rslt) => {
+            if (err) {
+                console.error(err);
+                return res.json({ error: 2, error_note: "Not" });
+            }
+            req.Dostavka = (amount) => Math.ceil((amount * 1 + rslt[0].cost * 1) * 100) / 100;
+
+
             let fish = req.body.fish || "fish";
             let mfy = req.body.mfy || "mfy";
             let tel = req.body.phone || "phone";
             let viloyat = req.body.viloyat || "viloyat";
             let tuman = req.body.tuman || "tuman";
-            req.body.amount=Math.ceil(req.body.amount/100)*100
-           
-             pool.promise()
-                .query("insert into orders (user_id,amount , payme_state , state , phone ,sana,praduct_id,fish,viloyat,tuman,mfy,dostavka_id"+sn+") " +
-                    "values (?,?,0,0,?,now(),?,?,?,?,?,?"+sv+") ; SELECT max(id) as id FROM orders WHERE phone=?",
-                    [req.session.userId||null,req.body.amount, tel, req.body.praduct_id, fish, viloyat,
-                        tuman, mfy, req.body.dostavka_id, tel])
+            req.body.amount = Math.ceil(req.body.amount / 100) * 100
+
+            pool.promise()
+                .query("insert into orders (user_id,amount , payme_state , state , phone ,sana,fish,viloyat,tuman,mfy,dostavka_id) " +
+                    "values (?,0,0,0,?,now(),?,?,?,?,?,?);",
+                    [req.session.userId || null, tel, fish, viloyat,
+                        tuman, mfy, req.body.dostavka_id])
                 .then(async (rest) => {
                     //  console.log(rest[0][1])
-                    bu = Buffer.from(`m=${merchant};ac.order=${rest[0][1][0].id};a=${req.body.amount *100}`).toString('base64')
-                    console.log(rest[0][1][0].id)
-pool.promise().query("call ecommerce_shop.promokod_use(?, -1);",rest[0][1][0].id)
-.then(e=>{
+                    let {
+                        data
+                    } = JSON.parse(req.body.praduct_id), s = "", a = [], notFounds = [], lessProd = []
+                    data.forEach((e, i) => {
+                        s += "SELECT *,cost cost2 FROM product WHERE id=? and isActive=1;";
+                        a.push(e.product_id)
+                    });
+                    s += "SELECT id,sub,percent,isFoiz FROM category WHERE isActive=1;";
+                    pool.query(s, a, (err, rows) => {
+                        if (err) {
+                            console.error({
+                                err
+                            })
+                            return res.json({
+                                error: 2,
+                                error_note: "Not"
+                            });
+                        }
+                        data.forEach((e, i) => {
+                            if (rows[i].length == 0) {
+                                notFounds.push({
+                                    id: e.product_id,
+                                    name: e.name
+                                })
+                            } else {
+                                if (rows[i][0].count * 1 < e.count) {
+                                    lessProd.push({
+                                        id: e.product_id,
+                                        name: e.name,
+                                        count: e.count
+                                    })
+                                } else {
+                                    rows[i][0].cost = rows[i][0].cost * 1 * (100 - 1 * rows[i][0].discount) / 100
+                                    rows[i][0].cost2 = rows[i][0].cost2 * 1 * (100 - 1 * rows[i][0].discount) / 100
+                                    if (rows[i][0].cost < 0) rows[i][0].cost = 0
+                                    changeCosts(rows[rows.length - 1], rows[i])
 
-})
-.catch(err=>console.log({error:"promokod change",err}))
-                    res.redirect(`/payme-ghvcjhbcfkrhkjdfhkjdfn/${bu}`);
-                }).catch((err) => {
-                    console.log(err)
-                    res.json({ error: 2, error_note: "Not" });
+                                }
+                            }
+                        });
+                        let check
+                        if (notFounds.length > 0) check.notFounds = notFounds
+                        if (lessProd.length > 0) check.lessProd = lessProd
+                        if (check) {
+                            return res.json({
+                                error: 2,
+                                error_note: "Not",
+                                notes: check
+                            });
+                        }
+
+                        let so = "INSERT INTO suborder(order_id,product_id,count,cost,discount,name,system_cost) VALUES",
+                            aso = [], summa = 0
+                        data.forEach((e, i) => {
+                            so += `(?,?,?,?,?,?,?),`
+                            aso.push(rest[0].insertId, e.product_id, e.count, rows[i][0].cost,
+                                req.promokod.Run(rows[i][0].cost), rows[i][0].name,
+                                rows[i][0].cost * 1 - req.promokod.Run(rows[i][0].cost * 1) - rows[i][0].cost2 * 1)
+                            summa += rows[i][0].cost;
+                        })
+                        aso.push(req.Dostavka(summa - req.promokod.Run(summa)),
+                            req.promokod.id || null, req.promokod.Run(summa),
+
+                            rest[0].insertId)
+                        pool.query(so.slice(0, -1) +
+                            "; UPDATE orders SET amount=?,promokod_id=?,discount=? WHERE id=?", aso, (err, row2) => {
+                                if (err) {
+                                    console.error({
+                                        err
+                                    })
+                                    return res.json({
+                                        error: 2,
+                                        error_note: "Not"
+                                    });
+                                }
+                                //Order Yaratildi.....
+                                sendClickTrans(rest[0].insertId)
+                                bu = Buffer.from(`m=${merchant};ac.order=${rest[0].insertId};a=${req.Dostavka(summa - req.promokod.Run(summa)) * 100}`).toString('base64')
+
+                                res.redirect(`/payme-ghvcjhbcfkrhkjdfhkjdfn/${bu}`);
+
+                            })
+
+
+
+                    }).catch((err) => {
+                        console.log(err)
+                        res.json({ error: 2, error_note: "Not" });
+                    })
+
                 })
 
-            })
-        
+        })
     }
 })
 
