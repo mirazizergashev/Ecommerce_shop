@@ -167,7 +167,8 @@ app.get("/click", async (req, res) => {
                         data.forEach((e, i) => {
                             so += `INSERT INTO suborder(order_id,product_id,count,cost,discount,name,system_cost)
                             VALUES(?,?,?,?,?,?,?);`
-                            aso.push(rest[0].insertId, e.product_id, e.count, rows[i][0].cost,)
+                            aso.push(rest[0].insertId, e.product_id, e.count, rows[i][0].cost,
+                                req.promokod.Run(rows[i][0].cost),rows[i][0].name,)
                         })
 
                     })
