@@ -123,7 +123,7 @@ app.get("/click", async (req, res) => {
             }
 
         }
-        pool.query("select * from dostavka_type where id=?", req.body.dostavka_id, async (err, rslt) => {
+        pool.query("select * from dostavka_type where id=?", req.body.dostavka_id||1, async (err, rslt) => {
             if (err) {
                 console.error(err);
                 return res.json({
@@ -144,7 +144,7 @@ app.get("/click", async (req, res) => {
 
             pool.promise().query(`insert into orders (user_id,payme_state,state,sana  ,isClick,karta,fish,phone,viloyat,tuman,mfy,dostavka_id) 
     values (?,0,0 ,now(),1,?,?,?,?,?,?,?) ;`,
-                    [req.session.userId, req.body.karta, fish, tel, viloyat, tuman, mfy, req.body.dostavka_id])
+                    [req.session.userId, req.body.karta, fish, tel, viloyat, tuman, mfy, req.body.dostavka_id||1])
                 .then((rest) => {
                     let {
                         data

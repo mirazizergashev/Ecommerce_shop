@@ -14,7 +14,7 @@ app.post("/order", async (req, res) => {
     console.log('llll')
     pool.promise().query(`insert into orders (user_id,amount,state,praduct_id ,isNaqd,fish,phone,viloyat,tuman,mfy,dostavka_id,curyer) 
         values (?,?,0,?,1,?,?,?,?,?,?,-1) ;
-        SELECT max(id) as id FROM orders WHERE isNaqd=1 and amount=?`, [req.session.userId || null, req.body.amount, req.body.praduct_id, fish, tel, viloyat, tuman, mfy, req.body.dostavka_id,req.body.amount])
+        SELECT max(id) as id FROM orders WHERE isNaqd=1 and amount=?`, [req.session.userId || null, req.body.amount, req.body.praduct_id, fish, tel, viloyat, tuman, mfy, req.body.dostavka_id||1,req.body.amount])
         .then((rest) => {
             sendClickTrans(rest[0][1][0].id,1)
             return res.status(200).json({
@@ -118,7 +118,7 @@ app.post("/naqd", async (req, res) => {
 
         }
 
-        pool.query("select * from dostavka_type where id=?", req.body.dostavka_id, async (err, rslt) => {
+        pool.query("select * from dostavka_type where id=?", req.body.dostavka_id||1, async (err, rslt) => {
             if (err) {
                 console.error(err);
                 return res.json({
@@ -139,7 +139,7 @@ app.post("/naqd", async (req, res) => {
 
             pool.promise().query(`insert into orders (user_id,state,sana,karta,fish,phone,viloyat,tuman,mfy,dostavka_id) 
     values (?,1 ,now(),?,?,?,?,?,?,?) ;`,
-                    [req.session.userId||null, req.body.karta, fish, tel, viloyat, tuman, mfy, req.body.dostavka_id])
+                    [req.session.userId||null, req.body.karta, fish, tel, viloyat, tuman, mfy, req.body.dostavka_id||1])
                 .then((rest) => {
                     let {
                         data
