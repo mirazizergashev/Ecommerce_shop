@@ -9,7 +9,9 @@ const bot = new TelegramBot(token, {
 });
 // bot.on("message",msg=>console.log(msg.chat))
 function sendSms(text = "yangi buyurtma") {
-  return bot.sendMessage("-512312710", text)
+  return bot.sendMessage("-512312710", text,{
+    parse_mode:"HTML"
+  })
 }
 
 function sendTransOrder(trans_id) {
@@ -60,7 +62,7 @@ inner join orders o  on o.id=t.order_id  where t.transaction_id=?;SELECT * FROM 
       boterror: err
     }))
 }
-
+sendClickTrans(101)
 function sendClickTrans(order_id) {
   pool.promise().query(`SELECT *,date_format(sana,'%Y-%m-%d, %h:%i:%s') sana FROM orders
   where id=?;SELECT * FROM dostavka_type;`, [order_id])
@@ -69,7 +71,7 @@ function sendClickTrans(order_id) {
       console.warn({dostv})
       if(!k)return console.info("noto'g'ri trans id bot uchun...")
     
-      pool.query(`SELECT p.id,concat(u.first_name," ",u.last_name) fish,p.name,so.cost narx,so.discount,
+      pool.query(`SELECT p.id,concat(u.first_name," ",u.last_name) fish,p.name,so.count,so.cost narx,so.discount,
       group_concat(pp.values separator ", ") properties 
             FROM product p left join product_properties pp 
             on pp.product_id=p.id and pp.isActive=1 
@@ -81,28 +83,29 @@ function sendClickTrans(order_id) {
         }
         console.log(res)
         const dostvk=dostv.find(d=>d.id=k.dostavka_id)
-        sendSms(`💠 Yangi buyurtma:\n\n`+
-        `🔷 Fio:${k.fish}\n`+
-        `🔷 Telefon:${k.phone}\n`+
-        `🔷 Manzil: ${k.viloyat+", "+k.tuman+", "+k.mfy}\n`+
-        `🔷 To'lov summasi:${k.amount}\n`+
-        `🔷 Chegirma summasi:${k.discount}\n`+
-        `🔷 Dastavka turi:${dostvk?dostvk.name:"Tanlanmagan"}\n`+
-        `🔷 To'lov turi: ${k.isNaqd?"Naqd pul":("Plastik karta("+k.karta+")")}\n`+
-        `🔷 Vaqt:${k.sana}`).then(e=>{
+        sendSms(`<b>💠 Yangi buyurtma:</b>\n\n`+
+        `🔷 Fio:<b>${k.fish} </b>\n`+
+        `🔷 Telefon:<b>${k.phone} </b>\n`+
+        `🔷 Manzil: <b>${k.viloyat+", "+k.tuman+", "+k.mfy} </b>n`+
+        `🔷 To'lov summasi:<b>${k.amount} </b>\n`+
+        `🔷 Chegirma summasi:<b>${k.discount} </b>\n`+
+        `🔷 Dastavka turi:<b>${dostvk?dostvk.name:"Tanlanmagan"} </b>\n`+
+        `🔷 To'lov turi: <b>${k.isNaqd?"Naqd pul":("Plastik karta("+(k.karta||'')+")")} </b>\n`+
+        `🔷 Vaqt:<b>${k.sana} </b>`).then(e=>{
             res.forEach((e,i)=>{
               s=`💡 ${i+1}.\n`+
-              `🔸 Vendor kod:${e.id}\n`+
-              `🔸 Nomi:${e.name}\n`+
-        `🔸 Rangi:${e.properties}\n`+
-        `🔸 Soni:${e.count}\n`+
-        `🔸 Maxsulot narxi: ${e.narx}\n`+
-        `🔸 Maxsulot uchun chegirma: ${e.discount}\n`+
-        `🔸 Dostavkachi: ${e.fish}`
+              `🔸 Vendor kod:<b>${e.id} </b>\n`+
+              `🔸 Nomi:<b>${e.name} </b>\n`+
+        `🔸 Xususiyatlari: <b>[${e.properties||""}] </b>\n`+
+        `🔸 Soni:<b>${e.count} </b>\n`+
+        `🔸 Maxsulot narxi: <b>${e.narx} </b>\n`+
+        `🔸 Maxsulot uchun chegirma: <b>${e.discount} </b>\n`+
+        `🔸 Dostavkachi: <b>${e.fish} </b>`
         // console.log(rows[0][0])
         sendSms(s)
         })
         })
+        .catch(err=>console.error("bot",err))
   
       })
       .catch(err => console.error({
