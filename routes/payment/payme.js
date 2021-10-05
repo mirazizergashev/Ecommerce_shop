@@ -192,7 +192,7 @@ app.use("/payme/1", async (req, res) => {
                                 }
                                 //Order Yaratildi.....
                                 sendClickTrans(rest[0].insertId)
-                                bu = Buffer.from(`m=${merchant};ac.order=${rest[0].insertId};a=${req.Dostavka(summa - req.promokod.Run(summa)) }`).toString('base64')
+                                bu = Buffer.from(`m=${merchant};ac.order=${rest[0].insertId};a=${100*req.Dostavka(summa - req.promokod.Run(summa)) }`).toString('base64')
 
                                 res.redirect(`/payme-ghvcjhbcfkrhkjdfhkjdfn/${bu}`);
 
