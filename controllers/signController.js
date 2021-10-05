@@ -98,7 +98,7 @@ signController.signUp = function (req, res) {
                                 message: {
                                     uz: "Bunday telefon mavjud!",
                                     en: "Such a phone is available!",
-                                    ru: "Такой телефон есть!"
+                                    ru: "Ранее введённый телефон номер уже существует, введите другой!"
                                 }
                             }
                         })
@@ -183,9 +183,9 @@ signController.signIn = function (req, res) {
                         code: 401,
                         error: {
                             message: {
-                                uz: "Telefon yoki parol xato!",
+                                uz: "Login yoki parol xato!",
                                 en: "A new user has been created!",
-                                ru: "Создан новый пользователь!"
+                                ru: "Логин или пароль введен не правильно!"
                             }
                         }
                     })
