@@ -38,7 +38,7 @@ promokodModel.promokod_edit=function(data,result){
 promokodModel.getAll=function(query,result){
     const step=query.step||0,count=query.count||15
     pool.query("SELECT p.*,date_format(p.deadline,'%Y-%m-%d, %h:%i:%s') deadline,date_format(p.created_on,'%Y-%m-%d, %h:%i:%s') created_on,concat(u.last_name,\" \",u.first_name) username"
-    +" FROM promokod p left join users u on u.id=p.user_id where p.isActive=1 limit ?,?",[step*1*count,count*1],function(err,res){
+    +", (SELECT count(*) from orders WHERE promokod_id=p.id) numberOfUse FROM promokod p left join users u on u.id=p.user_id where p.isActive=1 limit ?,?",[step*1*count,count*1],function(err,res){
         if(err){
             return result(err,null);
         }else{

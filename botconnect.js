@@ -36,7 +36,7 @@ inner join orders o  on o.id=t.order_id  where t.transaction_id=?;SELECT * FROM 
         `🔷 Telefon:${k.phone}\n`+
         `🔷 Manzil: ${k.viloyat+", "+k.tuman+", "+k.mfy}\n`+
         `🔷 To'lov summasi:${k.amount}\n`+
-        `🔷 Chegirma summasi:${k.dicount}\n`+
+        `🔷 Chegirma summasi:${k.discount}\n`+
         `🔷 Dastavka turi:${dostvk?dostvk.name:"Tanlanmagan"}\n`+
         `🔷 To'lov turi: ${k.isNaqd?"Naqd pul":("Plastik karta("+k.karta+")")}\n`+
         `🔷 Vaqt:${k.sana}`).then(e=>{
@@ -86,7 +86,7 @@ function sendClickTrans(order_id) {
         `🔷 Telefon:${k.phone}\n`+
         `🔷 Manzil: ${k.viloyat+", "+k.tuman+", "+k.mfy}\n`+
         `🔷 To'lov summasi:${k.amount}\n`+
-        `🔷 Chegirma summasi:${k.dicount}\n`+
+        `🔷 Chegirma summasi:${k.discount}\n`+
         `🔷 Dastavka turi:${dostvk?dostvk.name:"Tanlanmagan"}\n`+
         `🔷 To'lov turi: ${k.isNaqd?"Naqd pul":("Plastik karta("+k.karta+")")}\n`+
         `🔷 Vaqt:${k.sana}`).then(e=>{
@@ -112,7 +112,7 @@ function sendClickTrans(order_id) {
   
 }
 
-sendTransOrder("61546715568512a0eddff948")
+// sendTransOrder("61546715568512a0eddff948")
 // sendClickTrans(93)
 module.exports = {
   sendClickTrans,
