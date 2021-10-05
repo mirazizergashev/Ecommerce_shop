@@ -90,43 +90,49 @@ select * from category where isActive=1;`,
 productModel.statisticShop = function (start, end, result) {
     if (!start) start = '2012-01-01';
     if (!end) end = '2032-01-01';
+    function isDate(sDate) {  
+        if(sDate.toString() == parseInt(sDate).toString()) return false; 
+        var tryDate = new Date(sDate);
+        return (tryDate && tryDate.toString() != "NaN" && tryDate != "Invalid Date");  
+      }
 
-    console.log(start)
-    pool.query(`SELECT praduct_id as massiv FROM orders where state=2 and date(sana) between date('${start}') and date('${end}');`, function (err, res) {
+    if(!(isDate(start)&&isDate(end))){
+        return result(null,"Vaqt formati xato kiritildi");
+    }
+
+    // console.log(end)
+    pool.query(`SELECT p.user_id as id FROM suborder s inner join product p on s.product_id=p.id inner join orders o on 
+    s.order_id=o.id where o.state=2 and 
+    date(o.sana) between date('${start}') and date('${end}') group by(p.user_id);`, function (err, res) {
         if (err) {
             return result(err, null);
         }
 
-        // console.log(res)
 
-        let k = eval(res), s = 0, arr2;
-        let arr3, s2 = 0;
-        let img = [];
-        let arr4 = [], s4 = 0, cont = [], cont2 = [];
+        let s = 0;
+        let user = [], count = 0, daromad = 0, foyda = 0;
 
         //necha marta sotilgani
-        k.forEach((e, asos) => {
-
-            if (Array.isArray(JSON.parse(e.massiv))) {
-                arr2 = JSON.parse(e.massiv);
-
-                // console.log(k.length)
-                arr2.forEach((ee) => {
-                    s2++;
-                    pool.query(`SELECT concat(u.first_name," ",u.last_name) as fio FROM product p inner join users u on p.user_id=u.id where p.isActive=1 and p.id=?;`, [ee.product_id], function (err1, res1) {
-                        s++;
-                        if (res1.length > 0) {
-                            arr4.push({ id: s, fio: res1[0].fio, count: ee.count, daromad: ee.amount, foyda: ee.amount * 0.15 })
-                            if (s2 == s) {
-                                return result(null, arr4);
-                            }
-                        }
-
+        res.forEach((e, i) => {
+            pool.query(`SELECT u.id,concat(u.first_name," ",u.last_name) as fio,s.count,(s.cost-s.discount) as daromad,s.system_cost as foyda FROM suborder s inner join orders o on s.order_id=o.id inner join product p on s.product_id=p.id 
+        inner join users u on p.user_id=u.id where u.id=? and o.state=2`, [e.id], function (err1, res1) {
+              
+               
+                    res1.forEach((kk) => {
+                        count = count + kk.count*1;
+                        daromad += kk.daromad*1;
+                        foyda += kk.foyda*1
                     })
+                    user.push({ id: e.id, fio: res1[0].fio, count: count, daromad: daromad, foyda: foyda })
+                    count = 0; daromad = 0; foyda = 0;
+                    
+                    if (i+1 == res.length ) {
+                      
+                        return result(null, user);
+                    }
+              
 
-                    // console.log(arr4)
-                })
-            }
+            })
         })
         // console.log(arr4)
 

@@ -57,8 +57,60 @@ paymentController.getCuryerProd = function (req, res) {
     })
 }
 
-paymentController.getCuryerAll = function (req, res) {
-    paymentModel.getCuryerAll( (err, rows) => {
+paymentController.getOrdersAll = function (req, res) {
+    paymentModel.getOrdersAll( (err, rows) => {
+    
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+
+
+
+        res.status(200).json({
+            code: 200,
+            success: rows
+        })
+    })
+}
+
+paymentController.getOrdersIn = function (req, res) {
+    paymentModel.getOrdersIn(req.params.id,(err, rows) => {
+    
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+
+
+
+        res.status(200).json({
+            code: 200,
+            success: rows
+        })
+    })
+}
+
+paymentController.getOrdersAllCustomer = function (req, res) {
+    paymentModel.getOrdersAllCustomer( (err, rows) => {
     
         if (err) {
             console.log(err);
