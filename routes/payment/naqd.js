@@ -159,6 +159,7 @@ app.post("/naqd", async (req, res) => {
                                 error_note: "Not"
                             });
                         }
+                        let updateData=""
                         data.forEach((e, i) => {
                             if (rows[i].length == 0) {
                                 notFounds.push({
@@ -166,13 +167,15 @@ app.post("/naqd", async (req, res) => {
                                     name: e.name
                                 })
                             } else {
-                                if (rows[i][0].count * 1 < e.count) {
+                                if (rows[i][0].count * 1 < e.count*1) {
                                     lessProd.push({
                                         id: e.product_id,
                                         name: e.name,
                                         count: e.count
                                     })
                                 } else {
+                                    updateData+=`UPDATE product SET count=${rows[i][0].count * 1 - e.count} 
+                                    WHERE id =${rows[i][0].id};`
                                     rows[i][0].cost = rows[i][0].cost * 1 * (100 - 1 * rows[i][0].discount) / 100
                                     rows[i][0].cost2 = rows[i][0].cost2 * 1 * (100 - 1 * rows[i][0].discount) / 100
                                     if (rows[i][0].cost < 0) rows[i][0].cost = 0
@@ -206,7 +209,7 @@ app.post("/naqd", async (req, res) => {
                         
                         rest[0].insertId)
                         pool.query(so.slice(0, -1)+
-                        "; UPDATE orders SET amount=?,promokod_id=?,discount=? WHERE id=?",aso,(err,row2)=>{
+                        "; UPDATE orders SET amount=?,promokod_id=?,discount=? WHERE id=?;"+updateData,aso,(err,row2)=>{
                             if (err) {
                                 console.error({
                                     err
@@ -224,7 +227,7 @@ app.post("/naqd", async (req, res) => {
                                     message: {
                                         uz: "Buyurtma qabul qilindi! Tez orada mas'ullarimiz siz bilan bog'lanishadi!",
                                         en: "A new user has been created!",
-                                        ru: "Создан новый пользователь!"
+                                        ru: "Заказ принят! Наши сотрудники свяжутся с вами в ближайшее время!"
                                     }
                                 }
                             })
@@ -250,6 +253,45 @@ app.post("/naqd", async (req, res) => {
 
 })
 
-
+app.get("/naqd/cancel/:id",(req,res)=>{
+    pool.query("call cancel_order(?);",req.params.id,(err,rows)=>{
+        if (err) {
+            console.log(err)
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+        if(rows[0][0].natija==1){
+            res.status(200).json({
+                code: 200,
+                success: {
+                    message: {
+                        uz: "Buyurtma bekor qilindi!",
+                        en: "A new user has been created!",
+                        ru: "Заказ otmenet!"
+                    }
+                }
+            })
+        }else{
+            res.status(200).json({
+                code: 404,
+                error: {
+                    message: {
+                        uz: "Bunday buyurtma topilmadi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            }) 
+        }
+    })
+})
 
 module.exports = app;
