@@ -81,7 +81,7 @@ function sendClickTrans(order_id) {
         if(err){
           return console.error({err,path:"botConnect"})
         }
-        console.log(res)
+        // console.log(res)
         const dostvk=dostv.find(d=>d.id=k.dostavka_id)
         sendSms(`<b>💠 Yangi buyurtma:</b>\n\n`+
         `🔷 Fio:<b>${k.fish} </b>\n`+
