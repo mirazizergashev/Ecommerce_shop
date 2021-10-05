@@ -62,8 +62,8 @@ inner join orders o  on o.id=t.order_id  where t.transaction_id=?;SELECT * FROM 
       boterror: err
     }))
 }
-sendClickTrans(101)
-function sendClickTrans(order_id) {
+// sendClickTrans(101)
+function sendClickTrans(order_id,naqd="") {
   pool.promise().query(`SELECT *,date_format(sana,'%Y-%m-%d, %h:%i:%s') sana FROM orders
   where id=?;SELECT * FROM dostavka_type;`, [order_id])
     .then(rows => {
@@ -83,7 +83,7 @@ function sendClickTrans(order_id) {
         }
         // console.log(res)
         const dostvk=dostv.find(d=>d.id=k.dostavka_id)
-        sendSms(`<b>💠 Yangi buyurtma:</b>\n\n`+
+        sendSms(`<b>💠 Yangi buyurtma:</b>\n\n${naqd}`+
         `🔷 Fio:<b>${k.fish} </b>\n`+
         `🔷 Telefon:<b>${k.phone} </b>\n`+
         `🔷 Manzil: <b>${k.viloyat+", "+k.tuman+", "+k.mfy} </b>n`+
