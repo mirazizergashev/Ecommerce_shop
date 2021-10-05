@@ -8,7 +8,7 @@ var productModel = function () { }
 productModel.idDetail = function (id, result) {
 
     pool.query(`SELECT * FROM  product where isActive=1 and id=?;
-    SELECT praduct_id as massiv FROM orders;
+    SELECT count(s.id) as son FROM suborder s inner join orders o on s.order_id=o.id where o.state=2 and s.product_id=?;
     SELECT * FROM product_comment where product_id=?;
     SELECT img_url as img FROM  product_image where isActive=1 and product_id=?;
     SELECT cp.field_name, GROUP_CONCAT(pp.values SEPARATOR '#') as content FROM product_properties pp inner join category_properties cp on cp.id=pp.cat_prop_id where pp.product_id in 
@@ -21,22 +21,12 @@ select * from category where isActive=1;`,
                 return result(err, null);
             }
 
-            let k = eval(res[1]), s = 0, arr2;
+            let  s = 0, arr2;
             let arr3, s2 = 0;
             let img = [];
             let arr4 = [], s4 = 0, cont = [], cont2 = [];
 
-            //necha marta sotilgani
-            k.forEach((e) => {
-                if (Array.isArray(eval(e.massiv))) {
-                    arr2 = eval(e.massiv);
-                    arr2.forEach((ee) => {
-                        if (ee.product_id == id) {
-                            s++;
-                        }
-                    })
-                }
-            })
+            s=res[1].son
 
 
             //nechta yulduzcha va bahosi
