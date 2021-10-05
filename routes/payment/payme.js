@@ -9,7 +9,9 @@ const CancelTransaction = require("./CancelTransaction")
 const check = require("../../middleware/auth").authCheck;
 const session = require("express-session");
 const merchant = "6135b21ec517ef555a8accac"
-
+const {
+    sendClickTrans
+} = require("../../botconnect");
 //tekshrish 
 function checkAuth(auth) {
     return auth &&
@@ -93,7 +95,7 @@ app.use("/payme/1", async (req, res) => {
     if (req.body) {
         pool.query("select * from dostavka_type where id=?", req.body.dostavka_id, async (err, rslt) => {
             if (err) {
-                console.error(err);
+                console.error(1,err);
                 return res.json({ error: 2, error_note: "Not" });
             }
             req.Dostavka = (amount) => Math.ceil((amount * 1 + rslt[0].cost * 1) * 100) / 100;
@@ -108,7 +110,7 @@ app.use("/payme/1", async (req, res) => {
 
             pool.promise()
                 .query("insert into orders (user_id,amount , payme_state , state , phone ,sana,fish,viloyat,tuman,mfy,dostavka_id) " +
-                    "values (?,0,0,0,?,now(),?,?,?,?,?,?);",
+                    "values (?,0,0,0,?,now(),?,?,?,?,?);",
                     [req.session.userId || null, tel, fish, viloyat,
                         tuman, mfy, req.body.dostavka_id])
                 .then(async (rest) => {
@@ -180,7 +182,7 @@ app.use("/payme/1", async (req, res) => {
                         pool.query(so.slice(0, -1) +
                             "; UPDATE orders SET amount=?,promokod_id=?,discount=? WHERE id=?", aso, (err, row2) => {
                                 if (err) {
-                                    console.error({
+                                    console.error(2,{
                                         err
                                     })
                                     return res.json({
@@ -190,7 +192,7 @@ app.use("/payme/1", async (req, res) => {
                                 }
                                 //Order Yaratildi.....
                                 sendClickTrans(rest[0].insertId)
-                                bu = Buffer.from(`m=${merchant};ac.order=${rest[0].insertId};a=${req.Dostavka(summa - req.promokod.Run(summa)) * 100}`).toString('base64')
+                                bu = Buffer.from(`m=${merchant};ac.order=${rest[0].insertId};a=${req.Dostavka(summa - req.promokod.Run(summa)) }`).toString('base64')
 
                                 res.redirect(`/payme-ghvcjhbcfkrhkjdfhkjdfn/${bu}`);
 
@@ -198,11 +200,11 @@ app.use("/payme/1", async (req, res) => {
 
 
 
-                    }).catch((err) => {
-                        console.log(err)
-                        res.json({ error: 2, error_note: "Not" });
                     })
-
+                    })
+.catch((err) => {
+                        console.log("catch",err)
+                        res.json({ error: 2, error_note: "Not" });
                 })
 
         })
@@ -296,6 +298,22 @@ app.get("/money", async (req, res) => {
 })
 
 
+
+
+function changeCosts(c, data) {
+    data.forEach((e, i) => {
+        let k = e.category_id,
+            cost = e.cost,
+            ind = c.findIndex(x => x.id == k);
+
+        while (ind != -1) {
+            cost = parseInt(cost * (100 + c[ind].percent * 1) / 100) + 1 * c[ind].isFoiz
+            ind = c.findIndex(x => x.id == c[ind].sub)
+        }
+        data[i].cost = cost * (100 - data[i].discount * 1) / 100;
+    });
+    return data
+}
 
 
 module.exports = app;
