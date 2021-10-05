@@ -93,7 +93,7 @@ app.use("/payme/1", async (req, res) => {
 
     }
     if (req.body) {
-        pool.query("select * from dostavka_type where id=?", req.body.dostavka_id, async (err, rslt) => {
+        pool.query("select * from dostavka_type where id=?", req.body.dostavka_id||1, async (err, rslt) => {
             if (err) {
                 console.error(1,err);
                 return res.json({ error: 2, error_note: "Not" });
@@ -112,7 +112,7 @@ app.use("/payme/1", async (req, res) => {
                 .query("insert into orders (user_id,amount , payme_state , state , phone ,sana,fish,viloyat,tuman,mfy,dostavka_id) " +
                     "values (?,0,0,0,?,now(),?,?,?,?,?);",
                     [req.session.userId || null, tel, fish, viloyat,
-                        tuman, mfy, req.body.dostavka_id])
+                        tuman, mfy, req.body.dostavka_id||1])
                 .then(async (rest) => {
                     //  console.log(rest[0][1])
                     let {
