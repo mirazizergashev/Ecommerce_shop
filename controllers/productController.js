@@ -75,6 +75,126 @@ productController.statisticShopId = function (req, res) {
     })
 }
 
+productController.product_comment_edit_insert = function (req, res) {
+
+    //validatsiyada xatolik
+    const checked = schema.product_comment.validate(req.body);
+    if (checked.error) {
+        const msg = checked.error.details[0].message.split("#")
+        return res.status(200).json({
+            code: 400,
+            error: {
+                message: {
+                    uz: msg[0],
+                    en: msg[1],
+                    ru: msg[2]
+                }
+            }
+
+        });
+    }
+    let a = req.body;
+    console.log(req.session)
+    var data = [
+        a.id,
+        a.prod_id,
+        a.izoh,
+        a.baho,
+        req.session.userId || 0,
+        a.hol
+    ]
+
+    productModel.product_comment_edit_insert(data, function (err, result) {
+        if (err) {
+            console.log(err)
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        } else {
+            // req.flash('success', 'Employee added succesfully');
+            console.log(result[0][0].natija)
+            switch (result[0][0].natija) {
+                case '1':
+                    return res.status(200).json({
+                        code: 201,
+                        success: {
+                            message: {
+                                uz: "Yangi izoh yaratildi!",
+                                en: "New product created!",
+                                ru: "Создан новый продукт!"
+                            }
+                        }
+                    })
+
+                case '2':
+                    return res.status(200).json({
+                        code: 203,
+                        success: {
+                            message: {
+                                uz: "izoh o'zgartirildi !",
+                                en: "Product changed!",
+                                ru: "Товар изменен!"
+                            }
+                        }
+                    })
+
+
+                case '3':
+                    return res.status(200).json({
+                        code: 400,
+                        error: {
+                            message: {
+                                uz: "Foydalanuvchi topilmadi!",
+                                en: "No such role found!",
+                                ru: "Такой роли не найдено!"
+                            }
+                        }
+                    })
+
+                    case '4':
+                    return res.status(200).json({
+                        code: 400,
+                        error: {
+                            message: {
+                                uz: "Maxsulot topilmadi!",
+                                en: "No such role found!",
+                                ru: "Такой роли не найдено!"
+                            }
+                        }
+                    })
+
+
+                default:
+
+                    return res.status(200).json({
+                        code: 418,
+                        success: {
+                            message: {
+                                uz: "Kutilmagan xatolik adminga xabar bering !",
+                                en: "Report an unexpected error to the admin!",
+                                ru: "Сообщите администратору о непредвиденной ошибке!"
+                            }
+                        }
+                    })
+
+
+
+
+            }
+
+        }
+
+    });
+
+}
+
 productController.create_update = function (req, res) {
 
     //validatsiyada xatolik

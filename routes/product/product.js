@@ -21,6 +21,7 @@ router.get('/prodPropsByValue', productController.prodPropsByValue);
 router.get('/getAll/:id', productController.getAll);
 router.get('/getImage/:id', productController.getImage);
 router.post('/', productController.create_update);
+router.post('/comment', productController.product_comment_edit_insert);
 router.post('/check', productController.check_product);
 router.post('/img_del', productController.img_del);
 router.post('/image',upload, productController.product_image);
