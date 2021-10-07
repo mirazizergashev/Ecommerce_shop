@@ -75,6 +75,32 @@ productController.statisticShopId = function (req, res) {
     })
 }
 
+productController.getCommentAll = function (req, res) {
+    productModel.getCommentAll(req.params.id, req.session.userId, (err, rows) => {
+
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+
+
+
+        res.status(200).json({
+            code: 200,
+            success: rows
+        })
+    })
+}
+
 productController.product_comment_edit_insert = function (req, res) {
 
     //validatsiyada xatolik
@@ -100,7 +126,7 @@ productController.product_comment_edit_insert = function (req, res) {
         a.prod_id,
         a.izoh,
         a.baho,
-        req.session.userId || 0,
+        a.name,
         a.hol
     ]
 

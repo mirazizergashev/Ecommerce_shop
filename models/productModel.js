@@ -188,7 +188,16 @@ productModel.statisticShopId = function (start, end,id, result) {
     });
 }
 
-
+productModel.getCommentAll = function (id, ses, result) {
+    
+    pool.query(`SELECT * FROM product_comment where status=1`, function (err, res) {
+        if (err) {
+            return result(err, null);
+        } else {
+            return result(null, res);
+        }
+    });
+}
 //maxsulot qoshish
 productModel.product_comment_edit_insert = function (data, result) {
     pool.query("call prod_comment_edit_insert(?,?,?,?,?,?)", data, function (err, res, field) {
