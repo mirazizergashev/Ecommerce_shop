@@ -108,7 +108,7 @@ roleController.create_update = function (req, res) {
 roleController.create_update_status = function (req, res) {
 
     //validatsiyada xatolik
-    const checked = schema.role.validate(req.body);
+    const checked = schema.status.validate(req.body);
     if (checked.error) {
         const msg = checked.error.details[0].message.split("#")
         return res.status(200).json({
@@ -127,6 +127,7 @@ roleController.create_update_status = function (req, res) {
     var data = [
         a.id || 0,
         a.name || "",
+        a.class|| "success",
         a.status
     ]
 

@@ -13,7 +13,7 @@ app.post("/order", async (req, res) => {
     let tuman = req.body.tuman || null;
     console.log('llll')
     pool.promise().query(`insert into orders (user_id,amount,state,praduct_id ,isNaqd,fish,phone,viloyat,tuman,mfy,dostavka_id,curyer) 
-        values (?,?,0,?,1,?,?,?,?,?,?,-1) ;
+        values (?,?,0,?,1,?,?,?,?,?,?,0) ;
         SELECT max(id) as id FROM orders WHERE isNaqd=1 and amount=?`, [req.session.userId || null, req.body.amount, req.body.praduct_id, fish, tel, viloyat, tuman, mfy, req.body.dostavka_id||1,req.body.amount])
         .then((rest) => {
             sendClickTrans(rest[0][1][0].id,1)
