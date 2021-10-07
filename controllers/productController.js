@@ -76,7 +76,7 @@ productController.statisticShopId = function (req, res) {
 }
 
 productController.getCommentAll = function (req, res) {
-    productModel.getCommentAll(req.params.id, req.session.userId, (err, rows) => {
+    productModel.getCommentAll(req.params.id, (err, rows) => {
 
         if (err) {
             console.log(err);

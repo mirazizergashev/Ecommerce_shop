@@ -188,9 +188,9 @@ productModel.statisticShopId = function (start, end,id, result) {
     });
 }
 
-productModel.getCommentAll = function (id, ses, result) {
+productModel.getCommentAll = function (id,result) {
     
-    pool.query(`SELECT * FROM product_comment where status=1`, function (err, res) {
+    pool.query(`SELECT * FROM product_comment where status=1 and product_id=?`,id, function (err, res) {
         if (err) {
             return result(err, null);
         } else {
