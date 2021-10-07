@@ -1,4 +1,4 @@
-const {sendTransOrder}=require("../../botconnect")
+const {sendClickTrans}=require("../../botconnect")
 module.exports = PerformTransaction =async(data,javob)=>
 {
 
@@ -30,10 +30,12 @@ module.exports = PerformTransaction =async(data,javob)=>
                UPDATE transactions SET state=2,perform_time=? WHERE transaction_id=?;
                UPDATE orders SET state=2  WHERE  id IN  ( SELECT order_id FROM transactions 
                 WHERE transaction_id=?);
+                SELECT id FROM orders WHERE id IN  ( SELECT order_id FROM transactions 
+                  WHERE transaction_id=?);
               `,[datee.toString(),data.params.id,data.params.id])
             .then(async(rest)=>
             {  
-              sendTransOrder(data.params.id)
+              sendClickTrans(rest[0][2][0].id)
                 return javob.json({result: {
                     state : 2,
                     perform_time : datee,
