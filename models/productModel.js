@@ -61,6 +61,7 @@ select * from category where isActive=1;`,
                 data2 = {
                     'id': id,
                     'name': data[0].name,
+                    'description':data[0].comment,
                     'vendorCode': s,
                     'reviews': res[2].length,
                     'rating': isNaN(parseFloat(s2 / res[2].length).toFixed(1)) ? 0 : parseFloat(s2 / res[2].length).toFixed(1),
