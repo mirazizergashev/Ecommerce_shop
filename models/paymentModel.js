@@ -52,7 +52,7 @@ paymentModel.getCuryerProd = function (id, result) {
 
 
 paymentModel.getOrdersAll = function (result) {
-    pool.query(`SELECT o.id,o.fish,concat(o.viloyat," ",o.tuman," ",o.mfy) as address,o.amount as price,s.name as status,
+    pool.query(`SELECT o.id,o.fish,concat(o.viloyat," ",o.tuman," ",o.mfy) as address,o.amount as price,s.name as status,s.class,
     (case  when (o.isClick=0 and o.isNaqd=0) then "Payme"
     when (o.isClick=1) then "Click"
     else "Joyida to'lov" end
