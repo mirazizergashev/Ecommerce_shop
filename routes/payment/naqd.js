@@ -137,9 +137,9 @@ app.post("/naqd", async (req, res) => {
             let tuman = req.body.tuman || null;
 
 
-            pool.promise().query(`insert into orders (user_id,state,sana,karta,fish,phone,viloyat,tuman,mfy,dostavka_id) 
-    values (?,1 ,now(),?,?,?,?,?,?,?) ;`,
-                    [req.session.userId||null, req.body.karta, fish, tel, viloyat, tuman, mfy, req.body.dostavka_id||1])
+            pool.promise().query(`insert into orders (user_id,state,sana,fish,phone,viloyat,tuman,mfy,dostavka_id,isNaqd) 
+    values (?,1 ,now(),?,?,?,?,?,?,1) ;`,
+                    [req.session.userId||null, fish, tel, viloyat, tuman, mfy, req.body.dostavka_id||1])
                 .then((rest) => {
                     let {
                         data
@@ -184,7 +184,7 @@ app.post("/naqd", async (req, res) => {
                                 }
                             }
                         });
-                        let check
+                        let check={}
                         if (notFounds.length > 0) check.notFounds = notFounds
                         if (lessProd.length > 0) check.lessProd = lessProd
                         if (check) {
