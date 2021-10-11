@@ -353,7 +353,7 @@ productModel.getOne = function (id = 0, result) {
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
     left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1 and p.checked=2 and p.id=?;
+    where p.isActive=1 and p.checked=1 and p.id=?;
     select * from category where isActive=1;`, id, function (err, res) {
         if (err) {
             return result(err, null);
@@ -371,7 +371,7 @@ productModel.searchAll = function (text, result) {
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
     left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1 and p.checked=2 and p.name LIKE "%${text}%";
+    where p.isActive=1 and p.checked=1 and p.name LIKE "%${text}%";
     select * from category where isActive=1;`, function (err, res) {
         if (err) {
             return result(err, null);
@@ -474,7 +474,7 @@ productModel.productByCategory = function (id = 0, result) {
 
             pool.query(`SELECT p.*,pi.id as idcha,pi.img_url,pp.cat_prop_id,pp.values FROM product p left join product_image pi on pi.product_id=p.id and 
             pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1) left join 
-            product_properties pp on pp.product_id=p.id where p.isActive=1 and p.checked=2 and p.category_id in (${ids || null});`, function (err2, res) {
+            product_properties pp on pp.product_id=p.id where p.isActive=1 and p.checked=1 and p.category_id in (${ids || null});`, function (err2, res) {
                 if (err2) {
                     console.log("err2")
                     return result(err2, null);
@@ -519,7 +519,7 @@ productModel.productFilter = function (query, result) {
         `
 
     })
-    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p left join product_image pi on pi.product_id=p.id and p.isActive=1 and p.checked=2 and 
+    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p left join product_image pi on pi.product_id=p.id and p.isActive=1 and p.checked=1 and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
     ${ss}
     ;select * from category where isActive=1;`, a, function (err, res) {
