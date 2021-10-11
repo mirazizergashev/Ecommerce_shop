@@ -7,7 +7,7 @@ var productModel = function () { }
 //:id/detail
 productModel.idDetail = function (id, result) {
 
-    pool.query(`SELECT * FROM  product where isActive=1 and checked=2 and id=?;
+    pool.query(`SELECT * FROM  product where isActive=1 and checked=1 and id=?;
     SELECT count(s.id) as son FROM suborder s inner join orders o on s.order_id=o.id where o.state=2 and s.product_id=?;
     SELECT * FROM product_comment where product_id=?;
     SELECT img_url as img FROM  product_image where isActive=1 and product_id=?;
