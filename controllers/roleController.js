@@ -162,9 +162,9 @@ roleController.create_update_status = function (req, res) {
                 case '2':
                     return res.status(200).json({
                         code: 203,
-                        error: {
+                        success: {
                             message: {
-                                uz: "Status o'zgartirildi !",
+                                uz: "Malumotlar o'zgartirildi !",
                                 en: "User information has changed!",
                                 ru: "Информация о пользователе изменилась!"
                             }
@@ -187,7 +187,7 @@ roleController.create_update_status = function (req, res) {
 
                     return res.status(200).json({
                         code: 418,
-                        success: {
+                        error: {
                             message: {
                                 uz: "Kutilmagan xatolik adminga xabar bering !",
                                 en: "Report an unexpected error to the admin!",

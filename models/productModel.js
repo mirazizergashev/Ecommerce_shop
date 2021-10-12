@@ -7,7 +7,7 @@ var productModel = function () { }
 //:id/detail
 productModel.idDetail = function (id, result) {
 
-    pool.query(`SELECT * FROM  product where isActive=1 and id=?;
+    pool.query(`SELECT * FROM  product where isActive=1 and checked=1 and id=?;
     SELECT count(s.id) as son FROM suborder s inner join orders o on s.order_id=o.id where o.state=2 and s.product_id=?;
     SELECT * FROM product_comment where product_id=?;
     SELECT img_url as img FROM  product_image where isActive=1 and product_id=?;
@@ -307,16 +307,19 @@ productModel.changeTop = function (id, isTop, result) {
 productModel.All = function (query, result) {
 
     const page = parseInt(query.page || 0), count = parseInt(query.count || 15), user_id = parseInt(query.user_id || 0)
-    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url,
+    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url,(SELECT sum(mark)/count(mark) FROM product_comment where product_id=p.id) as rating,
+    (SELECT count(mark) FROM product_comment where product_id=p.id) as reviews,
     (select concat(u.first_name," ",u.last_name) from users u where u.id=p.user_id limit 1) as fish  FROM  product as p 
     left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1 and p.checked!=${query.allow ? -1 : 0} ${(user_id) ? `and p.user_id=${user_id} ` : ""} limit ?,?;
+    where p.isActive=1  ${(user_id) ? `and p.user_id=${user_id} ` : ""} limit ?,?;
     select * from category where isActive=1;`, [page * count, count], function (err, res) {
         if (err) {
             return result(err, null);
         } else {
             let data = changeCosts(res[1], res[0])
+            let data1=[];
+            console.log(data)
             return result(null, data);
         }
     });
@@ -350,7 +353,7 @@ productModel.getOne = function (id = 0, result) {
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
     left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1 and p.id=?;
+    where p.isActive=1 and p.checked=1 and p.id=?;
     select * from category where isActive=1;`, id, function (err, res) {
         if (err) {
             return result(err, null);
@@ -368,7 +371,7 @@ productModel.searchAll = function (text, result) {
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
     left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1 and p.name LIKE "%${text}%";
+    where p.isActive=1 and p.checked=1 and p.name LIKE "%${text}%";
     select * from category where isActive=1;`, function (err, res) {
         if (err) {
             return result(err, null);
@@ -383,7 +386,7 @@ productModel.searchAll = function (text, result) {
 productModel.Retcomment = function (id, result) {
 
 
-    pool.query(`SELECT * FROM ecommerce_shop.product_check where product_id=? order by created_on desc limit 1`, id || 0, function (err, res) {
+    pool.query(`SELECT * FROM product_check where product_id=? order by created_on desc limit 1`, id || 0, function (err, res) {
         if (err) {
             return result(err, null);
         } else {
@@ -471,7 +474,7 @@ productModel.productByCategory = function (id = 0, result) {
 
             pool.query(`SELECT p.*,pi.id as idcha,pi.img_url,pp.cat_prop_id,pp.values FROM product p left join product_image pi on pi.product_id=p.id and 
             pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1) left join 
-            product_properties pp on pp.product_id=p.id where p.isActive=1 and p.category_id in (${ids || null});`, function (err2, res) {
+            product_properties pp on pp.product_id=p.id where p.isActive=1 and p.checked=1 and p.category_id in (${ids || null});`, function (err2, res) {
                 if (err2) {
                     console.log("err2")
                     return result(err2, null);
@@ -516,10 +519,10 @@ productModel.productFilter = function (query, result) {
         `
 
     })
-    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p left join product_image pi on pi.product_id=p.id and 
+    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p left join product_image pi on pi.product_id=p.id and p.isActive=1 and p.checked=1 and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
     ${ss}
-    ;select * from category;`, a, function (err, res) {
+    ;select * from category where isActive=1;`, a, function (err, res) {
         if (err) {
             return result(err, null);
         } else {
