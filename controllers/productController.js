@@ -252,8 +252,8 @@ productController.create_update = function (req, res) {
         a.kategoriya,
         a.skidka,
     ]
-    console.log(a.properties)
-    pool.query(`SELECT  * FROM category where isActive=1;
+    // console.log(a.properties)
+    pool.query((!a.id || a.id==0)?"select 1":`SELECT  * FROM category where isActive=1;
     SELECT id,field_name,type_id,category_id FROM category_properties WHERE isActive=1;`,
     (err,row)=>{
         if (err) {
@@ -269,29 +269,31 @@ productController.create_update = function (req, res) {
                 }
             })
         }
-        let pp=getCatProperties(row[0],row[1],a.kategoriya||-2),pp0=[],myproperties=[]
-        pp.forEach(prop=>{
-            console.log({id:prop.id,find:a.properties.find(e=>e.cat_prop_id==prop.id)})
-            if(!a.properties.find(e=>e.cat_prop_id==prop.id))
-            pp0.push(prop)
-            else
-            myproperties.push(prop)
-        })
-        // console.log({pp0,properties:a.properties})
-        if (pp0.length>0) {
-            return res.status(200).json({
-                    code: 400,
-                    error: {
-                        message: {
-                            uz: "Maxsulotning kategoriyalariga mos maxsulotlar kiritilishi majburiy!",
-                            en: "Rejected due to server error!",
-                            ru: "Отклонено из-за ошибки сервера!"
-                        },
-                        data:pp0
-                    }
+        if(!a.id|| a.id==0){
+            let pp=getCatProperties(row[0],row[1],a.kategoriya||-2),pp0=[],myproperties=[]
+            pp.forEach(prop=>{
+                let pv=a.properties.find(e=>e.cat_prop_id==prop.id)
+                if(!pv)
+                pp0.push(prop)
+                else
+                myproperties.push(pv)
             })
+            // console.log({pp0,properties:a.properties})
+            if (pp0.length>0) {
+                return res.status(200).json({
+                        code: 400,
+                        error: {
+                            message: {
+                                uz: "Maxsulotning kategoriyalariga mos maxsulotlar kiritilishi majburiy!",
+                                en: "Rejected due to server error!",
+                                ru: "Отклонено из-за ошибки сервера!"
+                            },
+                            data:pp0
+                        }
+                })
+            }
         }
-        productModel.product_edit_insert(data, function (err, result) {
+        productModel.product_edit_insert(data,async function (err, result) {
             if (err) {
                 console.log(err)
                 return res.status(200).json({
@@ -309,7 +311,43 @@ productController.create_update = function (req, res) {
                 // console.log(result)
                 switch (result[0][0].natija) {
                     case '1':
-                        
+                        if(myproperties.length>0){
+                            let s="INSERT INTO product_properties(product_id,cat_prop_id,`values`) VALUES",ka=[]
+                            myproperties.forEach(e=>{
+                                s+=`(${result[0][0].id},${e.cat_prop_id*1},?),`
+                                ka.push(e.value||"")
+                            })
+                            s=s.slice(0,-1)
+                            console.log({s,ka})
+                            await pool.promise().query(s,ka).then(rows=>{
+                               
+                                return res.status(200).json({
+                                    code: 201,
+                                    success: {
+                                        message: {
+                                            uz: "Yangi maxsulot yaratildi!",
+                                            en: "New product created!",
+                                            ru: "Создан новый продукт!"
+                                        }
+                                    }
+                                })
+                            })
+                            .catch(err2=>{
+                                    console.log({err2})
+                                    return res.status(200).json({
+                                        code: 500,
+                                        error: {
+                                            message: {
+                                                uz: "Serverda xatolik tufayli rad etildi !",
+                                                en: "Rejected due to server error!",
+                                                ru: "Отклонено из-за ошибки сервера!"
+                                            }
+                                        }
+                                    })
+                                
+                            })
+                        }
+                        else
                         return res.status(200).json({
                             code: 201,
                             success: {
@@ -320,7 +358,7 @@ productController.create_update = function (req, res) {
                                 }
                             }
                         })
-
+                        break;
                     case '2':
                         return res.status(200).json({
                             code: 203,
@@ -332,7 +370,7 @@ productController.create_update = function (req, res) {
                                 }
                             }
                         })
-
+                    break
 
                     case '3':
                         return res.status(200).json({
