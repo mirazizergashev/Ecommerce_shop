@@ -69,6 +69,50 @@ paymentModel.getOrdersAll = function (result) {
     });
 }
 
+paymentModel.getOrdersAllPostavshik = function (id,result) {
+    pool.query(`SELECT p.id,p.name,s.count,(s.cost-s.discount) as price,ss.name as status,ss.class,
+    date_format(o.sana,'%Y-%m-%d %h:%i:%s') as sana FROM suborder s inner join orders o on s.order_id=o.id 
+    inner join product p on p.id=s.product_id   inner join dostavka_type d on o.dostavka_id=d.id inner join 
+    statuses ss on ss.id=o.status where p.user_id=?`,id, function (err, data) {
+        if (err) {
+            return result(err, null);
+        } else {
+            let datas=[],cont,arr4=[],cont2=[]
+            data.forEach((k,ii)=>{
+                pool.query(`SELECT cp.field_name, GROUP_CONCAT(pp.values SEPARATOR '#') as content FROM product_properties pp inner join category_properties cp on cp.id=pp.cat_prop_id where pp.product_id in 
+                (SELECT id FROM product where name in (SELECT name FROM product where id=?)) GROUP BY cp.field_name;`,k.id,(err1,row2,fff)=>{
+                    row2.forEach((e, i) => {
+                        cont = e.content.split('#')
+                        for (let j = 0; j < cont.length; j++) {
+                            cont2.push({ 'id': j + 1, 'content': cont[j] })
+                        }
+                        arr4.push({ 'title': e.field_name, 'data': cont2 })
+                        cont2 = []
+                    })
+                    
+                    datas.push({
+                        id:ii+1,
+                        name:k.name,
+                        count:k.count,
+                        price:k.price,
+                        status:k.status,
+                        class:k.class,
+                        sana:k.sana,
+                        properties:arr4
+                    })
+                    arr4=[]
+                    if(data.length==ii+1){
+                     
+                        return result(null, datas);
+                    }
+                })
+            })
+
+            
+        }
+    });
+}
+
 
 paymentModel.getOrdersIn = function (id,result) {
     pool.query(`SELECT p.id,p.name,s.count,s.cost as price FROM suborder s inner join orders o on s.order_id=o.id 
