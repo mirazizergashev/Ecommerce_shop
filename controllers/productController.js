@@ -1,3 +1,4 @@
+const pool = require('../database/db');
 var productModel = require('../models/productModel');
 const schema = require('../utils/product')
 
@@ -238,8 +239,8 @@ productController.create_update = function (req, res) {
             }
 
         });
-    }
-    let a = req.body;
+    }    
+    let a = req.body; 
     var data = [
         a.id,
         a.nom,
@@ -251,8 +252,10 @@ productController.create_update = function (req, res) {
         a.kategoriya,
         a.skidka,
     ]
-
-    productModel.product_edit_insert(data, function (err, result) {
+    // console.log(a.properties)
+    pool.query((!a.id || a.id==0)?"select 1":`SELECT  * FROM category where isActive=1;
+    SELECT id,field_name,type_id,category_id FROM category_properties WHERE isActive=1;`,
+    (err,row)=>{
         if (err) {
             console.log(err)
             return res.status(200).json({
@@ -265,72 +268,157 @@ productController.create_update = function (req, res) {
                     }
                 }
             })
-        } else {
-            // req.flash('success', 'Employee added succesfully');
-            console.log(result[0][0].natija)
-            switch (result[0][0].natija) {
-                case '1':
-                    return res.status(200).json({
-                        code: 201,
-                        success: {
-                            message: {
-                                uz: "Yangi maxsulot yaratildi!",
-                                en: "New product created!",
-                                ru: "Создан новый продукт!"
-                            }
-                        }
-                    })
-
-                case '2':
-                    return res.status(200).json({
-                        code: 203,
-                        success: {
-                            message: {
-                                uz: "Maxsulot o'zgartirildi !",
-                                en: "Product changed!",
-                                ru: "Товар изменен!"
-                            }
-                        }
-                    })
-
-
-                case '3':
-                    return res.status(200).json({
+        }
+        if(!a.id|| a.id==0){
+            let pp=getCatProperties(row[0],row[1],a.kategoriya||-2),pp0=[],myproperties=[]
+            pp.forEach(prop=>{
+                let pv=a.properties.find(e=>e.cat_prop_id==prop.id)
+                if(!pv)
+                pp0.push(prop)
+                else
+                myproperties.push(pv)
+            })
+            // console.log({pp0,properties:a.properties})
+            if (pp0.length>0) {
+                return res.status(200).json({
                         code: 400,
                         error: {
                             message: {
-                                uz: "Foydalanuvchi topilmadi!",
-                                en: "No such role found!",
-                                ru: "Такой роли не найдено!"
-                            }
+                                uz: "Maxsulotning kategoriyalariga mos maxsulotlar kiritilishi majburiy!",
+                                en: "Rejected due to server error!",
+                                ru: "Отклонено из-за ошибки сервера!"
+                            },
+                            data:pp0
                         }
-                    })
-
-
-                default:
-
-                    return res.status(200).json({
-                        code: 418,
-                        success: {
-                            message: {
-                                uz: "Kutilmagan xatolik adminga xabar bering !",
-                                en: "Report an unexpected error to the admin!",
-                                ru: "Сообщите администратору о непредвиденной ошибке!"
-                            }
+                })
+            }
+        }
+        productModel.product_edit_insert(data,async function (err, result) {
+            if (err) {
+                console.log(err)
+                return res.status(200).json({
+                    code: 500,
+                    error: {
+                        message: {
+                            uz: "Serverda xatolik tufayli rad etildi !",
+                            en: "Rejected due to server error!",
+                            ru: "Отклонено из-за ошибки сервера!"
                         }
-                    })
+                    }
+                })
+            } else {
+                // req.flash('success', 'Employee added succesfully');
+                // console.log(result)
+                switch (result[0][0].natija) {
+                    case '1':
+                        if(myproperties.length>0){
+                            let s="INSERT INTO product_properties(product_id,cat_prop_id,`values`) VALUES",ka=[]
+                            myproperties.forEach(e=>{
+                                s+=`(${result[0][0].id},${e.cat_prop_id*1},?),`
+                                ka.push(e.value||"")
+                            })
+                            s=s.slice(0,-1)
+                            console.log({s,ka})
+                            await pool.promise().query(s,ka).then(rows=>{
+                               
+                                return res.status(200).json({
+                                    code: 201,
+                                    success: {
+                                        message: {
+                                            uz: "Yangi maxsulot yaratildi!",
+                                            en: "New product created!",
+                                            ru: "Создан новый продукт!"
+                                        }
+                                    }
+                                })
+                            })
+                            .catch(err2=>{
+                                    console.log({err2})
+                                    return res.status(200).json({
+                                        code: 500,
+                                        error: {
+                                            message: {
+                                                uz: "Serverda xatolik tufayli rad etildi !",
+                                                en: "Rejected due to server error!",
+                                                ru: "Отклонено из-за ошибки сервера!"
+                                            }
+                                        }
+                                    })
+                                
+                            })
+                        }
+                        else
+                        return res.status(200).json({
+                            code: 201,
+                            success: {
+                                message: {
+                                    uz: "Yangi maxsulot yaratildi!",
+                                    en: "New product created!",
+                                    ru: "Создан новый продукт!"
+                                }
+                            }
+                        })
+                        break;
+                    case '2':
+                        return res.status(200).json({
+                            code: 203,
+                            success: {
+                                message: {
+                                    uz: "Maxsulot o'zgartirildi !",
+                                    en: "Product changed!",
+                                    ru: "Товар изменен!"
+                                }
+                            }
+                        })
+                    break
+
+                    case '3':
+                        return res.status(200).json({
+                            code: 400,
+                            error: {
+                                message: {
+                                    uz: "Foydalanuvchi topilmadi!",
+                                    en: "No such role found!",
+                                    ru: "Такой роли не найдено!"
+                                }
+                            }
+                        })
+
+
+                    default:
+
+                        return res.status(200).json({
+                            code: 418,
+                            success: {
+                                message: {
+                                    uz: "Kutilmagan xatolik adminga xabar bering !",
+                                    en: "Report an unexpected error to the admin!",
+                                    ru: "Сообщите администратору о непредвиденной ошибке!"
+                                }
+                            }
+                        })
 
 
 
+
+                }
 
             }
 
-        }
+        });
 
-    });
-
+    })
 }
 
+function getCatProperties(cat=[],prop=[],catId=-1) {
+    let arr=[],pp=[...prop]
+    arr=pp.filter(e=>e.category_id==catId)//.map(e=>e.id)
+    const cts=cat.find(e=>e.id==catId)
+    const category = cat.find(e => e.id == cts.sub)
+   if(category)
+        getCatProperties(cat,prop,category.id).forEach(e=>{arr.push(e)})
+return arr
+}
 //admin tasdiqlashi
 productController.check_product = function (req, res) {
 
@@ -949,19 +1037,31 @@ productController.productPropertiesCU = function (req, res) {
                             }
                         }
                     })
-                case '4':
-                    return res.status(200).json({
-                        code: 400,
-                        error: {
-                            message: {
-                                uz: "Kategoriya xususiyati topilmadi!",
-                                en: "Category feature not found!",
-                                ru: "Функция категории не найдена!"
+                    case '4':
+                        return res.status(200).json({
+                            code: 400,
+                            error: {
+                                message: {
+                                    uz: "Kategoriya xususiyati topilmadi!",
+                                    en: "Category feature not found!",
+                                    ru: "Функция категории не найдена!"
+                                }
                             }
-                        }
-                    })
-
-
+                        })
+    
+                        case '400':
+                            return res.status(200).json({
+                                code: 400,
+                                error: {
+                                    message: {
+                                        uz: "Kategoriya xususiyati topilmadi!",
+                                        en: "Category feature not found!",
+                                        ru: "Функция категории не найдена!"
+                                    }
+                                }
+                            })
+        
+            
                 default:
 
                     return res.status(200).json({

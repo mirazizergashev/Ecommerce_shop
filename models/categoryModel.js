@@ -139,6 +139,7 @@ categoryModel.getSubs=function(result){
     });
 }
 
+
 function getSubs(a,id) {
     let b=[]
     a.filter(e=>e.sub==id)
@@ -157,5 +158,21 @@ function getSubCategory(a,id) {
     return s
 }
 
-
+categoryModel.getv1PropertiesById=function(id=-1,result){
+    pool.query(`SELECT  * FROM category where isActive=1;
+    SELECT id,field_name,type_id,category_id FROM category_properties WHERE isActive=1;`,
+    (err,row)=>{
+        if (err) return result(err,null)
+        return result(null,getCatProperties(row[0],row[1],id||-2))
+    })
+}
+function getCatProperties(cat=[],prop=[],catId=-1) {
+    let arr=[],pp=[...prop]
+    arr=pp.filter(e=>e.category_id==catId)//.map(e=>e.id)
+    const cts=cat.find(e=>e.id==catId)
+    const category = cat.find(e => e.id == cts.sub)
+   if(category)
+        getCatProperties(cat,prop,category.id).forEach(e=>{arr.push(e)})
+return arr
+}
 module.exports=categoryModel;

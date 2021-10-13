@@ -12,6 +12,7 @@ router.get('/getSubs', categoryController.getSubs);
 router.post('/',[authCheck], categoryController.create_update);
 router.get('/delete/:id',[authCheck], categoryController.delete);
 
+router.get('/getv1PropertiesById/:id', categoryController.getv1PropertiesById);
 router.get('/getPropertiesByCat/:id', categoryController.getPropertiesByCat);
 router.get('/Properties/:id', categoryController.getProperties);
 router.post('/properties', categoryController.categoryPropertiesCU);
