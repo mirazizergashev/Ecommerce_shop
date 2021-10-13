@@ -252,8 +252,9 @@ productController.create_update = function (req, res) {
         a.kategoriya,
         a.skidka,
     ]
-    pool.query(`SELECT  * FROM category;
-    SELECT * FROM ecommerce_shop.category_properties;`,
+    console.log(a.properties)
+    pool.query(`SELECT  * FROM category where isActive=1;
+    SELECT id,field_name,type_id,category_id FROM category_properties WHERE isActive=1;`,
     (err,row)=>{
         if (err) {
             console.log(err)
@@ -268,10 +269,28 @@ productController.create_update = function (req, res) {
                 }
             })
         }
-    
-
-   
-
+        let pp=getCatProperties(row[0],row[1],a.kategoriya||-2),pp0=[],myproperties=[]
+        pp.forEach(prop=>{
+            console.log({id:prop.id,find:a.properties.find(e=>e.cat_prop_id==prop.id)})
+            if(!a.properties.find(e=>e.cat_prop_id==prop.id))
+            pp0.push(prop)
+            else
+            myproperties.push(prop)
+        })
+        // console.log({pp0,properties:a.properties})
+        if (pp0.length>0) {
+            return res.status(200).json({
+                    code: 400,
+                    error: {
+                        message: {
+                            uz: "Maxsulotning kategoriyalariga mos maxsulotlar kiritilishi majburiy!",
+                            en: "Rejected due to server error!",
+                            ru: "Отклонено из-за ошибки сервера!"
+                        },
+                        data:pp0
+                    }
+            })
+        }
         productModel.product_edit_insert(data, function (err, result) {
             if (err) {
                 console.log(err)
@@ -287,9 +306,10 @@ productController.create_update = function (req, res) {
                 })
             } else {
                 // req.flash('success', 'Employee added succesfully');
-                console.log(result[0][0].natija)
+                // console.log(result)
                 switch (result[0][0].natija) {
                     case '1':
+                        
                         return res.status(200).json({
                             code: 201,
                             success: {
@@ -352,6 +372,15 @@ productController.create_update = function (req, res) {
     })
 }
 
+function getCatProperties(cat=[],prop=[],catId=-1) {
+    let arr=[],pp=[...prop]
+    arr=pp.filter(e=>e.category_id==catId)//.map(e=>e.id)
+    const cts=cat.find(e=>e.id==catId)
+    const category = cat.find(e => e.id == cts.sub)
+   if(category)
+        getCatProperties(cat,prop,category.id).forEach(e=>{arr.push(e)})
+return arr
+}
 //admin tasdiqlashi
 productController.check_product = function (req, res) {
 
