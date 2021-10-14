@@ -253,7 +253,7 @@ productController.create_update = function (req, res) {
         a.skidka,
     ]
     // console.log(a.properties)
-    pool.query((!a.id || a.id==0)?"select 1":`SELECT  * FROM category where isActive=1;
+    pool.query(`SELECT  * FROM category where isActive=1;
     SELECT id,field_name,type_id,category_id FROM category_properties WHERE isActive=1;`,
     (err,row)=>{
         if (err) {
@@ -270,7 +270,9 @@ productController.create_update = function (req, res) {
             })
         }
         if(!a.id|| a.id==0){
-            let pp=getCatProperties(row[0],row[1],a.kategoriya||-2),pp0=[],myproperties=[]
+            // console.log(row[0])
+            let pp=getCatProperties(row[0],row[1],a.kategoriya||-2),pp0=[]
+            var myproperties=[]
             pp.forEach(prop=>{
                 let pv=a.properties.find(e=>e.cat_prop_id==prop.id)
                 if(!pv)
@@ -413,6 +415,7 @@ productController.create_update = function (req, res) {
 function getCatProperties(cat=[],prop=[],catId=-1) {
     let arr=[],pp=[...prop]
     arr=pp.filter(e=>e.category_id==catId)//.map(e=>e.id)
+    // console.log({cat})
     const cts=cat.find(e=>e.id==catId)
     const category = cat.find(e => e.id == cts.sub)
    if(category)
