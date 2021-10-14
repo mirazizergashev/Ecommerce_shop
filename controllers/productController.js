@@ -1189,5 +1189,119 @@ productController.prodPropsByValue = function (req, res) {
     })
 }
 
+productController.dublicate_product = function (req, res) {
 
+    //validatsiyada xatolik
+    const checked = schema.dublicate_product.validate(req.body);
+    if (checked.error) {
+        const msg = checked.error.details[0].message.split("#")
+        return res.status(200).json({
+            code: 400,
+            error: {
+                message: {
+                    uz: msg[0],
+                    en: msg[1],
+                    ru: msg[2]
+                }
+            }
+
+        });
+    }    
+    let a = req.body; 
+    var data = [
+        a.product_id,
+        a.cat_prop_id,
+        a.value
+    ]
+    
+           
+        productModel.dublicate_product(data,function (err, result) {
+            if (err) {
+                console.log(err)
+                return res.status(200).json({
+                    code: 500,
+                    error: {
+                        message: {
+                            uz: "Serverda xatolik tufayli rad etildi !",
+                            en: "Rejected due to server error!",
+                            ru: "Отклонено из-за ошибки сервера!"
+                        }
+                    }
+                })
+            } 
+               
+            switch (result[0][0].natija) {
+                    case '1':
+                        
+                        return res.status(200).json({
+                            code: 201,
+                            success: {
+                                message: {
+                                    uz: "Yangi maxsulot yaratildi!",
+                                    en: "New product created!",
+                                    ru: "Создан новый продукт!"
+                                }
+                            }
+                        })
+                        break;
+                    case '2':
+                        return res.status(200).json({
+                            code: 203,
+                            success: {
+                                message: {
+                                    uz: "Maxsulot o'zgartirildi !",
+                                    en: "Product changed!",
+                                    ru: "Товар изменен!"
+                                }
+                            }
+                        })
+                    break
+
+                    case '3':
+                        return res.status(200).json({
+                            code: 400,
+                            error: {
+                                message: {
+                                    uz: "Bunday kategoriya xususiyati mavjud emas!",
+                                    en: "No such role found!",
+                                    ru: "Такой роли не найдено!"
+                                }
+                            }
+                        })
+
+
+                        case '4':
+                            return res.status(200).json({
+                                code: 400,
+                                error: {
+                                    message: {
+                                        uz: "Bunday ID ga ega maxsulot mavjud emas!",
+                                        en: "No such role found!",
+                                        ru: "Такой роли не найдено!"
+                                    }
+                                }
+                            })
+    
+    
+                        default:
+
+                        return res.status(200).json({
+                            code: 418,
+                            success: {
+                                message: {
+                                    uz: "Kutilmagan xatolik adminga xabar bering !",
+                                    en: "Report an unexpected error to the admin!",
+                                    ru: "Сообщите администратору о непредвиденной ошибке!"
+                                }
+                            }
+                        })
+
+
+
+
+            }
+
+        });
+
+}
 module.exports = productController;

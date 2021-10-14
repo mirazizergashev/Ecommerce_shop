@@ -292,9 +292,41 @@ const product_properties = Joi.object().keys({
 
 
 });
+const dublicate_product = Joi.object().keys({
+    product_id: Joi
+        .number()
+        .min(0)
+        .max(10000000)
+        .required()
+        .messages({
+            "number.min": "product_id minimal 0 ga teng bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+            "number.max": "product_id maksimal 10000000  ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+            "any.required": `product_id maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
+        }),
+    cat_prop_id: Joi
+        .number()
+        .min(0)
+        .max(10000000)
+        .required()
+        .messages({
+            "number.min": "Kategoriya xusuiyati id minimal 0 ga teng bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+            "number.max": "Kategoriya xusuiyati id maksimal 10000000 ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+            "any.required": `Kategoriya xusuiyati id maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
+        }),
+    value: Joi.string().
+        min(1).
+        max(255).
+        required()
+        .messages({
+            "string.min": "Qiymat minimal 1 ta belgidan iborat bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+            "string.max": "Qiymat maksimal 255 ta belgi iborat bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+            "string.required": `Qiymat maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
+        })
+});
 
 module.exports = {
     product_properties,
+    dublicate_product,
     product,
     check_product,
     product_image,

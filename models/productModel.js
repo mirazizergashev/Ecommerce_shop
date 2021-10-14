@@ -209,6 +209,18 @@ productModel.product_comment_edit_insert = function (data, result) {
     });
 
 }
+productModel.dublicate_product = function (data, result) {
+    pool.query("call dublicate_product(?, ?,?);", data, function (err, res, field) {
+        if (err) {
+            return result(err, null);
+        } else {
+            return result(null, res);
+        }
+    });
+
+}
+
+
 
 //maxsulot qoshish
 productModel.product_edit_insert = function (data, result) {
