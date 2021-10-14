@@ -72,6 +72,15 @@ const product = Joi.object().keys({
         .messages({
             "number": "Butun son kirit !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!"
         }),
+        color:Joi.string().
+        min(1).
+        max(255).
+        required()
+        .messages({
+            "string.min": "Rang minimal 1 ta belgidan iborat bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+            "string.max": "Rang maksimal 255 ta belgi iborat bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+            "any.required": `Rang maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
+        }),
         properties: Joi.array().example(
             Joi.object().keys({
                 cat_prop_id: Joi

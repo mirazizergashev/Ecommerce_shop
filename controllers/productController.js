@@ -251,6 +251,7 @@ productController.create_update = function (req, res) {
         a.hol,
         a.kategoriya,
         a.skidka,
+        a.color
     ]
     // console.log(a.properties)
     pool.query(`SELECT  * FROM category where isActive=1;

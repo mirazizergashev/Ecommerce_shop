@@ -224,7 +224,7 @@ productModel.dublicate_product = function (data, result) {
 
 //maxsulot qoshish
 productModel.product_edit_insert = function (data, result) {
-    pool.query("call product_edit_insert(?,?,?,?,?,?,?,?,?)", data, function (err, res, field) {
+    pool.query("call product_edit_insert(?,?,?,?,?,?,?,?,?,?)", data, function (err, res, field) {
         if (err) {
             return result(err, null);
         } else {
