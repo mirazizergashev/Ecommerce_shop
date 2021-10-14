@@ -88,7 +88,7 @@ productModel.statisticShop = function (start, end, result) {
       }
 
     if(!(isDate(start)&&isDate(end))){
-        return result(null,"Vaqt formati xato kiritildi");
+        return result(null,[]);
     }
     
     // console.log(end)
@@ -99,7 +99,7 @@ productModel.statisticShop = function (start, end, result) {
             return result(err, null);
         }
         if(res.length==0){
-            return result(null,"Bu vaqt orasida sotuv bo`lmagan");
+            return result(null,[]);
         }
 
         let s = 0;
@@ -143,7 +143,7 @@ productModel.statisticShopId = function (start, end,id, result) {
       }
 
     if(!(isDate(start)&&isDate(end))){
-        return result(null,"Vaqt formati xato kiritildi");
+        return result(null,[]);
     }
 
     // console.log(end)
@@ -155,7 +155,7 @@ productModel.statisticShopId = function (start, end,id, result) {
         }
 
         if(res.length==0){
-            return result(null,"Bu vaqt orasida sotuv bo`lmagan");
+            return result(null,[]);
         }
         let s = 0;
         let user = [], count = 0, daromad = 0, foyda = 0;
@@ -324,7 +324,7 @@ productModel.All = function (query, result) {
     (select concat(u.first_name," ",u.last_name) from users u where u.id=p.user_id limit 1) as fish  FROM  product as p 
     left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1  ${(user_id) ? `and p.user_id=${user_id} ` : ""} limit ?,?;
+    where p.isActive=1 and checked=1  ${(user_id) ? `and p.user_id=${user_id} ` : ""} limit ?,?;
     select * from category where isActive=1;`, [page * count, count], function (err, res) {
         if (err) {
             return result(err, null);
