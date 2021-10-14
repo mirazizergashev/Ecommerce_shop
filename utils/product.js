@@ -92,7 +92,7 @@ const product = Joi.object().keys({
                         })
                     })
             )
-        .required()
+            .default([])
         .messages({
             "number": "Butun son kirit !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!"
         }),
