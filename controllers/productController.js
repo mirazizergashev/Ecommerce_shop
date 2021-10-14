@@ -1189,7 +1189,7 @@ productController.prodPropsByValue = function (req, res) {
     })
 }
 
-productController.dublicate_product = function (req, res) {
+productController.dublicateProduct = function (req, res) {
 
     //validatsiyada xatolik
     const checked = schema.dublicate_product.validate(req.body);
@@ -1240,7 +1240,8 @@ productController.dublicate_product = function (req, res) {
                                     uz: "Yangi maxsulot yaratildi!",
                                     en: "New product created!",
                                     ru: "Создан новый продукт!"
-                                }
+                                },
+                                product_id:result[0][0].id
                             }
                         })
                         break;

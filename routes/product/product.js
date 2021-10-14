@@ -29,5 +29,6 @@ router.post('/image',upload, productController.product_image);
 
 router.get('/Properties/:id', productController.getProperties);
 router.post('/properties', productController.productPropertiesCU);
+router.post('/dublicateProduct', productController.dublicateProduct);
 
 module.exports = router;
