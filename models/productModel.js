@@ -337,6 +337,29 @@ productModel.All = function (query, result) {
     });
 }
 
+productModel.All2 = function (query, result) {
+
+    const page = parseInt(query.page || 0), count = parseInt(query.count || 15), user_id = parseInt(query.user_id || 0)
+    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url,
+    (SELECT sum(mark)/count(mark) FROM product_comment where product_id=p.id) as rating,
+    (SELECT count(mark) FROM product_comment where product_id=p.id) as reviews,
+    (select concat(u.first_name," ",u.last_name) from users u where u.id=p.user_id limit 1) as fish,
+    MAX(p.cost*(100-p.discount)/100) maxCost,MIN(p.cost*(100-p.discount)/100) minCost FROM  product as p 
+left join product_image pi on pi.product_id=p.id and 
+pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
+where p.isActive=1 and checked=1  ${(user_id) ? `and p.user_id=${user_id} ` : ""}    group by p.name limit ?,?;
+    select * from category where isActive=1;`, [page * count, count], function (err, res) {
+        if (err) {
+            return result(err, null);
+        } else {
+            let data = changeCosts(res[1], res[0])
+            let data1=[];
+            console.log(data)
+            return result(null, data);
+        }
+    });
+}
+
 productModel.v1_All = function (query, result) {
 
     const FList = ["rating", "price", "discount", "Name"]
@@ -548,11 +571,11 @@ function changeCosts(c, data) {
     data.forEach((e, i) => {
         let k = e.category_id, cost = e.cost, ind = c.findIndex(x => x.id == k);
 
+        data[i].cost = cost * (100 - data[i].discount * 1) / 100;
         while (ind != -1) {
             cost = parseInt(cost * (100 + c[ind].percent * 1) / 100) + 1 * c[ind].isFoiz
             ind = c.findIndex(x => x.id == c[ind].sub)
         }
-        data[i].cost = cost * (100 - data[i].discount * 1) / 100;
     });
     return data
 }
