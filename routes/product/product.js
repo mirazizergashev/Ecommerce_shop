@@ -10,6 +10,7 @@ router.get('/statisticShop', productController.statisticShop);
 router.get('/statisticShopId/:id', productController.statisticShopId);
 router.get('/', productController.v1_All);
 router.get('/all', productController.All);
+router.get('/all2', productController.All2);
 router.get('/getCommentAll/:id', productController.getCommentAll);
 router.get('/changeTop/:id/:isTop', productController.changeTop);
 router.get('/getTop', productController.getTop);
