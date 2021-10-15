@@ -388,7 +388,20 @@ productController.create_update = function (req, res) {
                         })
 
 
-                    default:
+                        case '6':
+                            return res.status(200).json({
+                                code: 400,
+                                error: {
+                                    message: {
+                                        uz: "Kategoriya topilmadi!",
+                                        en: "No such role found!",
+                                        ru: "Такой роли не найдено!"
+                                    }
+                                }
+                            })
+    
+    
+                        default:
 
                         return res.status(200).json({
                             code: 418,
@@ -417,7 +430,8 @@ function getCatProperties(cat=[],prop=[],catId=-1) {
     let arr=[],pp=[...prop]
     arr=pp.filter(e=>e.category_id==catId)//.map(e=>e.id)
     // console.log({cat})
-    const cts=cat.find(e=>e.id==catId)
+    let cts=cat.find(e=>e.id==catId)
+    if(!cts) cts={sub:-8}
     const category = cat.find(e => e.id == cts.sub)
    if(category)
         getCatProperties(cat,prop,category.id).forEach(e=>{arr.push(e)})
