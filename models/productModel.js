@@ -324,7 +324,7 @@ productModel.All = function (query, result) {
     (select concat(u.first_name," ",u.last_name) from users u where u.id=p.user_id limit 1) as fish  FROM  product as p 
     left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1 and checked=1  ${(user_id) ? `and p.user_id=${user_id} ` : ""} limit ?,?;
+    where p.isActive=1 and (checked=1 ${query.userId?("or p.user_id="+query.userId):""})  ${(user_id) ? `and p.user_id=${user_id} ` : ""} limit ?,?;
     select * from category where isActive=1;`, [page * count, count], function (err, res) {
         if (err) {
             return result(err, null);
@@ -347,7 +347,7 @@ productModel.All2 = function (query, result) {
     MAX(p.cost*(100-p.discount)/100) maxCost,MIN(p.cost*(100-p.discount)/100) minCost FROM  product as p 
 left join product_image pi on pi.product_id=p.id and 
 pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-where p.isActive=1 and checked=1  ${(user_id) ? `and p.user_id=${user_id} ` : ""}    group by p.name limit ?,?;
+where p.isActive=1 and (checked=1 ${query.userId?("or p.user_id="+query.userId):""}) ${(user_id) ? `and p.user_id=${user_id} ` : ""}    group by p.name limit ?,?;
     select * from category where isActive=1;`, [page * count, count], function (err, res) {
         if (err) {
             return result(err, null);

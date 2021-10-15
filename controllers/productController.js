@@ -846,7 +846,7 @@ productController.All = function (req, res) {
 productController.All2 = function (req, res) {
     if (req.session.roleId == 4) req.query.allow = 1
     else req.query.allow = 0
-
+    req.query.userId=req.session.userId
     productModel.All2(req.query, (err, rows) => {
 
 
