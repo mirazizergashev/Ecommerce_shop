@@ -5,6 +5,32 @@ const { product } = require('../utils/product');
 var productModel = function () { }
 
 //:id/detail
+
+productModel.getDetails2 = function (id, result) {
+
+    pool.query(`select DISTINCT p.* from (select @id:=?) s,product_detail p`,
+        [id], function (err, res) {
+            if (err) {
+                console.log("err",err)
+                return result(err, null);
+            }
+            let cat_prop_ids=[],k=-1,data=[]
+            res.forEach(e=>{
+                let ind=cat_prop_ids.indexOf(e.cat_prop_id)
+                if(ind==-1){
+                    cat_prop_ids.push(e.cat_prop_id)
+                    data.push({cat_prop_id:e.cat_prop_id,title:e.title,
+                        properties:[{product_id:e.product_id,value:e.values}]})
+
+                }else{
+                    data[ind].properties.push({product_id:e.product_id,value:e.values})
+                }
+                
+            })
+            return result(null, data);
+
+        });
+}
 productModel.idDetail = function (id, result) {
 
     pool.query(`SELECT * FROM  product where isActive=1 and checked=1 and id=?;
