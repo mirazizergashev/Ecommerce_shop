@@ -14,10 +14,10 @@ Object.keys(query).forEach((x0, i) => {
     if (isNaN(parseInt(x0))) return;
     
     a.push(x0*1,query[x0])
-   ss+=` cat_prop_id=? and \`values\`=? or`
+   ss+=` cat_prop_id=? and \`values\`=? and`
 })
 if(ss){
-    ss=s0+ss.slice(0,-2)+') '
+    ss=s0+ss.slice(0,-3)+') '
 }
 
 
