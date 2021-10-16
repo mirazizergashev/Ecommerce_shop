@@ -28,6 +28,7 @@ router.post('/check', productController.check_product);
 router.post('/img_del', productController.img_del);
 router.post('/image',upload, productController.product_image);
 
+router.get('/getDetails2/:id', productController.getDetails2);
 router.get('/Properties/:id', productController.getProperties);
 router.post('/properties', productController.productPropertiesCU);
 router.post('/dublicateProduct', productController.dublicateProduct);
