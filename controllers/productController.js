@@ -1352,7 +1352,7 @@ productController.dublicateProduct = function (req, res) {
 
 
 productController.getDetails2= function (req, res) {
-    productModel.getDetails2(req.params.id, (err, rows) => {
+    productModel.getDetails2(req.params.id,req.query, (err, rows) => {
         if (err) {
             console.log(err);
             return res.status(200).json({

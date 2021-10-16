@@ -6,8 +6,18 @@ var productModel = function () { }
 
 //:id/detail
 
-productModel.getDetails2 = function (id, result) {
+productModel.getDetails2 = function (id,query,result) {
 //select DISTINCT p.* from (select @id:=?) s,product_detail p
+let a = [id], ss = "",s0=` where p.id  in (select product_id from  product_properties pp where `
+Object.keys(query).forEach((x0, i) => {
+    if (isNaN(parseInt(x0))) return;
+    
+    a.push(x0*1,query[x0])
+   ss+=` cat_prop_id=? and \`values\`=? or`
+})
+if(ss){
+    ss=s0+ss.slice(0,-2)+') '
+}
     pool.query(`WITH
     mp AS (SELECT p.name FROM ecommerce_shop.product_properties  pp 
     JOIN product p ON p.id=pp.product_id where product_id=?)
@@ -15,8 +25,9 @@ productModel.getDetails2 = function (id, result) {
   JOIN product p ON p.id=pp.product_id 
   JOIN mp ON mp.name=p.name
   JOIN category_properties cp ON cp.id=pp.cat_prop_id
+  ${ss}
   order by pp.cat_prop_id`,
-        [id], function (err, res) {
+        a, function (err, res) {
             if (err) {
                 console.log("err",err)
                 return result(err, null);
