@@ -61,6 +61,7 @@ select * from category where isActive=1;`,
                 data2 = {
                     'id': id,
                     'name': data[0].name,
+                    count:data[0].count,
                     'color': data[0].color,
                     'description':data[0].comment,
                     'vendorCode': s,
