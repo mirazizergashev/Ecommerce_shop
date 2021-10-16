@@ -230,8 +230,10 @@ productModel.getCommentAll = function (id,result) {
 productModel.product_comment_edit_insert = function (data, result) {
     pool.query("call prod_comment_edit_insert(?,?,?,?,?,?)", data, function (err, res, field) {
         if (err) {
+            console.log(err)
             return result(err, null);
         } else {
+            console.log(res)
             return result(null, res);
         }
     });
