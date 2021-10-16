@@ -7,8 +7,15 @@ var productModel = function () { }
 //:id/detail
 
 productModel.getDetails2 = function (id, result) {
-
-    pool.query(`select DISTINCT p.* from (select @id:=?) s,product_detail p`,
+//select DISTINCT p.* from (select @id:=?) s,product_detail p
+    pool.query(`WITH
+    mp AS (SELECT p.name FROM ecommerce_shop.product_properties  pp 
+    JOIN product p ON p.id=pp.product_id where product_id=?)
+  SELECT pp.*,cp.field_name title FROM product_properties pp 
+  JOIN product p ON p.id=pp.product_id 
+  JOIN mp ON mp.name=p.name
+  JOIN category_properties cp ON cp.id=pp.cat_prop_id
+  order by pp.cat_prop_id`,
         [id], function (err, res) {
             if (err) {
                 console.log("err",err)
