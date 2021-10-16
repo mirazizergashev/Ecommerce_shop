@@ -8,7 +8,8 @@ var productModel = function () { }
 
 productModel.getDetails2 = function (id,query,result) {
 //select DISTINCT p.* from (select @id:=?) s,product_detail p
-let a = [id], ss = "",s0=` where p.id  in (select product_id from  product_properties pp where `
+// `cat_prop_id=1 and `values`=42)`
+let a = [id], ss = "",s0=` ,px AS (select product_id from  product_properties where `
 Object.keys(query).forEach((x0, i) => {
     if (isNaN(parseInt(x0))) return;
     
@@ -18,14 +19,18 @@ Object.keys(query).forEach((x0, i) => {
 if(ss){
     ss=s0+ss.slice(0,-2)+') '
 }
+
+
     pool.query(`WITH
     mp AS (SELECT p.name FROM ecommerce_shop.product_properties  pp 
+        
     JOIN product p ON p.id=pp.product_id where product_id=?)
-  SELECT pp.*,cp.field_name title FROM product_properties pp 
+    ${ss}
+  SELECT pp.*,cp.field_name title ${ss?",(CASE WHEN px.product_id is NULL THEN 0 ELSE 1 END) hol":""} FROM product_properties pp 
   JOIN product p ON p.id=pp.product_id 
   JOIN mp ON mp.name=p.name
   JOIN category_properties cp ON cp.id=pp.cat_prop_id
-  ${ss}
+  ${ss?`LEFT JOIN px ON px.product_id=p.id`:""}
   order by pp.cat_prop_id`,
         a, function (err, res) {
             if (err) {
@@ -38,13 +43,13 @@ if(ss){
                 if(ind==-1){
                     cat_prop_ids.push(e.cat_prop_id)
                     data.push({cat_prop_id:e.cat_prop_id,title:e.title,
-                        properties:[{product_id:e.product_id,value:e.values}]})
+                        properties:[{product_id:e.product_id,value:e.values,isActive:e.hol}]})
 
                 }else{
                     let x=data[ind].properties.filter(el=>el.value==e.values).length
                     // console.log(data[ind].properties)
                     if(!x)
-                    data[ind].properties.push({product_id:e.product_id,value:e.values})
+                    data[ind].properties.push({product_id:e.product_id,value:e.values,isActive:e.hol})
                 }
                 
             })
