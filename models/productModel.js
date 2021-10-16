@@ -360,6 +360,8 @@ where p.isActive=1 and (checked=1 ${query.userId?("or p.user_id="+query.userId):
     });
 }
 
+
+
 productModel.v1_All = function (query, result) {
 
     const FList = ["rating", "price", "discount", "Name"]
