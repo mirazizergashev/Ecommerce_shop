@@ -23,7 +23,9 @@ productModel.getDetails2 = function (id, result) {
                         properties:[{product_id:e.product_id,value:e.values}]})
 
                 }else{
-                    if(!data[ind].properties.find(el=>el.values==e.values))
+                    let x=data[ind].properties.filter(el=>el.value==e.values).length
+                    // console.log(data[ind].properties)
+                    if(!x)
                     data[ind].properties.push({product_id:e.product_id,value:e.values})
                 }
                 
