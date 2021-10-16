@@ -32,7 +32,8 @@ module.exports = PerformTransaction =async(data,javob)=>
                 WHERE transaction_id=?);
                 SELECT id FROM orders WHERE id IN  ( SELECT order_id FROM transactions 
                   WHERE transaction_id=?);
-              `,[datee.toString(),data.params.id,data.params.id])
+                  call change_order_click_payme(?);
+              `,[datee.toString(),data.params.id,data.params.id,data.params.id])
             .then(async(rest)=>
             {  
               sendClickTrans(rest[0][2][0].id)
