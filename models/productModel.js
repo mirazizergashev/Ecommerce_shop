@@ -523,8 +523,6 @@ productModel.productByCategory = function (id = 0, result) {
 }
 
 productModel.prodPropsByValue = function (id = 0, result) {
-
-
     pool.query(`SELECT pp.id,pp.values,count(pp.product_id) count 
     FROM product_properties pp
     where pp.cat_prop_id=?
