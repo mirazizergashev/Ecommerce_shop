@@ -298,7 +298,7 @@ app.post("/getMoney", async (req, res) => {
     let a = req.body;
     var data = [
         a.order_id,
-        a.curyer_id,
+        req.session.userId||0,
         a.hol||3
     ]
     pool.query(`call ecommerce_shop.naqd_getting(?,?,?);`,data,(err,result,fld)=>{
