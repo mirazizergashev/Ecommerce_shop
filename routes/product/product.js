@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const upload=require('../../middleware/upload')
+const {authCheck}=require('../../middleware/auth');
+
 
 const productController=require("../../controllers/productController")
 
@@ -11,6 +13,7 @@ router.get('/statisticShopId/:id', productController.statisticShopId);
 router.get('/', productController.v1_All);
 router.get('/all', productController.All);
 router.get('/all2', productController.All2);
+router.get('/all3',authCheck, productController.All2);
 router.get('/getCommentAll/:id', productController.getCommentAll);
 router.get('/changeTop/:id/:isTop', productController.changeTop);
 router.get('/getTop', productController.getTop);
