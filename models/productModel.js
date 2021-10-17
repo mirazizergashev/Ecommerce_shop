@@ -7,22 +7,33 @@ var productModel = function () { }
 //:id/detail
 
 productModel.getDetails2 = function (id,query,result) {
+    console.log(query)
 //select DISTINCT p.* from (select @id:=?) s,product_detail p
 // `cat_prop_id=1 and `values`=42)`
-let a = [id], ss = "",s0=` ,px AS (select product_id from  product_properties where `
+let a = [id], ss = "",s0=` ,px AS (select pp.product_id from  product_properties pp  `
 Object.keys(query).forEach((x0, i) => {
     if (isNaN(parseInt(x0))) return;
     
     a.push(x0*1,query[x0])
-   ss+=` cat_prop_id=? and \`values\`=? or`
+   ss+=`JOIN product_properties pp${i} on pp${i}.product_id=pp.product_id and pp${i}.cat_prop_id=? and pp${i}.values=? `
 })
 if(ss){
-    ss=s0+ss.slice(0,-2)+') '
+    ss=s0+ss+') '
 }
-
+console.log({ss:`WITH
+mp AS (SELECT p.name FROM product_properties  pp 
+    
+JOIN product p ON p.id=pp.product_id where product_id=?)
+${ss}
+SELECT pp.*,cp.field_name title ${ss?",(CASE WHEN px.product_id is NULL THEN 0 ELSE 1 END) hol":""} FROM product_properties pp 
+JOIN product p ON p.id=pp.product_id 
+JOIN mp ON mp.name=p.name
+JOIN category_properties cp ON cp.id=pp.cat_prop_id
+${ss?`LEFT JOIN px ON px.product_id=p.id`:""}
+order by pp.cat_prop_id`})
 
     pool.query(`WITH
-    mp AS (SELECT p.name FROM ecommerce_shop.product_properties  pp 
+    mp AS (SELECT p.name FROM product_properties  pp 
         
     JOIN product p ON p.id=pp.product_id where product_id=?)
     ${ss}
@@ -37,6 +48,7 @@ if(ss){
                 console.log("err",err)
                 return result(err, null);
             }
+            // console.log(res)
             let cat_prop_ids=[],k=-1,data=[]
             res.forEach(e=>{
                 let ind=cat_prop_ids.indexOf(e.cat_prop_id)
@@ -46,10 +58,17 @@ if(ss){
                         properties:[{product_id:e.product_id,value:e.values,isActive:e.hol}]})
 
                 }else{
-                    let x=data[ind].properties.filter(el=>el.value==e.values).length
+                    let x=-5//=data[ind].properties.filter(el=>el.value==e.values)
+                    data[ind].properties.forEach((el,i)=>{
+                        if(el.value==e.values)x=i;
+                    })
                     // console.log(data[ind].properties)
-                    if(!x)
+                    if(x==-5)
                     data[ind].properties.push({product_id:e.product_id,value:e.values,isActive:e.hol})
+
+                    if(e.hol==1){
+                        data[ind].properties[x]={product_id:e.product_id,value:e.values,isActive:e.hol}
+                    }
                 }
                 
             })
