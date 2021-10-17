@@ -62,7 +62,7 @@ inner join orders o  on o.id=t.order_id  where t.transaction_id=?;SELECT * FROM 
       boterror: err
     }))
 }
-// sendClickTrans(101)
+// sendClickTrans(1)
 function sendClickTrans(order_id,naqd="") {
   pool.promise().query(`SELECT *,date_format(sana,'%Y-%m-%d, %h:%i:%s') sana FROM orders
   where id=?;SELECT * FROM dostavka_type;`, [order_id])
@@ -81,12 +81,12 @@ function sendClickTrans(order_id,naqd="") {
         if(err){
           return console.error({err,path:"botConnect"})
         }
-        // console.log(res)
+        console.log(res)
         const dostvk=dostv.find(d=>d.id=k.dostavka_id)
         sendSms(`<b>💠 Yangi buyurtma:</b>\n\n${naqd}`+
         `🔷 Fio:<b>${k.fish} </b>\n`+
         `🔷 Telefon:<b>${k.phone} </b>\n`+
-        `🔷 Manzil: <b>${k.viloyat+", "+k.tuman+", "+k.mfy} </b>n`+
+        `🔷 Manzil: <b>${k.viloyat+", "+k.tuman+", "+k.mfy} </b>\n`+
         `🔷 To'lov summasi:<b>${k.amount} </b>\n`+
         `🔷 Chegirma summasi:<b>${k.discount} </b>\n`+
         `🔷 Dastavka turi:<b>${dostvk?dostvk.name:"Tanlanmagan"} </b>\n`+
