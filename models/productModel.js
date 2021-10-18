@@ -357,7 +357,7 @@ productModel.getTop = function (query, result) {
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
     left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1  and p.checked!=${query.allow ? -1 : 0} and p.isTop=1 ${"limit " + (query.count || 1000)};
+    where p.isActive=1  and p.checked=1 and p.isTop=1 ${"limit " + (query.count || 1000)};
     select * from category where isActive=1;`, function (err, res) {
         if (err) {
             return result(err, null);
@@ -457,7 +457,7 @@ console.log(query)
 left join product_image pi on pi.product_id=p.id and 
 pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
 where p.isActive=1 and  p.user_id=? group by p.name limit ?,?;
-    select * from category where isActive=1;`, [query.userId,page * count, count], function (err, res) {
+    select * from category where isActive=1;`, [query.userId*1,page * count, count], function (err, res) {
         if (err) {
             return result(err, null);
         } else {
