@@ -25,7 +25,7 @@ app.use("/chat",authCheck, chat);
 app.use("/cart",authCheck, cart);
 app.use("/payment", payment);
 app.use("/payment", payment2);
-app.use("/payment",authCheck, payment3);
+app.use("/payment", payment3);
 app.use("/pay",authCheck, pay);
 app.use("/pay",authCheck, order_status);
 app.use("/category", category);

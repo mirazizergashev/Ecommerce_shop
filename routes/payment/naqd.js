@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 
 const pool = require("../../database/db");
+const {authCheck} = require("../../middleware/auth");
 const { sendClickTrans } = require("../../botconnect")
 
 app.post("/order", async (req, res) => {
@@ -294,7 +295,7 @@ app.get("/naqd/cancel/:id",(req,res)=>{
     })
 })
 
-app.post("/getMoney", async (req, res) => {
+app.post("/getMoney",authCheck, async (req, res) => {
     let a = req.body;
     var data = [
         a.order_id,
