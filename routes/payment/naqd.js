@@ -137,14 +137,11 @@ app.post("/naqd", async (req, res) => {
             let viloyat = req.body.viloyat || null;
             let tuman = req.body.tuman || null;
 
-
             pool.promise().query(`insert into orders (user_id,state,sana,fish,phone,viloyat,tuman,mfy,dostavka_id,isNaqd) 
     values (?,1 ,now(),?,?,?,?,?,?,1) ;`,
                     [req.session.userId||null, fish, tel, viloyat, tuman, mfy, req.body.dostavka_id||1])
                 .then((rest) => {
-                    let {
-                        data
-                    } = JSON.parse(req.body.praduct_id), s = "", a = [], notFounds = [], lessProd = []
+                    let   data= req.body.product_id, s = "", a = [], notFounds = [], lessProd = []
                     data.forEach((e, i) => {
                         s += "SELECT *,cost cost2 FROM product WHERE id=? and isActive=1;";
                         a.push(e.product_id)
@@ -169,6 +166,7 @@ app.post("/naqd", async (req, res) => {
                                 })
                             } else {
                                 if (rows[i][0].count * 1 < e.count*1) {
+                                    console.log(rows[i], e.count*1)
                                     lessProd.push({
                                         id: e.product_id,
                                         name: e.name,
@@ -397,5 +395,19 @@ app.post("/getMoney",authCheck, async (req, res) => {
         }
     })
 })
+
+
+function changeCosts(c, data) {
+    data.forEach((e, i) => {
+        let k = e.category_id, cost = e.cost, ind = c.findIndex(x => x.id == k);
+
+        data[i].cost = cost * (100 - data[i].discount * 1) / 100;
+        while (ind != -1) {
+            cost = parseInt(cost * (100 + c[ind].percent * 1) / 100) + 1 * c[ind].isFoiz
+            ind = c.findIndex(x => x.id == c[ind].sub)
+        }
+    });
+    return data
+}
 
 module.exports = app;
