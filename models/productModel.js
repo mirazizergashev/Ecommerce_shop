@@ -382,7 +382,7 @@ productModel.changeTop = function (id, isTop, result) {
 
 productModel.All = function (query, result) {
 
-    const page = parseInt(query.page || 0), count = parseInt(query.count || 15), user_id = parseInt(query.user_id || 0)
+    const page = parseInt(query.page || 0), count = parseInt(query.count || 15)
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url,(SELECT sum(mark)/count(mark) FROM product_comment where product_id=p.id) as rating,
     (SELECT count(mark) FROM product_comment where product_id=p.id) as reviews,
     (select concat(u.first_name," ",u.last_name) from users u where u.id=p.user_id limit 1) as fish  FROM  product as p 
@@ -447,7 +447,7 @@ where p.isActive=1 and checked!=0   group by p.name limit ?,?;
     });
 }
 productModel.AllSalesman = function (query, result) {
-
+console.log(query)
     const page = parseInt(query.page || 0), count = parseInt(query.count || 15), user_id = parseInt(query.user_id || 0)
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url,
     (SELECT sum(mark)/count(mark) FROM product_comment where product_id=p.id) as rating,
@@ -457,7 +457,7 @@ productModel.AllSalesman = function (query, result) {
 left join product_image pi on pi.product_id=p.id and 
 pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
 where p.isActive=1 and  p.user_id=? group by p.name limit ?,?;
-    select * from category where isActive=1;`, [user_id,page * count, count], function (err, res) {
+    select * from category where isActive=1;`, [query.userId,page * count, count], function (err, res) {
         if (err) {
             return result(err, null);
         } else {
