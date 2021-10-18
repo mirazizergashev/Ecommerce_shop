@@ -395,4 +395,18 @@ app.post("/getMoney", async (req, res) => {
     })
 })
 
+
+function changeCosts(c, data) {
+    data.forEach((e, i) => {
+        let k = e.category_id, cost = e.cost, ind = c.findIndex(x => x.id == k);
+
+        data[i].cost = cost * (100 - data[i].discount * 1) / 100;
+        while (ind != -1) {
+            cost = parseInt(cost * (100 + c[ind].percent * 1) / 100) + 1 * c[ind].isFoiz
+            ind = c.findIndex(x => x.id == c[ind].sub)
+        }
+    });
+    return data
+}
+
 module.exports = app;
