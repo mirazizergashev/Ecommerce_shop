@@ -24,10 +24,10 @@ if(ss){
     pool.query(`WITH
     mp AS (SELECT p.name FROM product_properties  pp 
         
-    JOIN product p ON p.id=pp.product_id where product_id=?)
+    JOIN product p ON p.id=pp.product_id where product_id=?  and p.isActive=1 and p.checked=1 )
     ${ss}
   SELECT pp.*,cp.field_name title ${ss?",(CASE WHEN px.product_id is NULL THEN 0 ELSE 1 END) hol":""} FROM product_properties pp 
-  JOIN product p ON p.id=pp.product_id 
+  JOIN product p ON p.id=pp.product_id  and p.isActive=1 and p.checked=1 
   JOIN mp ON mp.name=p.name
   JOIN category_properties cp ON cp.id=pp.cat_prop_id
   ${ss?`LEFT JOIN px ON px.product_id=p.id`:""}
