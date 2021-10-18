@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const upload=require('../../middleware/upload')
-const {authCheck}=require('../../middleware/auth');
+const {authCheck,authCheck2, isAdmin}=require('../../middleware/auth');
 
 
 const productController=require("../../controllers/productController")
@@ -11,9 +11,9 @@ router.get('/:id/detail', productController.idDetail);
 router.get('/statisticShop', productController.statisticShop);
 router.get('/statisticShopId/:id', productController.statisticShopId);
 router.get('/', productController.v1_All);
-router.get('/all', productController.All);
-router.get('/all2', productController.All2);
-router.get('/all3',authCheck, productController.All2);
+router.get('/AllUser', productController.AllUser);
+router.get('/AllSalesman',authCheck2, productController.AllSalesman);
+router.get('/AllAdmin',isAdmin, productController.AllAdmin);
 router.get('/getCommentAll/:id', productController.getCommentAll);
 router.get('/changeTop/:id/:isTop', productController.changeTop);
 router.get('/getTop', productController.getTop);

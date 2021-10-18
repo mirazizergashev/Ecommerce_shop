@@ -12,6 +12,19 @@ const authCheck = (req, res, next) => {
     // hozircha hamasi joyida .......
     next();
 }
+const authCheck2 = (req, res, next) => {
+    //  session mavjud bo'lmasa ...
+    if (!req.session.userId || req.session.roleId!=4)
+        return res.status(200).json({
+            code:404,
+            error: {
+                message: "Iltimos shaxsiy kabinetingizga kiring !"
+            }
+        })
+
+    // hozircha hamasi joyida .......
+    next();
+}
 const isAdmin = (req, res, next) => {
     //  session mavjud bo'lmasa ...
     if (!req.session.userId || req.session.roleId!=1 )
@@ -27,5 +40,5 @@ const isAdmin = (req, res, next) => {
 }
 
 module.exports = {
-    authCheck,isAdmin
+    authCheck,isAdmin,authCheck2
 }
