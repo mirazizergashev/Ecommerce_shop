@@ -63,7 +63,7 @@ categoryModel.getRegions=function(id,result){
 }
 
 categoryModel.getAllProp=function(result){
-    pool.query("SELECT * FROM category_properties;",function(err,res){
+    pool.query("SELECT * FROM category_properties WHERE isActive=1;",function(err,res){
         if(err){
             return result(err,null);
         }else{
