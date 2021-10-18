@@ -12,7 +12,7 @@ app.post("/order", async (req, res) => {
     let tel = req.body.phone || null;
     let viloyat = req.body.viloyat || null;
     let tuman = req.body.tuman || null;
-    console.log('llll')
+    // console.log('llll')
     pool.promise().query(`insert into orders (user_id,amount,state,praduct_id ,isNaqd,fish,phone,viloyat,tuman,mfy,dostavka_id,curyer) 
         values (?,?,0,?,1,?,?,?,?,?,?,0) ;
         SELECT max(id) as id FROM orders WHERE isNaqd=1 and amount=?`, [req.session.userId || null, req.body.amount, req.body.praduct_id, fish, tel, viloyat, tuman, mfy, req.body.dostavka_id||1,req.body.amount])
@@ -54,12 +54,11 @@ app.post("/naqd", async (req, res) => {
         }
         if (req.body.promokod) {
             //promokod
-            console.log("promokod")
+            // console.log("promokod")
             const result = await pool.promise()
                 .query("call promokod_checker(?)", [req.body.promokod])
                 .then((rest) => {
 
-                    console.log(rest[0])
                     if (rest[0][1][0].natija != 1) {
                         return {
                             error: {
@@ -166,7 +165,6 @@ app.post("/naqd", async (req, res) => {
                                 })
                             } else {
                                 if (rows[i][0].count * 1 < e.count*1) {
-                                    console.log(rows[i], e.count*1)
                                     lessProd.push({
                                         id: e.product_id,
                                         name: e.name,
@@ -237,7 +235,7 @@ app.post("/naqd", async (req, res) => {
                 })
                 
             }).catch((err) => {
-                    console.log(err)
+                    console.log("'naqt xatosi'",err)
                     res.json({
                         error: 2,
                         error_note: "Not"
@@ -301,7 +299,7 @@ app.post("/getMoney",authCheck, async (req, res) => {
         a.hol||3
     ]
     pool.query(`call ecommerce_shop.naqd_getting(?,?,?);`,data,(err,result,fld)=>{
-        console.log(result)
+        // console.log(result)
         if(err){
             console.log(err)
             return res.status(200).json({
