@@ -178,7 +178,7 @@ app.get("/click", async (req, res) => {
                                         count: e.count
                                     })
                                 } else {
-                                    rows[i][0].cost = rows[i][0].cost * 1 * (100 - 1 * rows[i][0].discount) / 100
+                                    //rows[i][0].cost = rows[i][0].cost * 1 * (100 - 1 * rows[i][0].discount) / 100
                                     rows[i][0].cost2 = rows[i][0].cost2 * 1 * (100 - 1 * rows[i][0].discount) / 100
                                     if (rows[i][0].cost < 0) rows[i][0].cost = 0
                                     changeCosts(rows[rows.length - 1], rows[i])
