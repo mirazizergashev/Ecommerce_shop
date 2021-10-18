@@ -7,7 +7,6 @@ var productModel = function () { }
 //:id/detail
 
 productModel.getDetails2 = function (id,query,result) {
-    console.log(query)
 //select DISTINCT p.* from (select @id:=?) s,product_detail p
 // `cat_prop_id=1 and `values`=42)`
 let a = [id], ss = "",s0=` ,px AS (select pp.product_id from  product_properties pp  `
@@ -20,17 +19,7 @@ Object.keys(query).forEach((x0, i) => {
 if(ss){
     ss=s0+ss+') '
 }
-console.log({ss:`WITH
-mp AS (SELECT p.name FROM product_properties  pp 
-    
-JOIN product p ON p.id=pp.product_id where product_id=?)
-${ss}
-SELECT pp.*,cp.field_name title ${ss?",(CASE WHEN px.product_id is NULL THEN 0 ELSE 1 END) hol":""} FROM product_properties pp 
-JOIN product p ON p.id=pp.product_id 
-JOIN mp ON mp.name=p.name
-JOIN category_properties cp ON cp.id=pp.cat_prop_id
-${ss?`LEFT JOIN px ON px.product_id=p.id`:""}
-order by pp.cat_prop_id`})
+
 
     pool.query(`WITH
     mp AS (SELECT p.name FROM product_properties  pp 
@@ -278,7 +267,7 @@ productModel.product_comment_edit_insert = function (data, result) {
             console.log(err)
             return result(err, null);
         } else {
-            console.log(res)
+            // console.log(res)
             return result(null, res);
         }
     });
@@ -406,7 +395,7 @@ productModel.All = function (query, result) {
         } else {
             let data = changeCosts(res[1], res[0])
             let data1=[];
-            console.log(data)
+            // console.log(data)
             return result(null, data);
         }
     });
@@ -582,7 +571,7 @@ productModel.productByCategory = function (id = 0, result) {
             let ids = (id || 0) + "," + filterProd(id, rows)
             // if(ids.length==0)
             ids = ids.slice(0, -1)
-            console.log("|" + ids + "|")
+            // console.log("|" + ids + "|")
 
             pool.query(`SELECT p.*,pi.id as idcha,pi.img_url,pp.cat_prop_id,pp.values FROM product p left join product_image pi on pi.product_id=p.id and 
             pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1) left join 
