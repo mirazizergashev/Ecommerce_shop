@@ -172,9 +172,9 @@ const product_comment = Joi.object().keys({
             "number.max": "hol maksimal 2 ga teng bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
             "any.required": `hol maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
         }),
-        properties:Joi.array().required().messages({
-            "any.required": `xusuiyat maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
-        }),
+        // properties:Joi.array().required().messages({
+        //     "any.required": `xusuiyat maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
+        // }),
         
 });
 

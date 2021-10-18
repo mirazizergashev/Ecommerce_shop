@@ -2,6 +2,8 @@ process.env.NTBA_FIX_319 = 1
 
 const pool = require("./database/db")
 const TelegramBot = require('node-telegram-bot-api');
+
+// const token = `2092351035:AAHN4fpXKHIlZA892UgdMKchXV0NphtEtiY`;
 const token = process.env.TOKEN || '2003490237:AAFTBAuD2h17gqvtvZmy8cbxBwMTeYkuJiA';
 //botga ulanish
 const bot = new TelegramBot(token, {
@@ -9,7 +11,8 @@ const bot = new TelegramBot(token, {
 });
 // bot.on("message",msg=>console.log(msg.chat))
 function sendSms(text = "yangi buyurtma") {
-  return bot.sendMessage("-512312710", text,{
+  return bot.sendMessage("-1001591070273", text,{
+    // return bot.sendMessage("-512312710", text,{
     parse_mode:"HTML"
   })
 }
@@ -81,7 +84,7 @@ function sendClickTrans(order_id,naqd="") {
         if(err){
           return console.error({err,path:"botConnect"})
         }
-        console.log(res)
+        // console.log(res)
         const dostvk=dostv.find(d=>d.id=k.dostavka_id)
         sendSms(`<b>💠 Yangi buyurtma:</b>\n\n${naqd}`+
         `🔷 Fio:<b>${k.fish} </b>\n`+
@@ -114,6 +117,12 @@ function sendClickTrans(order_id,naqd="") {
   })
   
 }
+
+// sendClickTrans(15)
+
+// bot.on('message', async (msg) => {
+//   console.log(msg)
+// })
 
 // sendTransOrder("61546715568512a0eddff948")
 // sendClickTrans(93)

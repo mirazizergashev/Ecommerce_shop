@@ -70,7 +70,7 @@ userModel.change_user=function(newUser,result){
 userModel.getAllUsers=function(result){
     pool.query(`SELECT u.id,u.last_name,u.first_name,u.address,u.phone,u.role_id,u.isActive status,r.name role,
     date_format(u.created_on,'%Y-%m-%d, %h:%i:%s') created_on
-    FROM users u inner join roles r on r.id=u.role_id where r.id!=1`,function(err,res){
+    FROM users u inner join roles r on r.id=u.role_id where r.id!=1 order by created_on desc`,function(err,res){
         if(err){
             return result(err,null);
         }else{

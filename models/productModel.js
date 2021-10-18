@@ -132,6 +132,8 @@ select * from category where isActive=1;`,
                 data2 = {
                     'id': id,
                     'name': data[0].name,
+                    count:data[0].count,
+                    'color': data[0].color,
                     'description':data[0].comment,
                     'vendorCode': s,
                     'reviews': res[2].length,
@@ -273,8 +275,10 @@ productModel.getCommentAll = function (id,result) {
 productModel.product_comment_edit_insert = function (data, result) {
     pool.query("call prod_comment_edit_insert(?,?,?,?,?,?)", data, function (err, res, field) {
         if (err) {
+            console.log(err)
             return result(err, null);
         } else {
+            console.log(res)
             return result(null, res);
         }
     });
@@ -625,7 +629,8 @@ productModel.productFilter = function (query, result) {
         `
 
     })
-    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p left join product_image pi on pi.product_id=p.id and p.isActive=1 and p.checked=1 and 
+    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p left join product_image pi on pi.product_id=p.id and p.isActive=1 
+    and p.checked=1 and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
     ${ss}
     ;select * from category where isActive=1;`, a, function (err, res) {

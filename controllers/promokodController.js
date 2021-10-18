@@ -474,7 +474,7 @@ promokodController.checkPromokod=function (req, res) {
                         code: 400,
                         error: {
                             message: {
-                                uz: "Bunday promokod mavjud emas!",
+                                uz: "Такого промокода не существует",
                                 en: "User information has changed!",
                                 ru: "Информация о пользователе изменилась!"
                             }
@@ -486,7 +486,7 @@ promokodController.checkPromokod=function (req, res) {
                     code: 200,
                     success: {
                         message: {
-                            uz: "Promokod faol holatda!",
+                            uz: "Промокод действителен и работает",
                             en: "A new user has been created!",
                             ru: "Создан новый пользователь!"
                         }
@@ -500,7 +500,7 @@ promokodController.checkPromokod=function (req, res) {
                     code: 400,
                     error: {
                         message: {
-                            uz: "Bunday promokod mavjud emas!",
+                            uz: "Такого промокода не существует",
                             en: "User information has changed!",
                             ru: "Информация о пользователе изменилась!"
                         }

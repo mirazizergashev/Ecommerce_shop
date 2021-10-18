@@ -294,4 +294,107 @@ app.get("/naqd/cancel/:id",(req,res)=>{
     })
 })
 
+app.post("/getMoney", async (req, res) => {
+    let a = req.body;
+    var data = [
+        a.order_id,
+        req.session.userId||0,
+        a.hol||3
+    ]
+    pool.query(`call ecommerce_shop.naqd_getting(?,?,?);`,data,(err,result,fld)=>{
+        console.log(result)
+        if(err){
+            console.log(err)
+            return res.status(200).json({
+                code: 400,
+                error: {
+                    message: {
+                        uz: "Bunday holat hali bo`lmaydi yani zakaz atmena qilinishi",
+                        en: "Product feature changed!",
+                        ru: "Характеристики продукта изменены!"
+                    }
+                }
+            })
+        }
+        switch (result[0][0].natija+"") {
+            case '1':
+                return res.status(200).json({
+                    code: 203,
+                    success: {
+                        message: {
+                            uz: "Buyurtma yetqazildi va to`lov olindi!",
+                            en: "Product feature saved!",
+                            ru: "Функция продукта сохранена!"
+                        }
+                    }
+                })
+
+            case '2':
+                return res.status(200).json({
+                    code: 203,
+                    error: {
+                        message: {
+                            uz: "Bunday holat hali bo`lmaydi yani zakaz atmena qilinishi",
+                            en: "Product feature changed!",
+                            ru: "Характеристики продукта изменены!"
+                        }
+                    }
+                })
+
+            case '3':
+                return res.status(200).json({
+                    code: 400,
+                    error: {
+                        message: {
+                            uz: "Buyurtma topilmadi!",
+                            en: "No product found!",
+                            ru: "Товар не найден!"
+                        }
+                    }
+                })
+                case '4':
+                    return res.status(200).json({
+                        code: 400,
+                        error: {
+                            message: {
+                                uz: "Bunday Curyer topilmadi!",
+                                en: "Category feature not found!",
+                                ru: "Функция категории не найдена!"
+                            }
+                        }
+                    })
+
+                    case '5':
+                        return res.status(200).json({
+                            code: 400,
+                            error: {
+                                message: {
+                                    uz: "Status topilmadi!",
+                                    en: "Category feature not found!",
+                                    ru: "Функция категории не найдена!"
+                                }
+                            }
+                        })
+    
+        
+            default:
+
+                return res.status(200).json({
+                    code: 418,
+                    success: {
+                        message: {
+                            uz: "Kutilmagan xatolik adminga xabar bering !",
+                            en: "Report an unexpected error to the admin!",
+                            ru: "Сообщите администратору о непредвиденной ошибке!"
+                        }
+                    }
+                })
+
+
+
+
+        }
+    })
+})
+
 module.exports = app;
