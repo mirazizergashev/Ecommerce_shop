@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 
 const pool = require("../../database/db");
+const {authCheck} = require("../../middleware/auth");
 const { sendClickTrans } = require("../../botconnect")
 
 app.post("/order", async (req, res) => {
@@ -11,7 +12,7 @@ app.post("/order", async (req, res) => {
     let tel = req.body.phone || null;
     let viloyat = req.body.viloyat || null;
     let tuman = req.body.tuman || null;
-    console.log('llll')
+    // console.log('llll')
     pool.promise().query(`insert into orders (user_id,amount,state,praduct_id ,isNaqd,fish,phone,viloyat,tuman,mfy,dostavka_id,curyer) 
         values (?,?,0,?,1,?,?,?,?,?,?,0) ;
         SELECT max(id) as id FROM orders WHERE isNaqd=1 and amount=?`, [req.session.userId || null, req.body.amount, req.body.praduct_id, fish, tel, viloyat, tuman, mfy, req.body.dostavka_id||1,req.body.amount])
@@ -53,12 +54,11 @@ app.post("/naqd", async (req, res) => {
         }
         if (req.body.promokod) {
             //promokod
-            console.log("promokod")
+            // console.log("promokod")
             const result = await pool.promise()
                 .query("call promokod_checker(?)", [req.body.promokod])
                 .then((rest) => {
 
-                    console.log(rest[0])
                     if (rest[0][1][0].natija != 1) {
                         return {
                             error: {
@@ -136,14 +136,11 @@ app.post("/naqd", async (req, res) => {
             let viloyat = req.body.viloyat || null;
             let tuman = req.body.tuman || null;
 
-
             pool.promise().query(`insert into orders (user_id,state,sana,fish,phone,viloyat,tuman,mfy,dostavka_id,isNaqd) 
     values (?,1 ,now(),?,?,?,?,?,?,1) ;`,
                     [req.session.userId||null, fish, tel, viloyat, tuman, mfy, req.body.dostavka_id||1])
                 .then((rest) => {
-                    let {
-                        data
-                    } = JSON.parse(req.body.praduct_id), s = "", a = [], notFounds = [], lessProd = []
+                    let   data= req.body.product_id, s = "", a = [], notFounds = [], lessProd = []
                     data.forEach((e, i) => {
                         s += "SELECT *,cost cost2 FROM product WHERE id=? and isActive=1;";
                         a.push(e.product_id)
@@ -238,7 +235,7 @@ app.post("/naqd", async (req, res) => {
                 })
                 
             }).catch((err) => {
-                    console.log(err)
+                    console.log("'naqt xatosi'",err)
                     res.json({
                         error: 2,
                         error_note: "Not"
@@ -294,7 +291,7 @@ app.get("/naqd/cancel/:id",(req,res)=>{
     })
 })
 
-app.post("/getMoney", async (req, res) => {
+app.post("/getMoney",authCheck, async (req, res) => {
     let a = req.body;
     var data = [
         a.order_id,
@@ -302,7 +299,7 @@ app.post("/getMoney", async (req, res) => {
         a.hol||3
     ]
     pool.query(`call ecommerce_shop.naqd_getting(?,?,?);`,data,(err,result,fld)=>{
-        console.log(result)
+        // console.log(result)
         if(err){
             console.log(err)
             return res.status(200).json({
@@ -396,5 +393,19 @@ app.post("/getMoney", async (req, res) => {
         }
     })
 })
+
+
+function changeCosts(c, data) {
+    data.forEach((e, i) => {
+        let k = e.category_id, cost = e.cost, ind = c.findIndex(x => x.id == k);
+
+        data[i].cost = cost * (100 - data[i].discount * 1) / 100;
+        while (ind != -1) {
+            cost = parseInt(cost * (100 + c[ind].percent * 1) / 100) + 1 * c[ind].isFoiz
+            ind = c.findIndex(x => x.id == c[ind].sub)
+        }
+    });
+    return data
+}
 
 module.exports = app;

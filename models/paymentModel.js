@@ -126,6 +126,9 @@ paymentModel.getOrdersIn = function (id,result) {
         if (err) {
             return result(err, null);
         } else {
+            if(data.length==0){
+                return result(null, []);
+            }
             let arr4 = [], s4 = 0, cont = [], cont2 = [],arr5=[]
             data.forEach((k,j)=>{
                 // pool.query(`SELECT cp.field_name, GROUP_CONCAT(pp.values SEPARATOR '#') as content FROM product_properties pp inner join category_properties cp 
