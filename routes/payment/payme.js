@@ -301,16 +301,27 @@ app.get("/money", async (req, res) => {
 
 
 function changeCosts(c, data) {
+    let k,cost,ind,maxCost,minCost
     data.forEach((e, i) => {
-        let k = e.category_id,
-            cost = e.cost,
-            ind = c.findIndex(x => x.id == k);
-
+        maxCost=e.maxCost
+        minCost=e.minCost
+        k = e.category_id, cost = e.cost, ind = c.findIndex(x => (x.id == k));
+    //    console.log(i,k,ind)
         while (ind != -1) {
             cost = parseInt(cost * (100 + c[ind].percent * 1) / 100) + 1 * c[ind].isFoiz
-            ind = c.findIndex(x => x.id == c[ind].sub)
+            if(e.maxCost){
+                maxCost= parseInt(maxCost * (100 + c[ind].percent * 1) / 100) + 1 * c[ind].isFoiz 
+            }
+            if(e.minCost){
+                minCost= parseInt(minCost * (100 + c[ind].percent * 1) / 100) + 1 * c[ind].isFoiz 
+            }
+            ind = c.findIndex(x => (x.id == c[ind].sub))
+    //    console.log(i,k,ind,"|")
+
         }
         data[i].cost = cost * (100 - data[i].discount * 1) / 100;
+        if(e.minCost) data[i].minCost = minCost * (100 - data[i].discount * 1) / 100;
+        if(e.maxCost) data[i].maxCost = maxCost * (100 - data[i].discount * 1) / 100;
     });
     return data
 }

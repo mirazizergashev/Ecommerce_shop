@@ -416,9 +416,9 @@ where p.isActive=1 and checked=1  group by p.name limit ?,?;
         if (err) {
             return result(err, null);
         } else {
+
             let data = changeCosts(res[1], res[0])
             let data1=[];
-            console.log(data)
             return result(null, data);
         }
     });
@@ -657,7 +657,9 @@ productModel.productByCategory = function (id = 0, result) {
                     console.log("err2")
                     return result(err2, null);
                 } else {
+                    // console.log(rows[0])
                     let data = changeCosts(rows, res)
+                    // console.log(data[0])
                     return result(null, data);
                 }
             });
@@ -710,14 +712,27 @@ productModel.productFilter = function (query, result) {
 }
 
 function changeCosts(c, data) {
+    let k,cost,ind,maxCost,minCost
     data.forEach((e, i) => {
-        let k = e.category_id, cost = e.cost, ind = c.findIndex(x => x.id == k);
-
-        data[i].cost = cost * (100 - data[i].discount * 1) / 100;
+        maxCost=e.maxCost
+        minCost=e.minCost
+        k = e.category_id, cost = e.cost, ind = c.findIndex(x => (x.id == k));
+    //    console.log(i,k,ind)
         while (ind != -1) {
             cost = parseInt(cost * (100 + c[ind].percent * 1) / 100) + 1 * c[ind].isFoiz
-            ind = c.findIndex(x => x.id == c[ind].sub)
+            if(e.maxCost){
+                maxCost= parseInt(maxCost * (100 + c[ind].percent * 1) / 100) + 1 * c[ind].isFoiz 
+            }
+            if(e.minCost){
+                minCost= parseInt(minCost * (100 + c[ind].percent * 1) / 100) + 1 * c[ind].isFoiz 
+            }
+            ind = c.findIndex(x => (x.id == c[ind].sub))
+    //    console.log(i,k,ind,"|")
+
         }
+        data[i].cost = cost * (100 - data[i].discount * 1) / 100;
+        if(e.minCost) data[i].minCost = minCost * (100 - data[i].discount * 1) / 100;
+        if(e.maxCost) data[i].maxCost = maxCost * (100 - data[i].discount * 1) / 100;
     });
     return data
 }
