@@ -189,7 +189,7 @@ app.get("/click", async (req, res) => {
                         let check
                         if (notFounds.length > 0) check.notFounds = notFounds
                         if (lessProd.length > 0) check.lessProd = lessProd
-                        if (check) {
+                        if (check.notFounds || check.lessProd) {
                             return res.json({
                                 error: 2,
                                 error_note: "Not",
