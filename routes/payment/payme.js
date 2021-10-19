@@ -122,7 +122,7 @@ app.use("/payme/1", async (req, res) => {
                         s += "SELECT *,cost cost2 FROM product WHERE id=? and isActive=1;";
                         a.push(e.product_id)
                     });
-                    s += "SELECT id,sub,percent,isFoiz FROM category WHERE isActive=1;";
+                    s += "SELECT * FROM category WHERE isActive=1;";
                     pool.query(s, a, (err, rows) => {
                         if (err) {
                             console.error({
