@@ -147,7 +147,6 @@ app.use("/payme/1", async (req, res) => {
                                         count: e.count
                                     })
                                 } else {
-                                    rows[i][0].cost = rows[i][0].cost * 1 * (100 - 1 * rows[i][0].discount) / 100
                                     rows[i][0].cost2 = rows[i][0].cost2 * 1 * (100 - 1 * rows[i][0].discount) / 100
                                     if (rows[i][0].cost < 0) rows[i][0].cost = 0
                                     changeCosts(rows[rows.length - 1], rows[i])
@@ -193,7 +192,6 @@ app.use("/payme/1", async (req, res) => {
                                 //Order Yaratildi.....
                                 // sendClickTrans(rest[0].insertId)
                                 bu = Buffer.from(`m=${merchant};ac.order=${rest[0].insertId};a=${parseInt(100*req.Dostavka(summa - req.promokod.Run(summa))) }`).toString('base64')
-
                                 res.redirect(`/payme-ghvcjhbcfkrhkjdfhkjdfn/${bu}`);
 
                             })
