@@ -186,7 +186,7 @@ app.get("/click", async (req, res) => {
                                 }
                             }
                         });
-                        let check
+                        let check={}
                         if (notFounds.length > 0) check.notFounds = notFounds
                         if (lessProd.length > 0) check.lessProd = lessProd
                         if (check.notFounds || check.lessProd) {
