@@ -757,7 +757,6 @@ productController.getTop = function (req, res) {
     if (req.session.roleId == 4) req.query.allow = 1
     else req.query.allow = 0
     productModel.getTop(req.query, (err, rows) => {
-
         if (err) {
             console.log(err);
             return res.status(200).json({

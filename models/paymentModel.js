@@ -66,7 +66,8 @@ paymentModel.getAllCard = function (id, result) {
         if (err) {
             return result(err, null);
         } else {
-           
+           console.log(id)
+           console.log(data)
             return result(null, data);
         }
     });
