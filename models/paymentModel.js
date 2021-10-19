@@ -50,6 +50,28 @@ paymentModel.getCuryerProd = function (id, result) {
     });
 }
 
+paymentModel.getAllCard = function (id, result) {
+    pool.query(`SELECT 
+    o.id,date_format(o.sana,"%y-%m-%d %h:%i:%s") as sana,
+    (s.cost-s.discount) as asl_narx,st.name as holat,st.class,concat(o.viloyat," ",o.tuman," ",o.mfy) as manzil,d.cost as yetqazish_narxi,
+    (s.cost-s.discount+d.cost) as jami_narx,
+    CASE
+        WHEN o.isClick=0 and o.isNaqd=0 and o.state=2 THEN (s.cost-s.discount+d.cost)
+        WHEN o.isClick=1 and o.isNaqd=0 and  o.state=2 THEN (s.cost-s.discount+d.cost)
+        WHEN o.isClick=0 and o.isNaqd=1 and o.state=2 THEN (s.cost-s.discount+d.cost)
+        ELSE 0
+    END as tulagan_summa
+    FROM orders o  inner join suborder s on s.order_id=o.id inner join statuses st on st.id=o.status 
+    inner join dostavka_type d on d.id=o.dostavka_id where o.user_id=?`,id, function (err, data) {
+        if (err) {
+            return result(err, null);
+        } else {
+           
+            return result(null, data);
+        }
+    });
+}
+
 
 paymentModel.getOrdersAll = function (result) {
     pool.query(`SELECT o.id,o.fish,concat(o.viloyat," ",o.tuman," ",o.mfy) as address,o.amount as price,s.name as status,s.class,
