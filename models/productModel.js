@@ -731,8 +731,8 @@ function changeCosts(c, data) {
 
         }
         data[i].cost = cost * (100 - data[i].discount * 1) / 100;
-        if(e.minCost) data[i].minCost = minCost * (100 - data[i].discount * 1) / 100;
-        if(e.maxCost) data[i].maxCost = maxCost * (100 - data[i].discount * 1) / 100;
+        if(e.minCost) data[i].minCost = minCost ;
+        if(e.maxCost) data[i].maxCost = maxCost ;
     });
     return data
 }
