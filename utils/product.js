@@ -148,7 +148,7 @@ const product_comment = Joi.object().keys({
 
     baho: Joi
         .number()
-        .min(1)
+        .min(0)
         .required()
         .messages({
             "number.min": "Baho minimal 0 ga teng bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
