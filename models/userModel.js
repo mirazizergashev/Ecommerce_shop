@@ -144,4 +144,15 @@ userModel.resetPassword=function(body,result){
         }
     });
 }
+
+userModel.tableAccess=function(result){
+    pool.query(`SELECT ta.*,tn.name as t_name,tn.info FROM table_access ta inner join tb_names tn on tn.id=ta.table_id`,function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
+
 module.exports=userModel;
