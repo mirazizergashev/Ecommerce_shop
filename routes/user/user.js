@@ -24,5 +24,6 @@ router.post("/rtPassword",[isAdmin],userController.resetPassword)
 router.get("/tableAccess/:id",access("users"),userController.tableAccess)
 router.get("/allModerator",access("users"),userController.allModerator)
 
+router.post("/accessAllow",[isAdmin],userController.accessAllow)
 
 module.exports = router;

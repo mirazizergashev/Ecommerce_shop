@@ -43,7 +43,7 @@ const isAdmin = (req, res, next) => {
 
 
 function access(s0) {
-    if(req.session.userId){
+    // if(req.session.userId){
        return async (req, res, next) => {
         //  session mavjud bo'lmasa ...
         if (req.session.roleId!=2) return next()
@@ -66,7 +66,7 @@ function access(s0) {
     
       
     }
-    }else next()
+    // }else next()
 }
 module.exports = {
     authCheck,isAdmin,authCheck2,access

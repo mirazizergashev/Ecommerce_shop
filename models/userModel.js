@@ -167,4 +167,14 @@ userModel.allModerator=function(result){
     });
 }
 
+userModel.accessAllow=function(data,result){
+    pool.query("call table_access_edit_insert(?,?,?,?,?,?)",data,function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
+
 module.exports=userModel;

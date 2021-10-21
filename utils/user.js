@@ -169,6 +169,55 @@ const  roledit = Joi.object().keys({
     })
 }); 
 
+
+const accessAllow = Joi.object().keys({
+    user_id: Joi.number().
+    min(0).
+    max(1000000).
+    required()
+    .messages({
+        "number.min": "user_id minimal 1 ta belgidan iborat bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+        "number.max": "user_id maksimal 1000000 ta belgi iborat bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+        "any.required": `user_id maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
+    }),
+    table_id: Joi.number().
+    min(0).
+    max(1000000).
+    required()
+    .messages({
+        "number.min": "table_id minimal 1 ta belgidan iborat bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+        "number.max": "table_id maksimal 1000000 ta belgi iborat bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",
+        "any.required": `table_id maydoni kiritilishi majburiy!#Password field required!#Поле пароля обязательно!`
+    }),
+    c:Joi.
+    number()
+    .min(0)
+    .max(2)
+    .required()
+    .messages({    
+        "number.min": "c minimal 1 ta belgidan iborat bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+        "number.max": "c maksimal 1000000 ta belgi iborat bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",  
+        "any.required": `Holatni kiriting!#Enter the status!#Введите status !`
+    }),
+    r:Joi.
+    number()
+    .min(0)
+    .max(2)
+    .required()
+    .messages({ 
+        "number.min": "c minimal 0  ta belgidan iborat bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+        "number.max": "c maksimal 1 ta belgi iborat bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",       
+        "any.required": `Holatni kiriting!#Enter the status!#Введите status !`
+    }),
+    u:Joi.
+    number().required()
+    .messages({      
+        "number.min": "c minimal 0  ta belgidan iborat bo'lishi kerak !#The password must be at least 4 characters long!#Пароль должен состоять не менее чем из 4 символов!",
+        "number.max": "c maksimal 1 ta belgi iborat bo'lishi kerak !#The password must be a maximum of 100 characters!#Пароль должен состоять максимум из 100 символов!",  
+        "any.required": `Holatni kiriting!#Enter the status!#Введите status !`
+    })
+});
+
 module.exports = {
     signin,
    signup,
@@ -176,5 +225,6 @@ module.exports = {
    signupdate,
    editPassword,
    roledit,
-   change_user
+   change_user,
+   accessAllow
 }

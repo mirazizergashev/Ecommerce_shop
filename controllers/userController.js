@@ -898,5 +898,120 @@ userController.allModerator = function (req, res) {
 }
 
 
+userController.accessAllow = function (req, res) {
+    //validatsiyada xatolik
+    const checked = schema.accessAllow.validate(req.body);
+    if (checked.error) {
+        const msg = checked.error.details[0].message.split("#")
+        return res.status(200).json({
+            code: 400,
+            error: {
+                message: {
+                    uz: msg[0],
+                    en: msg[1],
+                    ru: msg[2]
+                }
+            }
 
+        });
+    }
+    let a = req.body;
+    var data = [
+        a.user_id,
+        a.table_id ,
+        a.c,
+        a.r,
+        a.u,
+        req.session.userId
+
+    ]
+
+    userModel.accessAllow(data, (err, rows) => {
+
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+        switch (rows[0][0].natija) {
+            case '1':
+                return res.status(200).json({
+                    code: 201,
+                    success: {
+                        message: {
+                            uz: "Foydalanuvchiga dostup berildi!",
+                            en: "User information has changed!",
+                            ru: "Информация о пользователе изменилась!"
+                        }
+                    }
+                })
+                case '2':
+                    return res.status(200).json({
+                        code: 203,
+                        success: {
+                            message: {
+                                uz: "Foydalanuvchiga dostup berildi!",
+                                en: "User information has changed!",
+                                ru: "Информация о пользователе изменилась!"
+                            }
+                        }
+                    })
+            case '3':
+                return res.status(200).json({
+                    code: 400,
+                    error: {
+                        message: {
+                            uz: "Bunday jadval mavjud emas!",
+                            en: "No such role found!",
+                            ru: "Такой роли не найдено!"
+                        }
+                    }
+                })
+            case '4':
+                return res.status(200).json({
+                    code: 400,
+                    error: {
+                        message: {
+                            uz: "Rol topilmadi!",
+                            en: "No such role found!",
+                            ru: "Такой роли не найдено!"
+                        }
+                    }
+                })
+
+                case '403':
+                res.status(200).json({
+                    code: 403,
+                    error: {
+                        message: {
+                            uz: "Sizga bu ma'lumotlardan foydalanishga ruxsat berilmagan",
+                            ru: "Вам не разрешено использовать эту информацию",
+                            en: "You are not allowed to use this information"
+                        }
+                    }
+                })
+                break;
+            default:
+                res.status(200).json({
+                    code: 418,
+                    success: {
+                        message: {
+                            uz: "Kutilmagan xatolik adminga xabar bering !",
+                            en: "Report an unexpected error to the admin!",
+                            ru: "Сообщите администратору о непредвиденной ошибке!"
+                        }
+                    }
+                })
+
+        }
+    })
+}
 module.exports = userController;
