@@ -1,3 +1,5 @@
+const pool=require("../database/db")
+
 
 const authCheck = (req, res, next) => {
     //  session mavjud bo'lmasa ...
@@ -27,7 +29,7 @@ const authCheck2 = (req, res, next) => {
 }
 const isAdmin = (req, res, next) => {
     //  session mavjud bo'lmasa ...
-    if (!req.session.userId || req.session.roleId!=1 )
+    if (!req.session.userId || (req.session.roleId!=1 && req.session.roleId!=2))
         return res.status(200).json({
             code:403,
             error: {
@@ -39,6 +41,33 @@ const isAdmin = (req, res, next) => {
     next();
 }
 
+
+function access(s0) {
+    if(req.session.userId){
+       return async (req, res, next) => {
+        //  session mavjud bo'lmasa ...
+        if (req.session.roleId!=2) return next()
+        const acc=await pool.promise()
+        .query("select readable(?, (select eco.get_name(?))) access",[req.session.userId,s0])
+        if (acc[0][0].access=='1') next()
+        else
+        
+          return  res.status(200).json({
+                code: 403,
+                error: {
+                    message: {
+                        uz: "Sizga bu ma'lumotlardan foydalanishga ruxsat berilmagan",
+                        ru: "Вам не разрешено использовать эту информацию",
+                        en: "You are not allowed to use this information"
+                    }
+                }
+            })
+    
+    
+      
+    }
+    }else next()
+}
 module.exports = {
-    authCheck,isAdmin,authCheck2
+    authCheck,isAdmin,authCheck2,access
 }

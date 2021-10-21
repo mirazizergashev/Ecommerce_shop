@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const upload = require("../../middleware/upload")
-const {isAdmin} = require("../../middleware/auth")
+const {isAdmin,access} = require("../../middleware/auth")
 const userController=require("../../controllers/userController")
 
 
@@ -12,7 +12,7 @@ router.post('/changePassword',userController.editPassword);
 router.post('/roledit',userController.rolEdit);
 
 router.get("/getMe",userController.getMe)
-router.get("/getAllUsers",userController.getAllUsers)
+router.get("/getAllUsers",[isAdmin,access("users")],userController.getAllUsers)
 router.get("/img/:url",userController.getOneImg)
 router.get("/images", userController.getAllImges)
 router.post("/img", upload, userController.uploadImg );
@@ -21,8 +21,8 @@ router.get("/filter",[isAdmin],userController.filter)
 router.post("/rtPassword",[isAdmin],userController.resetPassword)
 
 //##########
-router.get("/tableAccess/:id",userController.tableAccess)
-router.get("/allModerator",userController.allModerator)
+router.get("/tableAccess/:id",access("users"),userController.tableAccess)
+router.get("/allModerator",access("users"),userController.allModerator)
 
 
 module.exports = router;

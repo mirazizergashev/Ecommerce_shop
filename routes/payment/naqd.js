@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 
 const pool = require("../../database/db");
-const {authCheck} = require("../../middleware/auth");
+const {authCheck,access} = require("../../middleware/auth");
 const { sendClickTrans } = require("../../botconnect")
 
 app.post("/order", async (req, res) => {
@@ -250,7 +250,7 @@ app.post("/naqd", async (req, res) => {
 
 })
 
-app.get("/naqd/cancel/:id",(req,res)=>{
+app.get("/naqd/cancel/:id",access("orders"),(req,res)=>{
     pool.query("call cancel_order(?,?);",[req.params.id,req.session.userId],(err,rows)=>{
         if (err) {
             console.log(err)
@@ -448,8 +448,8 @@ function changeCosts(c, data) {
 
         }
         data[i].cost = cost * (100 - data[i].discount * 1) / 100;
-        if(e.minCost) data[i].minCost = minCost ;
-        if(e.maxCost) data[i].maxCost = maxCost ;
+        if(e.minCost) data[i].minCost = minCost * (100 - data[i].discount * 1) / 100;
+        if(e.maxCost) data[i].maxCost = maxCost * (100 - data[i].discount * 1) / 100;
     });
     return data
 }
