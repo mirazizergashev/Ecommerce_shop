@@ -19,7 +19,7 @@ Object.keys(query).forEach((x0, i) => {
 if(ss){
     ss=s0+ss+') '
 }
-
+a.push(id)
 
     pool.query(`WITH
     mp AS (SELECT p.name FROM product_properties  pp 
@@ -31,6 +31,7 @@ if(ss){
   JOIN mp ON mp.name=p.name
   JOIN category_properties cp ON cp.id=pp.cat_prop_id
   ${ss?`LEFT JOIN px ON px.product_id=p.id`:""}
+  WHERE p.color in (SELECT color FROM product WHERE id=?)
   order by pp.cat_prop_id`,
         a, function (err, res) {
             if (err) {
