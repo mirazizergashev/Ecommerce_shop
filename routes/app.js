@@ -17,9 +17,11 @@ const static = require("./statik/app");
 const promokod = require("./promokod/app");
 const chat = require("./chat/app");
 const changes = require("./changes/app");
+const dostavka = require("./dostavka/app");
 
 // sing in , up 
 app.use("/sign", sign);
+app.use("/dostavka", dostavka);
 app.use("/promokod", promokod);
 app.use("/chat",authCheck, chat);
 app.use("/cart",authCheck, cart);
