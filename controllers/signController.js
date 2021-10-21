@@ -201,7 +201,7 @@ break
                             message: {
                                 uz: "Muvaffaqiyatli tizimga kirildi!",
                                 en: "Report an unexpected error to the admin!",
-                                ru: "Сообщите администратору о непредвиденной ошибке!"
+                                ru: "Успешный вход в систему!"
                             }
                         }
                     })
