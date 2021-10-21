@@ -443,7 +443,7 @@ where p.isActive=1 and checked!=0   group by p.name limit ?,?;
             // let data = changeCosts(res[1], res[0])
             // let data1=[];
             // console.log(data)
-            return result(null, data);
+            return result(null, res[0]);
         }
     });
 }
@@ -465,7 +465,7 @@ where p.isActive=1 and  p.user_id=? group by p.name limit ?,?;
             // let data = changeCosts(res[1], res[0])
             // let data1=[];
             // console.log(data)
-            return result(null, data);
+            return result(null, res[0]);
         }
     });
 }
