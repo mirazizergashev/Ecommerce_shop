@@ -15,6 +15,8 @@ dostavkaModel.dostavka_edit_insert=function(data,result){
 }
 
 dostavkaModel.getAll=function(roleId,result){
+    console.log(`SELECT * from dostavka_type 
+    ${(roleId==1||roleId==2)?"":"WHERE isActive=1"}`)
     pool.query(`SELECT * from dostavka_type 
     ${(roleId==1||roleId==2)?"":"WHERE isActive=1"}`,
     function(err,res){

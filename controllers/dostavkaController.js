@@ -136,8 +136,7 @@ dostavkaController.getAll = function (req, res) {
         
          res.status(200).json({
              code: 200,
-             success: rows[0],
-             title:rows[1]
+             success: rows
          })
      })
  }
