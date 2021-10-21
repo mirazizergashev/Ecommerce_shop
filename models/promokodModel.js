@@ -3,7 +3,7 @@ var pool= require('../database/db');
 var promokodModel=function(){}
 
 promokodModel.promokod_edit_insert=function(data,result){
-    pool.query("call promokod_edit_insert(?,?,?,?,?,?,?)",data,function(err,res,field){
+    pool.query("call promokod_edit_insert(?,?,?,?,?,?,?,?)",data,function(err,res,field){
         if(err){
             return result(err,null);
         }else{

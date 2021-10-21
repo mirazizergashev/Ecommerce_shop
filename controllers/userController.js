@@ -29,7 +29,8 @@ userController.update = function (req, res) {
         a.fam || "",
         "",
         "",
-        a.address || ""
+        a.address || "",
+        req.session.userId||0
     ]
 
     userModel.user_edit_insert(newUser, function (err, result) {
@@ -60,6 +61,18 @@ userController.update = function (req, res) {
                             }
                         }
                     })
+                    case '403':
+                        res.status(200).json({
+                            code: 403,
+                            error: {
+                                message: {
+                                    uz: "Sizga bu ma'lumotlardan foydalanishga ruxsat berilmagan",
+                                    ru: "Вам не разрешено использовать эту информацию",
+                                    en: "You are not allowed to use this information"
+                                }
+                            }
+                        })
+                        break;
 
                 case '2':
                     return res.status(200).json({
@@ -687,7 +700,8 @@ userController.rolEdit = function (req, res) {
     var data = [
         a.id,
         a.rol,
-        a.holat
+        a.holat,
+        req.session.userId
 
     ]
 
@@ -706,7 +720,7 @@ userController.rolEdit = function (req, res) {
                 }
             })
         }
-        switch (rows[0][0].natija) {
+        switch (rows[0][0].natija+"") {
             case '2':
                 return res.status(200).json({
                     code: 203,
@@ -741,6 +755,19 @@ userController.rolEdit = function (req, res) {
                         }
                     }
                 })
+
+                case '403':
+                res.status(200).json({
+                    code: 403,
+                    error: {
+                        message: {
+                            uz: "Sizga bu ma'lumotlardan foydalanishga ruxsat berilmagan",
+                            ru: "Вам не разрешено использовать эту информацию",
+                            en: "You are not allowed to use this information"
+                        }
+                    }
+                })
+                break;
             default:
                 res.status(200).json({
                     code: 418,

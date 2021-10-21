@@ -31,7 +31,8 @@ promokodController.generate = function (req, res) {
         a.isFoiz,
         a.deadline,
         a.count,
-        a.description
+        a.description,
+        req.session.userId
 
     ]
 
@@ -49,7 +50,7 @@ promokodController.generate = function (req, res) {
                 }
             })
         } else {
-            switch (result[0][0].natija) {
+            switch (result[0][0].natija+"") {
                 case '1':
                     return res.status(200).json({
                         code: 201,
@@ -62,6 +63,18 @@ promokodController.generate = function (req, res) {
                             token: result[0][0].token
                         }
                     })
+                    case '403':
+                        res.status(200).json({
+                            code: 403,
+                            error: {
+                                message: {
+                                    uz: "Sizga bu ma'lumotlardan foydalanishga ruxsat berilmagan",
+                                    ru: "Вам не разрешено использовать эту информацию",
+                                    en: "You are not allowed to use this information"
+                                }
+                            }
+                        })
+                        break;
 
                 case '2':
                     return res.status(200).json({

@@ -3,7 +3,7 @@ var pool= require('../database/db');
 var roleModel=function(){}
 
 roleModel.rol_edit_insert=function(idNameStatus,result){
-    pool.query("call rol_edit_insert(?,?,?)",idNameStatus,function(err,res,field){
+    pool.query("call rol_edit_insert(?,?,?,?)",idNameStatus,function(err,res,field){
         if(err){
             return result(err,null);
         }else{
@@ -13,7 +13,7 @@ roleModel.rol_edit_insert=function(idNameStatus,result){
    
 }
 roleModel.status_edit_insert=function(idNameStatus,result){
-    pool.query("call status_edit_insert(?,?,?,?)",idNameStatus,function(err,res,field){
+    pool.query("call status_edit_insert(?,?,?,?,?)",idNameStatus,function(err,res,field){
         if(err){
             return result(err,null);
         }else{

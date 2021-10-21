@@ -26,7 +26,8 @@ roleController.create_update = function (req, res) {
     var data = [
         a.id || 0,
         a.name || "",
-        a.status
+        a.status,
+        req.session.userId
     ]
 
     roleModel.rol_edit_insert(data, function (err, result) {
@@ -44,7 +45,7 @@ roleController.create_update = function (req, res) {
             })
         } else {
             // req.flash('success', 'Employee added succesfully');
-            switch (result[0][0].natija) {
+            switch (result[0][0].natija+"") {
                 case '1':
                     return res.status(200).json({
                         code: 203,
@@ -56,6 +57,18 @@ roleController.create_update = function (req, res) {
                             }
                         }
                     })
+                    case '403':
+                        res.status(200).json({
+                            code: 403,
+                            error: {
+                                message: {
+                                    uz: "Sizga bu ma'lumotlardan foydalanishga ruxsat berilmagan",
+                                    ru: "Вам не разрешено использовать эту информацию",
+                                    en: "You are not allowed to use this information"
+                                }
+                            }
+                        })
+                        break;
 
                 case '2':
                     return res.status(200).json({
@@ -128,7 +141,8 @@ roleController.create_update_status = function (req, res) {
         a.id || 0,
         a.name || "",
         a.class|| "success",
-        a.status
+        a.status,
+        req.session.userId
     ]
 
     roleModel.status_edit_insert(data, function (err, result) {
@@ -146,7 +160,7 @@ roleController.create_update_status = function (req, res) {
             })
         } else {
             // req.flash('success', 'Employee added succesfully');
-            switch (result[0][0].natija) {
+            switch (result[0][0].natija+"") {
                 case '1':
                     return res.status(200).json({
                         code: 203,
@@ -158,6 +172,18 @@ roleController.create_update_status = function (req, res) {
                             }
                         }
                     })
+                    case '403':
+                        res.status(200).json({
+                            code: 403,
+                            error: {
+                                message: {
+                                    uz: "Sizga bu ma'lumotlardan foydalanishga ruxsat berilmagan",
+                                    ru: "Вам не разрешено использовать эту информацию",
+                                    en: "You are not allowed to use this information"
+                                }
+                            }
+                        })
+                        break;
 
                 case '2':
                     return res.status(200).json({
