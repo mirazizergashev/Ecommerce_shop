@@ -251,7 +251,8 @@ productController.create_update = function (req, res) {
         a.hol,
         a.kategoriya,
         a.skidka,
-        a.color
+        a.color,
+        req.session.userId
     ]
     // console.log(a.properties)
     pool.query(`SELECT  * FROM category where isActive=1;
@@ -312,7 +313,7 @@ productController.create_update = function (req, res) {
             } else {
                 // req.flash('success', 'Employee added succesfully');
                 // console.log(result)
-                switch (result[0][0].natija) {
+                switch (result[0][0].natija+"") {
                     case '1':
                         if(myproperties.length>0){
                             let s="INSERT INTO product_properties(product_id,cat_prop_id,`values`) VALUES",ka=[]
@@ -386,7 +387,19 @@ productController.create_update = function (req, res) {
                                 }
                             }
                         })
-
+                    
+                    case '403':
+                            res.status(200).json({
+                                code: 403,
+                                error: {
+                                    message: {
+                                        uz: "Sizga bu ma'lumotlardan foydalanishga ruxsat berilmagan",
+                                        ru: "Вам не разрешено использовать эту информацию",
+                                        en: "You are not allowed to use this information"
+                                    }
+                                }
+                            })
+                            break;
 
                         case '6':
                             return res.status(200).json({
@@ -461,7 +474,8 @@ productController.check_product = function (req, res) {
         a.product_id,
         a.hol,
         req.session.userId || 0,
-        a.izoh
+        a.izoh,
+        req.session.userId
     ]
 
     productModel.check_product(data, function (err, result) {
@@ -491,6 +505,18 @@ productController.check_product = function (req, res) {
                             }
                         }
                     })
+                    case 403:
+                       return res.status(200).json({
+                            code: 403,
+                            error: {
+                                message: {
+                                    uz: "Sizga bu ma'lumotlardan foydalanishga ruxsat berilmagan",
+                                    ru: "Вам не разрешено использовать эту информацию",
+                                    en: "You are not allowed to use this information"
+                                }
+                            }
+                        })
+                        break;
 
                 case 1:
                     return res.status(200).json({
@@ -656,7 +682,8 @@ productController.product_image = function (req, res) {
         a.id,
         a.product_id,
         req.linkFile,
-        a.hol
+        a.hol,
+        req.session.userId
     ]
 
     productModel.product_image(data, function (err, result) {
@@ -687,6 +714,19 @@ productController.product_image = function (req, res) {
                             }
                         }
                     })
+
+                    case 403:
+                        res.status(200).json({
+                            code: 403,
+                            error: {
+                                message: {
+                                    uz: "Sizga bu ma'lumotlardan foydalanishga ruxsat berilmagan",
+                                    ru: "Вам не разрешено использовать эту информацию",
+                                    en: "You are not allowed to use this information"
+                                }
+                            }
+                        })
+                        break;
 
 
                 case 2:
@@ -1127,7 +1167,8 @@ productController.productPropertiesCU = function (req, res) {
         a.product_id,
         a.cat_prop_id,
         a.qiymat,
-        a.hol
+        a.hol,
+        req.session.userId
     ]
 
     productModel.product_properties_edit_insert(data, function (err, result) {
@@ -1145,7 +1186,7 @@ productController.productPropertiesCU = function (req, res) {
             })
         } else {
             // req.flash('success', 'Employee added succesfully');
-            switch (result[0][0].natija) {
+            switch (result[0][0].natija+"") {
                 case '1':
                     return res.status(200).json({
                         code: 203,
@@ -1157,6 +1198,19 @@ productController.productPropertiesCU = function (req, res) {
                             }
                         }
                     })
+                
+                    case '403':
+                        res.status(200).json({
+                            code: 403,
+                            error: {
+                                message: {
+                                    uz: "Sizga bu ma'lumotlardan foydalanishga ruxsat berilmagan",
+                                    ru: "Вам не разрешено использовать эту информацию",
+                                    en: "You are not allowed to use this information"
+                                }
+                            }
+                        })
+                        break;
 
                 case '2':
                     return res.status(200).json({

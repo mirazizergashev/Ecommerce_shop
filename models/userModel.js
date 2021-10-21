@@ -4,7 +4,7 @@ var pool= require('../database/db');
 var userModel=function(){}
 
 userModel.user_edit_insert=function(newUser,result){
-    pool.query("call user_edit_insert(?,?,?,?,?,?,?)",newUser,function(err,res,field){
+    pool.query("call user_edit_insert(?,?,?,?,?,?,?,?)",newUser,function(err,res,field){
         if(err){
             return result(err,null);
         }else{
@@ -38,7 +38,7 @@ userModel.user_login=function(newUser,result){
 }
 
 userModel.editPassword=function(data,result){
-    pool.query("call password_edit(?,?,?)",data,function(err,res,field){
+    pool.query("call password_edit(?,?,?,?)",data,function(err,res,field){
         if(err){
             return result(err,null);
         }else{
@@ -92,7 +92,7 @@ userModel.getEmployee=function(result){
 }
 
 userModel.roleEdit=function(data,result){
-    pool.query("call user_role_edit(?,?,?)",data,function(err,res){
+    pool.query("call user_role_edit(?,?,?,?)",data,function(err,res){
         if(err){
             return result(err,null);
         }else{
@@ -144,4 +144,27 @@ userModel.resetPassword=function(body,result){
         }
     });
 }
+
+userModel.tableAccess=function(id,result){
+    pool.query(`SELECT ifnull(ta.c,0) c,ifnull(ta.r,0) r,ifnull(ta.u,0) u,tn.id as t_id,tn.name as t_name,tn.info 
+    FROM table_access ta 
+    right join tb_names tn on tn.id=ta.table_id and ta.user_id=?`,id,function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
+
+userModel.allModerator=function(result){
+    pool.query(`SELECT * FROM users where isActive=1 and role_id=2`,function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
+
 module.exports=userModel;

@@ -251,7 +251,7 @@ app.post("/naqd", async (req, res) => {
 })
 
 app.get("/naqd/cancel/:id",(req,res)=>{
-    pool.query("call cancel_order(?);",req.params.id,(err,rows)=>{
+    pool.query("call cancel_order(?,?);",[req.params.id,req.session.userId],(err,rows)=>{
         if (err) {
             console.log(err)
             return res.status(200).json({
@@ -265,29 +265,47 @@ app.get("/naqd/cancel/:id",(req,res)=>{
                 }
             })
         }
-        if(rows[0][0].natija==1){
-            res.status(200).json({
-                code: 200,
-                success: {
-                    message: {
-                        uz: "Buyurtma bekor qilindi!",
-                        en: "A new user has been created!",
-                        ru: "Заказ otmenet!"
+
+        switch (rows[0][0].natija) {
+            case '1':
+                res.status(200).json({
+                    code: 200,
+                    success: {
+                        message: {
+                            uz: "Buyurtma bekor qilindi!",
+                            en: "A new user has been created!",
+                            ru: "Заказ otmenet!"
+                        }
                     }
-                }
-            })
-        }else{
-            res.status(200).json({
-                code: 404,
-                error: {
-                    message: {
-                        uz: "Bunday buyurtma topilmadi !",
-                        en: "Rejected due to server error!",
-                        ru: "Отклонено из-за ошибки сервера!"
+                })
+
+                case '403':
+                    res.status(200).json({
+                        code: 403,
+                        error: {
+                            message: {
+                                uz: "Sizga bu ma'lumotlardan foydalanishga ruxsat berilmagan",
+                                ru: "Вам не разрешено использовать эту информацию",
+                                en: "You are not allowed to use this information"
+                            }
+                        }
+                    })
+                    break;
+
+            default:
+                res.status(200).json({
+                    code: 418,
+                    success: {
+                        message: {
+                            uz: "Bunday buyurtma topilmadi !",
+                            en: "Rejected due to server error!",
+                            ru: "Bunday buyurtma topilmadi !"
+                        }
                     }
-                }
-            }) 
+                })
+
         }
+       
     })
 })
 
@@ -296,9 +314,10 @@ app.post("/getMoney",authCheck, async (req, res) => {
     var data = [
         a.order_id,
         req.session.userId||0,
-        a.hol||3
+        a.hol||3,
+        req.session.userId
     ]
-    pool.query(`call ecommerce_shop.naqd_getting(?,?,?);`,data,(err,result,fld)=>{
+    pool.query(`call ecommerce_shop.naqd_getting(?,?,?,?);`,data,(err,result,fld)=>{
         // console.log(result)
         if(err){
             console.log(err)
@@ -325,6 +344,20 @@ app.post("/getMoney",authCheck, async (req, res) => {
                         }
                     }
                 })
+            break;
+
+            case '403':
+                res.status(200).json({
+                    code: 403,
+                    error: {
+                        message: {
+                            uz: "Sizga bu ma'lumotlardan foydalanishga ruxsat berilmagan",
+                            ru: "Вам не разрешено использовать эту информацию",
+                            en: "You are not allowed to use this information"
+                        }
+                    }
+                })
+                break;
 
             case '2':
                 return res.status(200).json({

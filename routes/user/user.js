@@ -20,4 +20,9 @@ router.post("/block", userController.block);//blok qilish
 router.get("/filter",[isAdmin],userController.filter)
 router.post("/rtPassword",[isAdmin],userController.resetPassword)
 
+//##########
+router.get("/tableAccess/:id",userController.tableAccess)
+router.get("/allModerator",userController.allModerator)
+
+
 module.exports = router;

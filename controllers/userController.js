@@ -29,7 +29,8 @@ userController.update = function (req, res) {
         a.fam || "",
         "",
         "",
-        a.address || ""
+        a.address || "",
+        req.session.userId||0
     ]
 
     userModel.user_edit_insert(newUser, function (err, result) {
@@ -56,10 +57,22 @@ userController.update = function (req, res) {
                             message: {
                                 uz: "Ma'lumotlar saqlandi!",
                                 en: "A new user has been created!",
-                                ru: "Создан новый пользователь!"
+                                ru: "Личная информация сохранена"
                             }
                         }
                     })
+                    case '403':
+                        res.status(200).json({
+                            code: 403,
+                            error: {
+                                message: {
+                                    uz: "Sizga bu ma'lumotlardan foydalanishga ruxsat berilmagan",
+                                    ru: "Вам не разрешено использовать эту информацию",
+                                    en: "You are not allowed to use this information"
+                                }
+                            }
+                        })
+                        break;
 
                 case '2':
                     return res.status(200).json({
@@ -175,7 +188,7 @@ userController.change_user = function (req, res) {
         } else {
             // req.flash('success', 'Employee added succesfully');
             switch (result[0][0].natija) {
-              
+
 
                 case '2':
                     return res.status(200).json({
@@ -196,7 +209,7 @@ userController.change_user = function (req, res) {
                             message: {
                                 uz: "Bunday Foydalanuvchi topilmadi!",
                                 en: "No such role found!",
-                                ru: "Такой роли не найдено!"
+                                ru: "Такой user не найдено!"
                             }
                         }
                     })
@@ -211,7 +224,7 @@ userController.change_user = function (req, res) {
                             }
                         }
                     })
-              
+
 
 
                 default:
@@ -291,14 +304,14 @@ userController.blok = function (req, res) {
                         }
                     })
 
-                    case 0:
+                case 0:
                     return res.status(200).json({
                         code: 200,
                         success: {
                             message: {
                                 uz: "Blokga kiritildi",
                                 en: "A new user has been created!",
-                                ru: "Создан новый пользователь!"
+                                ru: "Заблокировано !"
                             }
                         }
                     })
@@ -315,7 +328,7 @@ userController.blok = function (req, res) {
                         }
                     })
 
-                
+
 
                 default:
 
@@ -461,7 +474,7 @@ userController.block = function (req, res) {
         });
     }
     let a = req.body;
-    pool.query("call blok_user(?,?)", [a.id, a.holat], (err, rows, fields) => {
+    pool.query("call blok_user(?,?,?)", [a.id, a.holat, req.session.userId], (err, rows, fields) => {
         if (err) {
             console.error(err)
             return res.status(200).json({
@@ -475,9 +488,9 @@ userController.block = function (req, res) {
                 }
             })
         }
-        switch (parseInt(rows[0][0].natija)) {
+        switch (rows[0][0].natija + "") {
 
-            case 0:
+            case '0':
                 res.status(200).json({
                     code: 400,
                     success: {
@@ -489,7 +502,7 @@ userController.block = function (req, res) {
                     }
                 })
                 break;
-            case 1:
+            case '1':
                 res.status(200).json({
                     code: 400,
                     success: {
@@ -497,6 +510,18 @@ userController.block = function (req, res) {
                             uz: "Foydalanuvchi blokdan chiqarildi!",
                             ru: "Пользователь разблокирован!",
                             en: "User unblocked!"
+                        }
+                    }
+                })
+                break;
+            case '403':
+                res.status(200).json({
+                    code: 403,
+                    error: {
+                        message: {
+                            uz: "Sizga bu ma'lumotlardan foydalanishga ruxsat berilmagan",
+                            ru: "Вам не разрешено использовать эту информацию",
+                            en: "You are not allowed to use this information"
                         }
                     }
                 })
@@ -537,7 +562,7 @@ userController.editPassword = function (req, res) {
         });
     }
     let { oldPass, newPass } = req.body;
-    userModel.editPassword([req.session.userId || 0, oldPass, newPass], (err, rows) => {
+    userModel.editPassword([req.session.userId || 0, oldPass, newPass,req.session.userId], (err, rows) => {
         if (err) {
             console.log(err)
             return res.status(200).json({
@@ -552,7 +577,7 @@ userController.editPassword = function (req, res) {
             })
         }
 
-        switch (rows[0][0].natija) {
+        switch (rows[0][0].natija+"") {
             case '2':
                 return res.status(200).json({
                     code: 203,
@@ -564,6 +589,20 @@ userController.editPassword = function (req, res) {
                         }
                     }
                 })
+            break;
+
+            case '403':
+                res.status(200).json({
+                    code: 403,
+                    error: {
+                        message: {
+                            uz: "Sizga bu ma'lumotlardan foydalanishga ruxsat berilmagan",
+                            ru: "Вам не разрешено использовать эту информацию",
+                            en: "You are not allowed to use this information"
+                        }
+                    }
+                })
+                break;
 
             case '3':
                 return res.status(200).json({
@@ -595,7 +634,7 @@ userController.editPassword = function (req, res) {
 }
 
 userController.getMe = function (req, res) {
-    userModel.getMe(req.session.userId||0, (err, rows) => {
+    userModel.getMe(req.session.userId || 0, (err, rows) => {
 
         if (err) {
             console.log(err);
@@ -661,7 +700,8 @@ userController.rolEdit = function (req, res) {
     var data = [
         a.id,
         a.rol,
-        a.holat
+        a.holat,
+        req.session.userId
 
     ]
 
@@ -680,7 +720,7 @@ userController.rolEdit = function (req, res) {
                 }
             })
         }
-        switch (rows[0][0].natija) {
+        switch (rows[0][0].natija+"") {
             case '2':
                 return res.status(200).json({
                     code: 203,
@@ -715,6 +755,19 @@ userController.rolEdit = function (req, res) {
                         }
                     }
                 })
+
+                case '403':
+                res.status(200).json({
+                    code: 403,
+                    error: {
+                        message: {
+                            uz: "Sizga bu ma'lumotlardan foydalanishga ruxsat berilmagan",
+                            ru: "Вам не разрешено использовать эту информацию",
+                            en: "You are not allowed to use this information"
+                        }
+                    }
+                })
+                break;
             default:
                 res.status(200).json({
                     code: 418,
@@ -735,7 +788,7 @@ userController.rolEdit = function (req, res) {
 
 
 userController.filter = function (req, res) {
-    userModel.filter(req.query,(err, rows) => {
+    userModel.filter(req.query, (err, rows) => {
         if (err) {
             console.log(err);
             return res.status(200).json({
@@ -759,7 +812,7 @@ userController.filter = function (req, res) {
 
 
 userController.resetPassword = function (req, res) {
-    userModel.resetPassword(req.body,(err, rows) => {
+    userModel.resetPassword(req.body, (err, rows) => {
         if (err) {
             console.log(err);
             return res.status(200).json({
@@ -773,18 +826,18 @@ userController.resetPassword = function (req, res) {
                 }
             })
         }
-console.log(rows)
-if(rows.changedRows)
-       return res.status(200).json({
-            code: 200,
-            success:  {
+        console.log(rows)
+        if (rows.changedRows)
+            return res.status(200).json({
+                code: 200,
+                success: {
                     message: {
                         uz: "Parol muvaffaqiyatli o'zgartirildi !",
                         en: "Rejected due to server error!",
                         ru: "Отклонено из-за ошибки сервера!"
                     }
                 }
-        })
+            })
 
         res.status(200).json({
             code: 404,
@@ -798,6 +851,52 @@ if(rows.changedRows)
         })
     })
 }
+
+
+userController.tableAccess = function (req, res) {
+    userModel.tableAccess(req.params.id,(err, rows) => {
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+        res.status(200).json({
+            code: 200,
+            success: rows
+        })
+    })
+}
+
+userController.allModerator = function (req, res) {
+    userModel.allModerator((err, rows) => {
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+        res.status(200).json({
+            code: 200,
+            success: rows
+        })
+    })
+}
+
 
 
 module.exports = userController;
