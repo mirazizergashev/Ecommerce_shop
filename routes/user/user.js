@@ -17,7 +17,7 @@ router.get("/img/:url",userController.getOneImg)
 router.get("/images", userController.getAllImges)
 router.post("/img", upload, userController.uploadImg );
 router.post("/block", userController.block);//blok qilish
-router.get("/filter",[isAdmin],userController.filter)
+router.get("/filter",[isAdmin,access("users")],userController.filter)
 router.post("/rtPassword",[isAdmin],userController.resetPassword)
 
 //##########
