@@ -38,7 +38,7 @@ userModel.user_login=function(newUser,result){
 }
 
 userModel.editPassword=function(data,result){
-    pool.query("call password_edit(?,?,?)",data,function(err,res,field){
+    pool.query("call password_edit(?,?,?,?)",data,function(err,res,field){
         if(err){
             return result(err,null);
         }else{

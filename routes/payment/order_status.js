@@ -26,10 +26,11 @@ app.post("/orderStatus", async (req, res) => {
  var data = [
      a.order_id || 0,
      req.session.userId || 0,
-     a.status
+     a.status,
+     req.session.userId
  ]
 
- pool.query("call order_status(?,?,?)",data,function(err,result,field){
+ pool.query("call order_status(?,?,?,?)",data,function(err,result,field){
     if (err) {
         console.log(err)
         return res.status(200).json({
@@ -56,6 +57,20 @@ app.post("/orderStatus", async (req, res) => {
                         }
                     }
                 })
+            break;
+
+            case '403':
+                res.status(200).json({
+                    code: 403,
+                    error: {
+                        message: {
+                            uz: "Sizga bu ma'lumotlardan foydalanishga ruxsat berilmagan",
+                            ru: "Вам не разрешено использовать эту информацию",
+                            en: "You are not allowed to use this information"
+                        }
+                    }
+                })
+                break;
 
             case '2':
                 return res.status(200).json({

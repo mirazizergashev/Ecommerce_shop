@@ -461,7 +461,8 @@ productController.check_product = function (req, res) {
         a.product_id,
         a.hol,
         req.session.userId || 0,
-        a.izoh
+        a.izoh,
+        req.session.userId
     ]
 
     productModel.check_product(data, function (err, result) {
@@ -491,6 +492,18 @@ productController.check_product = function (req, res) {
                             }
                         }
                     })
+                    case 403:
+                        res.status(200).json({
+                            code: 403,
+                            error: {
+                                message: {
+                                    uz: "Sizga bu ma'lumotlardan foydalanishga ruxsat berilmagan",
+                                    ru: "Вам не разрешено использовать эту информацию",
+                                    en: "You are not allowed to use this information"
+                                }
+                            }
+                        })
+                        break;
 
                 case 1:
                     return res.status(200).json({
