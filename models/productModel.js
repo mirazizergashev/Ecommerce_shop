@@ -524,8 +524,8 @@ productModel.searchALLAdmin = function (text, result) {
             return result(err, null);
         }
         else {
-            let data = changeCosts(res[1], res[0])
-            return result(null, data);
+           // let data = changeCosts(res[1], res[0])
+            return result(null, res[0]);
         }
     });
 }
@@ -541,8 +541,8 @@ productModel.searchALLSalesman = function (query, result) {
             return result(err, null);
         }
         else {
-            let data = changeCosts(res[1], res[0])
-            return result(null, data);
+           // let data = changeCosts(res[1], res[0])
+            return result(null, res[0]);
         }
     });
 }
