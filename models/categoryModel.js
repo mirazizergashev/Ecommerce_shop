@@ -26,6 +26,7 @@ categoryModel.getAll=function(role_id,result){
         }
     });
 }
+
 categoryModel.delete=function(id,result){
     pool.query("SELECT id,sub,isActive FROM category;SELECT isActive FROM category where id=?;",id,
     function(err,res){
@@ -39,8 +40,6 @@ categoryModel.delete=function(id,result){
         })
     });  
 }
-
-
 
 categoryModel.getDostavka=function(id,result){
     pool.query("SELECT * FROM ecommerce_shop.dostavka_type",function(err,res){
@@ -82,7 +81,6 @@ categoryModel.getType=function(result){
     });
 }
 
-
 categoryModel.getSub=function(id,result){
     pool.query("SELECT *,date_format(created_on,'%Y-%m-%d, %h:%i:%s') created_on FROM category where sub=? and isActive=1;"
     +"select sub id,name title from category where id=? and isActive=1",
@@ -94,7 +92,6 @@ categoryModel.getSub=function(id,result){
         }
     });
 }
-
 
 categoryModel.category_properties_edit_insert=function(data,result){
     pool.query("call category_properties_edit_insert(?,?,?,?,?,?)",data,function(err,res,field){
