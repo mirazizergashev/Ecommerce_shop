@@ -35,7 +35,8 @@ signController.signUp = function (req, res) {
         "",
         a.tel,        
         a.parol,
-       ""
+       "",
+       req.session.userId
     ]
 
     userModel.user_edit_insert(newUser, function (err,result) {
