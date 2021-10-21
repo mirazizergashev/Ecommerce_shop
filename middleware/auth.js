@@ -48,7 +48,7 @@ function access(s0) {
         //  session mavjud bo'lmasa ...
         if (!req.session.userId || req.session.roleId!=2) return next()
         const acc=await pool.promise()
-        .query("select readable(?, (select eco.get_name(?))) access",[req.session.userId,s0])
+        .query("select readable(?, (select get_name(?))) access",[req.session.userId,s0])
         if (acc[0][0].access=='1') next()
         else
         
