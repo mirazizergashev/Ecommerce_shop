@@ -56,7 +56,7 @@ userController.update = function (req, res) {
                             message: {
                                 uz: "Ma'lumotlar saqlandi!",
                                 en: "A new user has been created!",
-                                ru: "Создан новый пользователь!"
+                                ru: "Личная информация сохранена"
                             }
                         }
                     })
@@ -196,7 +196,7 @@ userController.change_user = function (req, res) {
                             message: {
                                 uz: "Bunday Foydalanuvchi topilmadi!",
                                 en: "No such role found!",
-                                ru: "Такой роли не найдено!"
+                                ru: "Такой user не найдено!"
                             }
                         }
                     })
@@ -298,7 +298,7 @@ userController.blok = function (req, res) {
                             message: {
                                 uz: "Blokga kiritildi",
                                 en: "A new user has been created!",
-                                ru: "Создан новый пользователь!"
+                                ru: "Заблокировано !"
                             }
                         }
                     })
