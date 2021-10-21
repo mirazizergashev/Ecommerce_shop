@@ -85,7 +85,7 @@ categoryModel.getType=function(result){
 
 categoryModel.getSub=function(id,result){
     pool.query("SELECT *,date_format(created_on,'%Y-%m-%d, %h:%i:%s') created_on FROM category where sub=? and isActive=1;"
-    +"select id,name title from category where id=? and isActive=1",
+    +"select sub id,name title from category where id=? and isActive=1",
     [id||0,id||0],function(err,res){
         if(err){
             return result(err,null);
