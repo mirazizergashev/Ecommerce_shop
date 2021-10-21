@@ -145,8 +145,20 @@ userModel.resetPassword=function(body,result){
     });
 }
 
-userModel.tableAccess=function(result){
-    pool.query(`SELECT ta.*,tn.name as t_name,tn.info FROM table_access ta inner join tb_names tn on tn.id=ta.table_id`,function(err,res){
+userModel.tableAccess=function(id,result){
+    pool.query(`SELECT ifnull(ta.c,0) c,ifnull(ta.r,0) r,ifnull(ta.u,0) u,tn.id as t_id,tn.name as t_name,tn.info 
+    FROM table_access ta 
+    right join tb_names tn on tn.id=ta.table_id and ta.user_id=?`,id,function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
+
+userModel.allModerator=function(result){
+    pool.query(`SELECT * FROM users where isActive=1 and role_id=2`,function(err,res){
         if(err){
             return result(err,null);
         }else{

@@ -21,7 +21,8 @@ router.get("/filter",[isAdmin],userController.filter)
 router.post("/rtPassword",[isAdmin],userController.resetPassword)
 
 //##########
-router.get("/tableAccess",userController.tableAccess)
+router.get("/tableAccess/:id",userController.tableAccess)
+router.get("/allModerator",userController.allModerator)
 
 
 module.exports = router;
