@@ -168,6 +168,7 @@ function getCatProperties(cat=[],prop=[],catId=-1) {
     let arr=[],pp=[...prop]
     arr=pp.filter(e=>e.category_id==catId)//.map(e=>e.id)
     const cts=cat.find(e=>e.id==catId)
+    if(!cts)cts={sub:-404}
     const category = cat.find(e => e.id == cts.sub)
    if(category)
         getCatProperties(cat,prop,category.id).forEach(e=>{arr.push(e)})
