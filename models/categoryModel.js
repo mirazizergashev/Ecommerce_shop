@@ -167,7 +167,7 @@ categoryModel.getv1PropertiesById=function(id=-1,result){
 function getCatProperties(cat=[],prop=[],catId=-1) {
     let arr=[],pp=[...prop]
     arr=pp.filter(e=>e.category_id==catId)//.map(e=>e.id)
-    const cts=cat.find(e=>e.id==catId)
+    let cts=cat.find(e=>e.id==catId)
     if(!cts)cts={sub:-404}
     const category = cat.find(e => e.id == cts.sub)
    if(category)
