@@ -562,7 +562,7 @@ productModel.searchAll = function (text, result) {
     MAX(p.cost*(100-p.discount)/100) maxCost,MIN(p.cost*(100-p.discount)/100) minCost FROM  product as p 
 left join product_image pi on pi.product_id=p.id and 
 pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-where p.isActive=1 and checked=1 and p.name LIKE ?  group by p.name;select * from category`,`%${text}%` function (err, res) {
+where p.isActive=1 and checked=1 and p.name LIKE ?  group by p.name;select * from category`,`%${text}%`, function (err, res) {
         if (err) {
             return result(err, null);
         }
