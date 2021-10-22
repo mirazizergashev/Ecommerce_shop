@@ -763,5 +763,19 @@ function filterProd(id, data) {
     return s;
 }
 
+productModel.similarProduct = function (name, result) {
 
+    pool.query(`SELECT p.id,p.name,p.color,max(pi.img_url) img_url FROM product p 
+    LEFT JOIN product_image pi ON p.id=pi.product_id 
+    where name=? and p.checked=1 and p.isActive=1
+    GROUP BY  p.id,p.name,p.color;`,name, function (err, res) {
+        if (err) {
+            return result(err, null);
+        }
+        else {
+            
+            return result(null, res);
+        }
+    });
+}
 module.exports = productModel;
