@@ -532,11 +532,15 @@ productModel.searchALLAdmin = function (text, result) {
 
 productModel.searchALLSalesman = function (query, result) {
 
-    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
-    left join product_image pi on pi.product_id=p.id and 
-    pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1 and p.user_id=? and p.name LIKE ?;
-    select * from category where isActive=1;`,[query.userId,"%"+query.text+"%"], function (err, res) {
+    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url,
+    (SELECT sum(mark)/count(mark) FROM product_comment where product_id=p.id) as rating,
+    (SELECT count(mark) FROM product_comment where product_id=p.id) as reviews,
+    (select concat(u.first_name," ",u.last_name) from users u where u.id=p.user_id limit 1) as fish,
+    MAX(p.cost*(100-p.discount)/100) maxCost,MIN(p.cost*(100-p.discount)/100) minCost FROM  product as p 
+left join product_image pi on pi.product_id=p.id and 
+pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
+where p.isActive=1 and p.user_id=? and p.name LIKE ? group by p.name;
+select * from category`,[query.userId,`%${text}%`], function (err, res) {
         if (err) {
             return result(err, null);
         }
