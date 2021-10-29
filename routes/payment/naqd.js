@@ -117,11 +117,8 @@ app.post("/naqd", async (req, res) => {
             }
 
         }
-<<<<<<< HEAD
         console.log(req.body)
 
-=======
->>>>>>> 3791ddef6534cb789ba13869a12b2f132cbbc13e
         pool.query("select * from dostavka_type where id=?", req.body.dostavka_id||1, async (err, rslt) => {
             if (err) {
                 console.error(err);
