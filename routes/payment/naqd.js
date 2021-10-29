@@ -117,6 +117,7 @@ app.post("/naqd", async (req, res) => {
             }
 
         }
+        console.log(req.body)
 
         pool.query("select * from dostavka_type where id=?", req.body.dostavka_id||1, async (err, rslt) => {
             if (err) {
@@ -132,7 +133,7 @@ app.post("/naqd", async (req, res) => {
 
             let fish = req.body.fish || null;
             let mfy = req.body.mfy || null;
-            let tel = req.body.phone || null;
+            let tel = req.body.tel || null;
             let viloyat = req.body.viloyat || null;
             let tuman = req.body.tuman || null;
 
