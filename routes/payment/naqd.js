@@ -117,8 +117,11 @@ app.post("/naqd", async (req, res) => {
             }
 
         }
+<<<<<<< HEAD
         console.log(req.body)
 
+=======
+>>>>>>> 3791ddef6534cb789ba13869a12b2f132cbbc13e
         pool.query("select * from dostavka_type where id=?", req.body.dostavka_id||1, async (err, rslt) => {
             if (err) {
                 console.error(err);
@@ -430,27 +433,19 @@ app.post("/getMoney",authCheck, async (req, res) => {
 
 
 function changeCosts(c, data) {
-    let k,cost,ind,maxCost,minCost
+    let k,cost,ind
     data.forEach((e, i) => {
-        maxCost=e.maxCost
-        minCost=e.minCost
+       
         k = e.category_id, cost = e.cost, ind = c.findIndex(x => (x.id == k));
     //    console.log(i,k,ind)
         while (ind != -1) {
-            cost = parseInt(cost * (100 + c[ind].percent * 1) / 100) + 1 * c[ind].isFoiz
-            if(e.maxCost){
-                maxCost= parseInt(maxCost * (100 + c[ind].percent * 1) / 100) + 1 * c[ind].isFoiz 
-            }
-            if(e.minCost){
-                minCost= parseInt(minCost * (100 + c[ind].percent * 1) / 100) + 1 * c[ind].isFoiz 
-            }
+            cost = parseInt(cost * (100 + c[ind].percent * 1) / 100) + 1 * c[ind].isFoiz            
             ind = c.findIndex(x => (x.id == c[ind].sub))
     //    console.log(i,k,ind,"|")
 
         }
         data[i].cost = cost * (100 - data[i].discount * 1) / 100;
-        if(e.minCost) data[i].minCost = minCost * (100 - data[i].discount * 1) / 100;
-        if(e.maxCost) data[i].maxCost = maxCost * (100 - data[i].discount * 1) / 100;
+      
     });
     return data
 }

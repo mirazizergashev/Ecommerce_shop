@@ -48,7 +48,7 @@ userModel.editPassword=function(data,result){
 }
 
 userModel.getMe=function(userId,result){
-    pool.query("SELECT last_name ism,first_name fam,phone,address FROM users where id=?",userId,function(err,res){
+    pool.query("SELECT last_name fam,first_name ism,phone,address FROM users where id=?",userId,function(err,res){
         if(err){
             return result(err,null);
         }else{
@@ -159,6 +159,16 @@ userModel.tableAccess=function(id,result){
 
 userModel.allModerator=function(result){
     pool.query(`SELECT * FROM users where isActive=1 and role_id=2`,function(err,res){
+        if(err){
+            return result(err,null);
+        }else{
+            return result(null,res);
+        }
+    });
+}
+
+userModel.accessAllow=function(data,result){
+    pool.query("call table_access_edit_insert(?,?,?,?,?,?)",data,function(err,res){
         if(err){
             return result(err,null);
         }else{

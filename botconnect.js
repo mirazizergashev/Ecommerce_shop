@@ -111,11 +111,11 @@ function sendClickTrans(order_id,naqd="") {
         .catch(err=>console.error("bot",err))
   
       })
-      .catch(err => console.error({
+     
+  })
+   .catch(err => console.error({
         boterror: err
       }))
-  })
-  
 }
 
 // sendClickTrans(15)

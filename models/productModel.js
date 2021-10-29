@@ -515,11 +515,15 @@ productModel.getOne = function (id = 0, result) {
 
 productModel.searchALLAdmin = function (text, result) {
 
-    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
-    left join product_image pi on pi.product_id=p.id and 
-    pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1 and p.checked!=0 and p.name LIKE "%${text}%";
-    select * from category where isActive=1;`, function (err, res) {
+    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url,
+    (SELECT sum(mark)/count(mark) FROM product_comment where product_id=p.id) as rating,
+    (SELECT count(mark) FROM product_comment where product_id=p.id) as reviews,
+    (select concat(u.first_name," ",u.last_name) from users u where u.id=p.user_id limit 1) as fish,
+    MAX(p.cost*(100-p.discount)/100) maxCost,MIN(p.cost*(100-p.discount)/100) minCost FROM  product as p 
+left join product_image pi on pi.product_id=p.id and 
+pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
+where p.isActive=1 and p.checked!=0 and p.name LIKE ?  group by p.name;
+select * from category`,`%${text}%`, function (err, res) {
         if (err) {
             return result(err, null);
         }
@@ -532,11 +536,15 @@ productModel.searchALLAdmin = function (text, result) {
 
 productModel.searchALLSalesman = function (query, result) {
 
-    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
-    left join product_image pi on pi.product_id=p.id and 
-    pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1 and p.user_id=? and p.name LIKE ?;
-    select * from category where isActive=1;`,[query.userId,"%"+query.text+"%"], function (err, res) {
+    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url,
+    (SELECT sum(mark)/count(mark) FROM product_comment where product_id=p.id) as rating,
+    (SELECT count(mark) FROM product_comment where product_id=p.id) as reviews,
+    (select concat(u.first_name," ",u.last_name) from users u where u.id=p.user_id limit 1) as fish,
+    MAX(p.cost*(100-p.discount)/100) maxCost,MIN(p.cost*(100-p.discount)/100) minCost FROM  product as p 
+left join product_image pi on pi.product_id=p.id and 
+pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
+where p.isActive=1 and p.user_id=? and p.name LIKE ? group by p.name;
+select * from category`,[query.userId,`%${text}%`], function (err, res) {
         if (err) {
             return result(err, null);
         }
@@ -546,13 +554,24 @@ productModel.searchALLSalesman = function (query, result) {
         }
     });
 }
+
+
+// `SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
+//     left join product_image pi on pi.product_id=p.id and 
+//     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
+//     where p.isActive=1 and p.checked=1 and p.name LIKE "%${text}%";
+//     select * from category where isActive=1;`
 productModel.searchAll = function (text, result) {
 
-    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
-    left join product_image pi on pi.product_id=p.id and 
-    pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1 and p.checked=1 and p.name LIKE "%${text}%";
-    select * from category where isActive=1;`, function (err, res) {
+    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url,
+    (SELECT sum(mark)/count(mark) FROM product_comment where product_id=p.id) as rating,
+    (SELECT count(mark) FROM product_comment where product_id=p.id) as reviews,
+    (select concat(u.first_name," ",u.last_name) from users u where u.id=p.user_id limit 1) as fish,
+    MAX(p.cost*(100-p.discount)/100) maxCost,MIN(p.cost*(100-p.discount)/100) minCost FROM  product as p 
+left join product_image pi on pi.product_id=p.id and 
+pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
+where p.isActive=1 and checked=1 and p.name LIKE ?  group by p.name;
+select * from category`,`%${text}%`, function (err, res) {
         if (err) {
             return result(err, null);
         }
@@ -651,9 +670,12 @@ productModel.productByCategory = function (id = 0, result) {
             ids = ids.slice(0, -1)
             // console.log("|" + ids + "|")
 
-            pool.query(`SELECT p.*,pi.id as idcha,pi.img_url,pp.cat_prop_id,pp.values FROM product p left join product_image pi on pi.product_id=p.id and 
-            pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1) left join 
-            product_properties pp on pp.product_id=p.id where p.isActive=1 and p.checked=1 and p.category_id in (${ids || null});`, function (err2, res) {
+            pool.query(`SELECT DISTINCT p.*,pi.id as idcha,pi.img_url 
+            FROM product p left join product_image pi on pi.product_id=p.id and 
+                        pi.img_url=(select img_url from product_image where product_id=p.id 
+                        order by created_on desc limit 1) left join 
+                        product_properties pp on pp.product_id=p.id where p.isActive=1 
+                        and p.checked=1 and p.category_id in (${ids || null});`, function (err2, res) {
                 if (err2) {
                     console.log("err2")
                     return result(err2, null);
@@ -750,5 +772,19 @@ function filterProd(id, data) {
     return s;
 }
 
+productModel.similarProduct = function (name, result) {
 
+    pool.query(`SELECT p.id,p.name,p.color,max(pi.img_url) img_url FROM product p 
+    LEFT JOIN product_image pi ON p.id=pi.product_id 
+    where name=? and p.checked=1 and p.isActive=1
+    GROUP BY  p.id,p.name,p.color;`,name, function (err, res) {
+        if (err) {
+            return result(err, null);
+        }
+        else {
+            
+            return result(null, res);
+        }
+    });
+}
 module.exports = productModel;
