@@ -827,7 +827,7 @@ userController.resetPassword = function (req, res) {
             })
         }
         console.log(rows)
-        if (rows.changedRows)
+        if (rows.affectedRows)
             return res.status(200).json({
                 code: 200,
                 success: {
