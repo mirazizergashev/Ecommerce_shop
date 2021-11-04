@@ -1064,7 +1064,7 @@ productController.searchAll = function (req, res) {
 }
 productController.searchALLSalesman = function (req, res) {
     req.query.userId=req.session.userId
-    productModel.searchALLSalesman(req.query, (err, rows) => {
+    productModel.searchALLSalesman(req.query.text, (err, rows) => {
 
 
         if (err) {
