@@ -7,5 +7,4 @@ router.get('/getAll', dostavkaController.getAll);
 
 router.post('/',[authCheck], dostavkaController.create_update);
 
-
 module.exports = router;
