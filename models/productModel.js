@@ -523,7 +523,7 @@ productModel.searchALLAdmin = function (text, result) {
 left join product_image pi on pi.product_id=p.id and 
 pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
 where p.isActive=1 and p.checked!=0 and p.name LIKE ?  group by p.name;
-select * from category`,`%${text}%`, function (err, res) {
+select * from category`,`%${text||''}%`, function (err, res) {
         if (err) {
             return result(err, null);
         }
@@ -534,7 +534,7 @@ select * from category`,`%${text}%`, function (err, res) {
     });
 }
 
-productModel.searchALLSalesman = function (query, result) {
+productModel.searchALLSalesman = function (text, result) {
 
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url,
     (SELECT sum(mark)/count(mark) FROM product_comment where product_id=p.id) as rating,
@@ -544,7 +544,7 @@ productModel.searchALLSalesman = function (query, result) {
 left join product_image pi on pi.product_id=p.id and 
 pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
 where p.isActive=1 and p.user_id=? and p.name LIKE ? group by p.name;
-select * from category`,[query.userId,`%${text}%`], function (err, res) {
+select * from category`,[query.userId,`%${text||''}%`], function (err, res) {
         if (err) {
             return result(err, null);
         }
@@ -571,7 +571,7 @@ productModel.searchAll = function (text, result) {
 left join product_image pi on pi.product_id=p.id and 
 pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
 where p.isActive=1 and checked=1 and p.name LIKE ?  group by p.name;
-select * from category`,`%${text}%`, function (err, res) {
+select * from category`,`%${text||''}%`, function (err, res) {
         if (err) {
             return result(err, null);
         }
