@@ -20,6 +20,7 @@ router.get('/getTop', productController.getTop);
 router.get('/searchALL', productController.searchAll);
 router.get('/searchALLAdmin',[isAdmin,access("product")], productController.searchALLAdmin);
 router.get('/searchALLSalesman',authCheck2, productController.searchALLSalesman);
+router.get('/searchALLSalesman2',authCheck2, productController.searchALLSalesman2);
 router.get('/Retcomment/:id',access("product"), productController.Retcomment);
 router.get('/getOne/:id',access("product"), productController.getOne);
 router.get('/productFilter',access("product"), productController.productFilter);

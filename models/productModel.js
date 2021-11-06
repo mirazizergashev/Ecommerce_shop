@@ -554,7 +554,25 @@ select * from category`,[query.userId,`%${query.text||''}%`], function (err, res
         }
     });
 }
+productModel.searchALLSalesman2 = function (query, result) {
 
+    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url,
+    (SELECT sum(mark)/count(mark) FROM product_comment where product_id=p.id) as rating,
+    (SELECT count(mark) FROM product_comment where product_id=p.id) as reviews,
+    (select concat(u.first_name," ",u.last_name) from users u where u.id=p.user_id limit 1) as fish FROM  product as p 
+left join product_image pi on pi.product_id=p.id and 
+pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
+where p.isActive=1 and p.user_id=? and p.name LIKE ?;
+select * from category`,[query.userId,`%${query.text||''}%`], function (err, res) {
+        if (err) {
+            return result(err, null);
+        }
+        else {
+           // let data = changeCosts(res[1], res[0])
+            return result(null, res[0]);
+        }
+    });
+}
 
 // `SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
 //     left join product_image pi on pi.product_id=p.id and 
