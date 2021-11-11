@@ -415,6 +415,7 @@ productModel.AllUser = function (query, result) {
         case 'cost':  s=" ORDER BY cost "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
         case 'rating':  s=" ORDER BY rating "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
         case 'reviews':  s=" ORDER BY reviews "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
+        case 'discount':  s=" ORDER BY discount "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
         case 'fish':  s=" ORDER BY fish "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
     
         default:
