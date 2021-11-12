@@ -760,6 +760,17 @@ productModel.prodPropsByValue = function (id = 0, result) {
 
 productModel.productFilter = function (query, result) {
     let a = [], ss = ""
+    let s0=''
+    switch (query.sortBy) {
+        case 'id':  s0=" ORDER BY p.id "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
+        case 'name':  s0=" ORDER BY p.name "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
+        case 'cost':  s0=" ORDER BY p.cost "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
+        case 'count':  s0=" ORDER BY p.count "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
+        case 'discount':  s0=" ORDER BY p.discount "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
+       
+        default:
+            break;
+    } 
     Object.keys(query).forEach((id, i) => {
         if (id == "fcost" || id == "lcost") return;
         let s = ""
@@ -777,7 +788,7 @@ productModel.productFilter = function (query, result) {
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p left join product_image pi on pi.product_id=p.id and p.isActive=1 
     and p.checked=1 and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    ${ss}
+    ${ss} ${s0}
     ;select * from category where isActive=1;`, a, function (err, res) {
         if (err) {
             return result(err, null);
