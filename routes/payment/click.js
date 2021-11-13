@@ -125,6 +125,7 @@ app.get("/click", async (req, res) => {
         }
         pool.query("select * from dostavka_type where id=?", req.body.dostavka_id||1, async (err, rslt) => {
             if (err) {
+                console.log("error 1")
                 console.error(err);
                 return res.json({
                     error: 2,
@@ -159,6 +160,8 @@ app.get("/click", async (req, res) => {
                             console.error({
                                 err
                             })
+                console.log("error 2")
+
                             return res.json({
                                 error: 2,
                                 error_note: "Not"
@@ -190,6 +193,7 @@ app.get("/click", async (req, res) => {
                         if (notFounds.length > 0) check.notFounds = notFounds
                         if (lessProd.length > 0) check.lessProd = lessProd
                         if (check.notFounds || check.lessProd) {
+                            
                             return res.json({
                                 error: 2,
                                 error_note: "Not",
@@ -216,6 +220,8 @@ app.get("/click", async (req, res) => {
                                 console.error({
                                     err
                                 })
+                console.log("error 3")
+
                                 return res.json({
                                     error: 2,
                                     error_note: "Not"
@@ -234,6 +240,8 @@ app.get("/click", async (req, res) => {
                   
                 }).catch((err) => {
                     console.log(err)
+                console.log("error 4")
+
                     res.json({
                         error: 2,
                         error_note: "Not"
@@ -267,16 +275,20 @@ app.use("/click/2", async (req, res) => {
                 })
             }).catch((err) => {
                 console.error(err)
+                console.log("error 5")
+
                 res.json({
                     error: 2,
                     error_note: "Not"
                 });
             })
     } else
+      {
+        console.log("error 6")
         res.json({
             error: 2,
             error_note: "Not"
-        });
+        });}
 })
 
 // click etab 3
@@ -302,21 +314,28 @@ app.use("/click/3", async (req, res) => {
                     });
                 }).catch((err) => {
                     console.log(err)
+                console.log("error 7")
+
                     res.json({
                         error: 1,
                         error_note: "Not"
                     });
                 })
-        } else
+        } else{
+            console.log("error 8")
             res.json({
                 error: 1,
                 error_note: "Not"
             });
+        }
     } else
+       { 
+        console.log("error 9")
         res.json({
             error: 1,
             error_note: "Not"
         });
+    }
 })
 
 
