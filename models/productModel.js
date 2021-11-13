@@ -760,7 +760,10 @@ productModel.prodPropsByValue = function (id = 0, result) {
 
 productModel.productFilter = function (query, result) {
     let a = [], ss = ""
-    let s0=''
+    let s0='',cat_id=''
+    if(!isNaN(query.category_id*1)){
+        cat_id='where p.category_id='+query.category_id
+    }
     switch (query.sortBy) {
         case 'id':  s0=" ORDER BY p.id "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
         case 'name':  s0=" ORDER BY p.name "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
@@ -772,7 +775,7 @@ productModel.productFilter = function (query, result) {
             break;
     } 
     Object.keys(query).forEach((id, i) => {
-        if (id == "fcost" || id == "lcost") return;
+        if (id == "fcost" || id == "lcost"||id=="sortBy"||id=="category_id"||id=="direction") return;
         let s = ""
         a.push(id)
         //    for (let i = 0; i < query[id].length; i++) 
@@ -785,10 +788,19 @@ productModel.productFilter = function (query, result) {
         `
 
     })
-    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p left join product_image pi on pi.product_id=p.id and p.isActive=1 
+    console.log(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p left join product_image pi 
+    on pi.product_id=p.id and p.isActive=1 
     and p.checked=1 and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    ${ss} ${s0}
+    ${ss} ${cat_id} ${s0}
+    ;select * from category where isActive=1;`)
+
+
+    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p left join product_image pi 
+    on pi.product_id=p.id and p.isActive=1 
+    and p.checked=1 and 
+    pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
+    ${ss} ${cat_id} ${s0}
     ;select * from category where isActive=1;`, a, function (err, res) {
         if (err) {
             return result(err, null);

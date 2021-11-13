@@ -105,6 +105,7 @@ app.get("/click", async (req, res) => {
                     };
                 })
             if (result.error) {
+                console.log("error001")
                 console.log(result.error)
                 return res.json({
                     error: 2,
