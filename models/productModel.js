@@ -408,7 +408,11 @@ productModel.AllUser = function (query, result) {
     count = parseInt(query.count || 15),
     a=[]
     a.push(page * count, count)
-    let s=''
+    let s='',cat_id=''
+    if(!isNaN(query.category_id*1)){
+        cat_id=' and p.category_id='+query.category_id
+        if(query.category_id*1==0)cat_id=''
+    }
     switch (query.sortBy) {
         case 'id':  s=" ORDER BY id "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
         case 'name':  s=" ORDER BY name "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
@@ -428,8 +432,9 @@ productModel.AllUser = function (query, result) {
         MAX(p.cost*(100-p.discount)/100) maxCost,MIN(p.cost*(100-p.discount)/100) minCost FROM  product as p 
     left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    where p.isActive=1 and checked=1   group by p.name)
-    select * from cte s limit ?,?;
+    where p.isActive=1 and checked=1 ${cat_id}  group by p.name)
+    select * from cte ${s}
+     limit ?,?;
     select * from category where isActive=1;`, [page * count, count], function (err, res) {
         if (err) {
             return result(err, null);
@@ -763,6 +768,7 @@ productModel.productFilter = function (query, result) {
     let s0='',cat_id=''
     if(!isNaN(query.category_id*1)){
         cat_id='where p.category_id='+query.category_id
+        if(query.category_id*1==0)cat_id=''
     }
     switch (query.sortBy) {
         case 'id':  s0=" ORDER BY p.id "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
