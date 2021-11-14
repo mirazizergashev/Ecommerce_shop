@@ -1009,7 +1009,8 @@ productController.AllUser = function (req, res) {
 
         res.status(200).json({
             code: 200,
-            success: rows
+            success: rows.data,
+            pageCount:rows.pageCount
         })
     })
 }
