@@ -190,6 +190,7 @@ app.get("/click", async (req, res) => {
                         if (notFounds.length > 0) check.notFounds = notFounds
                         if (lessProd.length > 0) check.lessProd = lessProd
                         if (check.notFounds || check.lessProd) {
+                            console.log("193")
                             return res.json({
                                 error: 2,
                                 error_note: "Not",
@@ -234,6 +235,7 @@ app.get("/click", async (req, res) => {
                   
                 }).catch((err) => {
                     console.log(err)
+                    console.log(238)
                     res.json({
                         error: 2,
                         error_note: "Not"
@@ -267,16 +269,20 @@ app.use("/click/2", async (req, res) => {
                 })
             }).catch((err) => {
                 console.error(err)
+                console.error("click/2 catch 272")
                 res.json({
                     error: 2,
                     error_note: "Not"
                 });
             })
-    } else
+    } else{
+    console.error("click/2 catch 279")
+
         res.json({
             error: 2,
             error_note: "Not"
         });
+    }
 })
 
 // click etab 3
@@ -307,16 +313,23 @@ app.use("/click/3", async (req, res) => {
                         error_note: "Not"
                     });
                 })
-        } else
+        } else{
+        console.error("click/3 catch 316")
+
             res.json({
                 error: 1,
                 error_note: "Not"
             });
+        }
     } else
+    {
+    console.error("click/3 catch 323")
+
         res.json({
             error: 1,
             error_note: "Not"
         });
+    }
 })
 
 
