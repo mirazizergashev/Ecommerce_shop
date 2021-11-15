@@ -1009,7 +1009,8 @@ productController.AllUser = function (req, res) {
 
         res.status(200).json({
             code: 200,
-            success: rows
+            success: rows.data,
+            pageCount:rows.pageCount
         })
     })
 }
@@ -1088,6 +1089,32 @@ productController.searchALLSalesman = function (req, res) {
         })
     })
 }
+productController.searchALLSalesman2 = function (req, res) {
+    req.query.userId=req.session.userId
+    productModel.searchALLSalesman2(req.query, (err, rows) => {
+
+
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+
+
+        res.status(200).json({
+            code: 200,
+            success: rows
+        })
+    })
+}
 productController.searchALLAdmin = function (req, res) {
     productModel.searchALLAdmin(req.query.text, (err, rows) => {
 
@@ -1113,6 +1140,32 @@ productController.searchALLAdmin = function (req, res) {
         })
     })
 }
+productController.searchALLAdmin2 = function (req, res) {
+    productModel.searchALLAdmin2(req.query.text, (err, rows) => {
+
+
+        if (err) {
+            console.log(err);
+            return res.status(200).json({
+                code: 500,
+                error: {
+                    message: {
+                        uz: "Serverda xatolik tufayli rad etildi !",
+                        en: "Rejected due to server error!",
+                        ru: "Отклонено из-за ошибки сервера!"
+                    }
+                }
+            })
+        }
+
+
+        res.status(200).json({
+            code: 200,
+            success: rows
+        })
+    })
+}
+
 productController.Retcomment = function (req, res) {
     productModel.Retcomment(req.params.id, (err, rows) => {
 

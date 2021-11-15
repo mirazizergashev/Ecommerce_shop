@@ -403,26 +403,63 @@ productModel.All = function (query, result) {
 }
 
 productModel.AllUser = function (query, result) {
-
-    const page = parseInt(query.page || 0), count = parseInt(query.count || 15)
-    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url,
-    (SELECT sum(mark)/count(mark) FROM product_comment where product_id=p.id) as rating,
-    (SELECT count(mark) FROM product_comment where product_id=p.id) as reviews,
-    (select concat(u.first_name," ",u.last_name) from users u where u.id=p.user_id limit 1) as fish,
-    MAX(p.cost*(100-p.discount)/100) maxCost,MIN(p.cost*(100-p.discount)/100) minCost FROM  product as p 
-left join product_image pi on pi.product_id=p.id and 
-pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-where p.isActive=1 and checked=1  group by p.name limit ?,?;
-    select * from category where isActive=1;`, [page * count, count], function (err, res) {
+  pool.query("SELECT id,sub,isActive FROM category;",
+    function(err,res){
+        if(err)
+          { console.log("err0");
+             return result(err,null);}
+    const page = parseInt(query.page || 0), 
+    count = parseInt(query.count || 15),
+    a=[]
+    a.push(page * count, count)
+    let s='',cat_id=''
+    if(!isNaN(query.category_id*1)){
+        cat_id=' and p.category_id '+`in (${query.category_id+getSubCategory(res,query.category_id)})`
+        if(query.category_id*1==0)cat_id=''
+    }
+    switch (query.sortBy) {
+        case 'id':  s=" ORDER BY id "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
+        case 'name':  s=" ORDER BY name "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
+        case 'cost':  s=" ORDER BY cost "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
+        case 'rating':  s=" ORDER BY rating "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
+        case 'reviews':  s=" ORDER BY reviews "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
+        case 'discount':  s=" ORDER BY discount "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
+        case 'fish':  s=" ORDER BY fish "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
+    
+        default:
+            break;
+    } 
+    pool.query(`WITH cte AS (SELECT  p.*,pi.id as idcha,pi.img_url,
+        (SELECT sum(mark)/count(mark) FROM product_comment where product_id=p.id) as rating,
+        (SELECT count(mark) FROM product_comment where product_id=p.id) as reviews,
+        (select concat(u.first_name," ",u.last_name) from users u where u.id=p.user_id limit 1) as fish,
+        MAX(p.cost*(100-p.discount)/100) maxCost,MIN(p.cost*(100-p.discount)/100) minCost FROM  product as p 
+    left join product_image pi on pi.product_id=p.id and 
+    pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
+    where p.isActive=1 and checked=1 ${cat_id}  group by p.name)
+    select * from cte ${s}
+     limit ?,?;
+   
+    select * from category where isActive=1;
+    WITH cte AS (SELECT  p.*,pi.id as idcha,pi.img_url,
+        (SELECT sum(mark)/count(mark) FROM product_comment where product_id=p.id) as rating,
+        (SELECT count(mark) FROM product_comment where product_id=p.id) as reviews,
+        (select concat(u.first_name," ",u.last_name) from users u where u.id=p.user_id limit 1) as fish,
+        MAX(p.cost*(100-p.discount)/100) maxCost,MIN(p.cost*(100-p.discount)/100) minCost FROM  product as p 
+    left join product_image pi on pi.product_id=p.id and 
+    pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
+    where p.isActive=1 and checked=1 ${cat_id}  group by p.name)
+    select count(*) pages from cte;`, [page * count, count], function (err, res) {
         if (err) {
             return result(err, null);
         } else {
 
             let data = changeCosts(res[1], res[0])
             let data1=[];
-            return result(null, data);
+            return result(null, {data,pageCount:Math.ceil(res[2][0].pages/count)});
         }
     });
+});
 }
 
 productModel.AllAdmin = function (query, result) {
@@ -523,7 +560,7 @@ productModel.searchALLAdmin = function (text, result) {
 left join product_image pi on pi.product_id=p.id and 
 pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
 where p.isActive=1 and p.checked!=0 and p.name LIKE ?  group by p.name;
-select * from category`,`%${text}%`, function (err, res) {
+select * from category`,`%${text||''}%`, function (err, res) {
         if (err) {
             return result(err, null);
         }
@@ -533,7 +570,26 @@ select * from category`,`%${text}%`, function (err, res) {
         }
     });
 }
+productModel.searchALLAdmin2 = function (text, result) {
 
+    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url,
+    (SELECT sum(mark)/count(mark) FROM product_comment where product_id=p.id) as rating,
+    (SELECT count(mark) FROM product_comment where product_id=p.id) as reviews,
+    (select concat(u.first_name," ",u.last_name) from users u where u.id=p.user_id limit 1) as fish 
+    FROM  product as p 
+left join product_image pi on pi.product_id=p.id and 
+pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
+where p.isActive=1 and p.checked!=0 and p.name LIKE ?;
+select * from category`,`%${text||''}%`, function (err, res) {
+        if (err) {
+            return result(err, null);
+        }
+        else {
+           // let data = changeCosts(res[1], res[0])
+            return result(null, res[0]);
+        }
+    });
+}
 productModel.searchALLSalesman = function (query, result) {
 
     pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url,
@@ -544,7 +600,7 @@ productModel.searchALLSalesman = function (query, result) {
 left join product_image pi on pi.product_id=p.id and 
 pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
 where p.isActive=1 and p.user_id=? and p.name LIKE ? group by p.name;
-select * from category`,[query.userId,`%${text}%`], function (err, res) {
+select * from category`,[query.userId,`%${query.text||''}%`], function (err, res) {
         if (err) {
             return result(err, null);
         }
@@ -554,7 +610,25 @@ select * from category`,[query.userId,`%${text}%`], function (err, res) {
         }
     });
 }
+productModel.searchALLSalesman2 = function (query, result) {
 
+    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url,
+    (SELECT sum(mark)/count(mark) FROM product_comment where product_id=p.id) as rating,
+    (SELECT count(mark) FROM product_comment where product_id=p.id) as reviews,
+    (select concat(u.first_name," ",u.last_name) from users u where u.id=p.user_id limit 1) as fish FROM  product as p 
+left join product_image pi on pi.product_id=p.id and 
+pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
+where p.isActive=1 and p.user_id=? and p.name LIKE ?;
+select * from category`,[query.userId,`%${query.text||''}%`], function (err, res) {
+        if (err) {
+            return result(err, null);
+        }
+        else {
+           // let data = changeCosts(res[1], res[0])
+            return result(null, res[0]);
+        }
+    });
+}
 
 // `SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p 
 //     left join product_image pi on pi.product_id=p.id and 
@@ -571,7 +645,7 @@ productModel.searchAll = function (text, result) {
 left join product_image pi on pi.product_id=p.id and 
 pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
 where p.isActive=1 and checked=1 and p.name LIKE ?  group by p.name;
-select * from category`,`%${text}%`, function (err, res) {
+select * from category`,`%${text||''}%`, function (err, res) {
         if (err) {
             return result(err, null);
         }
@@ -706,8 +780,23 @@ productModel.prodPropsByValue = function (id = 0, result) {
 
 productModel.productFilter = function (query, result) {
     let a = [], ss = ""
+    let s0='',cat_id=''
+    if(!isNaN(query.category_id*1)){
+        cat_id='where p.category_id='+query.category_id
+        if(query.category_id*1==0)cat_id=''
+    }
+    switch (query.sortBy) {
+        case 'id':  s0=" ORDER BY p.id "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
+        case 'name':  s0=" ORDER BY p.name "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
+        case 'cost':  s0=" ORDER BY p.cost "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
+        case 'count':  s0=" ORDER BY p.count "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
+        case 'discount':  s0=" ORDER BY p.discount "+(query.direction && query.direction=='DESC'?'DESC':'');  break;
+       
+        default:
+            break;
+    } 
     Object.keys(query).forEach((id, i) => {
-        if (id == "fcost" || id == "lcost") return;
+        if (id == "fcost" || id == "lcost"||id=="sortBy"||id=="category_id"||id=="direction") return;
         let s = ""
         a.push(id)
         //    for (let i = 0; i < query[id].length; i++) 
@@ -720,10 +809,19 @@ productModel.productFilter = function (query, result) {
         `
 
     })
-    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p left join product_image pi on pi.product_id=p.id and p.isActive=1 
+    console.log(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p left join product_image pi 
+    on pi.product_id=p.id and p.isActive=1 
     and p.checked=1 and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
-    ${ss}
+    ${ss} ${cat_id} ${s0}
+    ;select * from category where isActive=1;`)
+
+
+    pool.query(`SELECT  p.*,pi.id as idcha,pi.img_url FROM  product as p left join product_image pi 
+    on pi.product_id=p.id and p.isActive=1 
+    and p.checked=1 and 
+    pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
+    ${ss} ${cat_id} ${s0}
     ;select * from category where isActive=1;`, a, function (err, res) {
         if (err) {
             return result(err, null);
@@ -786,5 +884,15 @@ productModel.similarProduct = function (name, result) {
             return result(null, res);
         }
     });
+}
+
+
+function getSubCategory(a,id) {
+    let b=[],s=""
+    a.filter(e=>e.sub==id)
+    .forEach(e => {
+        s+=","+e.id+getSubCategory(a,e.id)
+    });
+    return s
 }
 module.exports = productModel;
