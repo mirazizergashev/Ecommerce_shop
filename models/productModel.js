@@ -409,10 +409,9 @@ productModel.AllUser = function (query, result) {
           { console.log("err0");
              return result(err,null);}
     const page = parseInt(query.page || 0), 
-    count = parseInt(query.count || 15),
-    a=[]
-    a.push(page * count, count)
-    let s='',cat_id=''
+    count = parseInt(query.count || 15)
+    let a=[]
+    let s='',cat_id='',prop=''
     if(!isNaN(query.category_id*1)){
         cat_id=' and p.category_id '+`in (${query.category_id+getSubCategory(res,query.category_id)})`
         if(query.category_id*1==0)cat_id=''
@@ -428,12 +427,34 @@ productModel.AllUser = function (query, result) {
     
         default:
             break;
-    } 
+    }
+     Object.keys(query).forEach((id, i) => {
+        if (id == "count" ||id == "fcost" ||id == "page" || 
+        id == "lcost"||id=="sortBy"||id=="category_id"||id=="direction") return;
+        let s = ""
+        a.push(id)
+
+        //    for (let i = 0; i < query[id].length; i++) 
+        //    if(query[id][i]=='"'){
+        //     query[id][i]="'"
+        //    } 
+        query[id].split(" ").forEach(e => { a.push(e);
+            s += '?,' })
+        prop += ` inner join product_properties pp${i} 
+        on p.id=pp${i}.product_id and pp${i}.cat_prop_id=? and pp${i}.values in (${s.slice(0, -1)})
+        `
+
+    }) 
+    let b=[...a]
+    // b.concat(a)
+    a.push(page * count, count)
+    a=a.concat(b)
     pool.query(`WITH cte AS (SELECT  p.*,pi.id as idcha,pi.img_url,
         (SELECT sum(mark)/count(mark) FROM product_comment where product_id=p.id) as rating,
         (SELECT count(mark) FROM product_comment where product_id=p.id) as reviews,
         (select concat(u.first_name," ",u.last_name) from users u where u.id=p.user_id limit 1) as fish,
         MAX(p.cost*(100-p.discount)/100) maxCost,MIN(p.cost*(100-p.discount)/100) minCost FROM  product as p 
+        ${prop}
     left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
     where p.isActive=1 and checked=1 and p.count>0 ${cat_id}  group by p.name)
@@ -446,10 +467,11 @@ productModel.AllUser = function (query, result) {
         (SELECT count(mark) FROM product_comment where product_id=p.id) as reviews,
         (select concat(u.first_name," ",u.last_name) from users u where u.id=p.user_id limit 1) as fish,
         MAX(p.cost*(100-p.discount)/100) maxCost,MIN(p.cost*(100-p.discount)/100) minCost FROM  product as p 
+        ${prop}
     left join product_image pi on pi.product_id=p.id and 
     pi.id=(select id from product_image where product_id=p.id order by created_on desc limit 1)
     where p.isActive=1 and checked=1 and p.count>0 ${cat_id}  group by p.name)
-    select count(*) pages from cte;`, [page * count, count], function (err, res) {
+    select count(*) pages from cte;`, a, function (err, res) {
         if (err) {
             return result(err, null);
         } else {
