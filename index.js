@@ -2,27 +2,40 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 const session = require("express-session");
+const cors = require("cors")
 var FileStore = require('session-file-store')(session);
 const dotenv = require('dotenv').config()
 const fileUpload = require('express-fileupload');
 
 var app = express();
-
-
-
-app.use((req, res, next) => {
-
-    // res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Origin', req.header('origin'));
-    res.setHeader("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH,OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    res.setHeader('Access-Control-Allow-Credentials', true)
-  
-    if (req.method === 'OPTIONS') {
-        return res.sendStatus(200); // to deal with chrome sending an extra options request
+const whitelist = ["http://localhost:80","http://localhost:3003",
+"http://localhost:3004","http://localhost:3005",
+"http://buy-it.uz:80","http://a.buy-it.uz:3003",
+"http://a.buy-it.uz:3004","http://a.buy-it.uz:3005"]
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error("Not allowed by CORS"))
     }
-    next();
-  });
+  },
+  credentials: true,
+}
+app.use(cors(corsOptions))
+// app.use((req, res, next) => {
+
+//     // res.header('Access-Control-Allow-Origin', '*');
+//     res.header('Access-Control-Allow-Origin', req.header('origin'));
+//     res.setHeader("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH,OPTIONS");
+//     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     res.setHeader('Access-Control-Allow-Credentials', true)
+  
+//     if (req.method === 'OPTIONS') {
+//         return res.sendStatus(200); // to deal with chrome sending an extra options request
+//     }
+//     next();
+//   });
 
 app.use(fileUpload());
 
@@ -46,21 +59,11 @@ app.use(session({
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/payme-ghvcjhbcfkrhkjdfhkjdfn/:bu',function forceLiveDomain(req, res, next) {
-  
-    console.log(req.isPayme)
-    console.log(1)
-    console.log( req.params.bu)
-    
       return res.redirect(301, 'https:/checkout.paycom.uz/' + req.params.bu);
    
   });
 
   app.use('/click-ghvcjhhtrfhhkjdfhkjdfn/service/:bu',function forceLiveDomain(req, res, next) {
-  
-    console.log(req.isPayme)
-    console.log(1)
-    console.log( req.params.bu)
-    
       return res.redirect(301, 'https:/my.click.uz/services/pay?' + req.params.bu);
    
   });
