@@ -99,7 +99,10 @@ changeController.mainRating=function (req, res) {
                 }
             })
         }
-
+        rows[0].salesmen=rows[0].salesmen||0
+        rows[0].customers=rows[0].customers||0
+        rows[0].orders=rows[0].orders||0
+        rows[0].benefit=rows[0].benefit||0
         res.status(200).json({
             code: 200,
             success: rows
