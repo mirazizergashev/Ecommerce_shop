@@ -145,7 +145,7 @@ categoryController.create_update = function (req, res) {
 
 }
 categoryController.delete = function (req, res) {
-    categoryModel.delete(req.params.id, (err, rows) => {
+    categoryModel.delete(req.params.id,req.session.userId, (err, rows) => {
         if (err) {
             console.log(err);
             return res.status(200).json({
@@ -159,7 +159,16 @@ categoryController.delete = function (req, res) {
                 }
             })
         }
-
+        if(rows.auth)return res.status(200).json({
+            code: 403,
+            success: {
+                message: {
+                    uz: "Sizga ushbu amalni bajarishga ruxsat berilmagan!",
+                    en: "Rejected due to server error!",
+                    ru: "Отклонено из-за ошибки сервера!"
+                }
+            }
+        })
         res.status(200).json({
             code: 200,
             success: {

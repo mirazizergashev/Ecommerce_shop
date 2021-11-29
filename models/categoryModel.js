@@ -27,17 +27,21 @@ categoryModel.getAll=function(role_id,result){
     });
 }
 
-categoryModel.delete=function(id,result){
-    pool.query("SELECT id,sub,isActive FROM category;SELECT isActive FROM category where id=?;",id,
+categoryModel.delete=function(id,userId,result){
+    pool.query("SELECT id,sub,isActive FROM category;"+
+    "SELECT isActive FROM category where id=?;"+
+    "SELECT updateable(?, get_name('category')) auth;",[id,userId],
     function(err,res){
         if(err)
             return result(err,null);
-        else
+        else{
+            if(res[2][0].auth==0)return result(null,{auth:1})
             pool.query(`update category set isActive=${(parseInt(res[1][0].isActive)+1)%2} where id in (${id+getSubCategory(res[0],id)})`,
             function(err,rows){
                 if(err) return result(err,null);
                 return result(null,rows);
         })
+    }
     });  
 }
 
