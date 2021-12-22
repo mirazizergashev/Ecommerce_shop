@@ -3,8 +3,8 @@ process.env.NTBA_FIX_319 = 1
 const pool = require("./database/db")
 const TelegramBot = require('node-telegram-bot-api');
 
-// const token = `2092351035:AAHN4fpXKHIlZA892UgdMKchXV0NphtEtiY`;
-const token = process.env.TOKEN || '2003490237:AAFTBAuD2h17gqvtvZmy8cbxBwMTeYkuJiA';
+// const token = `2092351035:AAHN4fpXKHIlZA892sdfghjsdrftdrhftyegrtydgerftghftyghrftygygjgtyhUgdMKchXV0NphtEtiY`;
+const token = process.env.TOKEN ';
 //botga ulanish
 const bot = new TelegramBot(token, {
   polling: true
