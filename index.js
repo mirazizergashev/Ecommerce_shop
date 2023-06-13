@@ -11,7 +11,9 @@ var app = express();
 const whitelist = ["http://localhost:80","http://localhost:3003",
 "http://localhost:3004","http://localhost:3005",
 "http://buy-it.uz:80","http://a.buy-it.uz:3003",
-"http://a.buy-it.uz:3004","http://a.buy-it.uz:3005"]
+"http://a.buy-it.uz:3004","http://a.buy-it.uz:3005","http://a.buy-it.uz:3004"
+,
+"http://buy-it.uz","http://a.buy-it.uz","http://ams.buy-it.uz","http://cms.buy-it.uz"]
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || whitelist.indexOf(origin) !== -1) {

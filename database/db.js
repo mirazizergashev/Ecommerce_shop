@@ -12,26 +12,17 @@ const pool = mysql.createPool({
     // queueLimit: 0,
     // multipleStatements: true,
 
-    host: '80.85.142.207',
+    host: '90.85.182.208',
     // host: 'localhost',
-    user: 'admin',
-    password: "Admin*2021",
+    user: 'root',
+    password: "Root#2021",
     database: 'ecommerce_shop',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
     multipleStatements: true,
 
-    // host: '45.12.212.172',
-    // // host: 'localhost',
-    // user: 'admin',
-    // user: 'root',
-    // password: "in_CRM2021",
-    // database: 'ecommerce_shop',
-    // waitForConnections: true,
-    // connectionLimit: 10,
-    // queueLimit: 0,
-    // multipleStatements: true,
+    
     
 });
 
